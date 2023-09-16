@@ -41,7 +41,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,14 +83,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+
 TIME_ZONE = 'UTC'
 
+
 USE_I18N = True
+
 
 USE_TZ = True
 
 
 STATIC_URL = 'static/'
+
+
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+
+MEDIA_URL = 'media/'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
