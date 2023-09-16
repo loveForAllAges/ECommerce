@@ -1,9 +1,13 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<form action="" method="post" style="margin: 20px 0px;">
+<form action="" method="post" style="margin: 20px 0px;" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_div }}
+    {{ image_formset. }}
+    <div class="">
+        <input type="file" name="photos" multiple>
+    </div>
     <button type="submit">Create</button>
 </form>
 <div class="">===</div>

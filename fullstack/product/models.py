@@ -27,7 +27,7 @@ class Product(models.Model):
     name = models.CharField(max_length=128)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     description = models.TextField()
-    category = models.OneToOneField(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.IntegerField()
 
     def __str__(self):

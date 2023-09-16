@@ -28,21 +28,20 @@ class CreateProductView(View):
     form_class = ProductForm
 
     def get(self, request):
-        form1 = self.form_class()
-        form2 = ProductPhotoForm()
+        form = self.form_class()
+        image_formset = ProductPhotoForm()
         items = Product.objects.all()
-        return render(request, self.template_name, {'form1': form1, 'form2': form2, 'items': items})
+        return render(request, self.template_name, {'form': form, 'image_formset': image_formset, 'items': items})
 
     def post(self, request):
-        print(request.FILES)
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
+        form = self.form_class(request.POST)
+        if form.is_valid() and request.FILES.getlist('photos'):
             product = form.save(commit=False)
             product.save()
-            for photo in request.FILES.getlist('photos'):
-                ProductPhoto.objects.create(product=product, photo=photo)
+            for image in request.FILES.getlist('images'):
+                ProductPhoto.objects.create(product=product, image=image)
             return redirect('main')
-        return render(request, self.template_name, {'form1': form1, 'form2': form2})
+        return render(request, self.template_name, {'form': form})
 
 
 class CreateCategoryView(CreateView):

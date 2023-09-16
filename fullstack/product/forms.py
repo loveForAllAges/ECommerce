@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 from .models import Product, Category, Size, Brand, ProductPhoto
-from multiupload.fields import MultiFileField
 
 
 class ProductForm(ModelForm):
@@ -12,7 +11,7 @@ class ProductForm(ModelForm):
 class ProductPhotoForm(ModelForm):
     class Meta:
         model = ProductPhoto
-        fields = ('__all__')
+        fields = ('photo',)
 
 
 class SizeForm(ModelForm):
