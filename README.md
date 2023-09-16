@@ -1,2 +1,0 @@
-# ECommerce
-Django, Tailwindcss
