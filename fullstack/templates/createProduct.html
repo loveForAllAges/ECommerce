@@ -11,11 +11,25 @@
     <button type="submit">Create</button>
 </form>
 <div class="">===</div>
-<ul class="">
+<div class="">
 {% for i in items %}
-<li>
-{{ i.name }}
-</li>
+    <div>{{ i.name }}</div>
+    <div>{{ i.brand }}</div>
+    <div>{{ i.description }}</div>
+    <div>{{ i.category }}</div>
+    <div>{{ i.price }}</div>
+    {% for photo in i.productphoto_set.all %}
+    <img src="{{ photo.photo.url }}" alt="">
+    {% endfor %}
+    <div class="">
+        <a href="{% url 'product-detail' i.id %}">View</a>
+        <a href="{% url 'update-product' i.id %}">Edit</a>
+
+        <form method="POST" action="{% url 'delete-product' i.id %}">
+            {% csrf_token %}<input type="submit" value="Delete">
+         </form>
+    </div>
+    <br>
 {% endfor %}
-</ul>
+</div>
 {% endblock %}

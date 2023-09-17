@@ -1,26 +1,22 @@
 from django.shortcuts import render
 from .models import Product, Category, Size, Brand, ProductPhoto
 from django.views import View
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 from .forms import ProductForm, CategoryForm, SizeForm, BrandForm, ProductPhotoForm
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 
-class ProductView(ListView):
+class ProductListView(ListView):
     template_name = 'products.html'
     model = Product
 
 
-# class CreateProductView(CreateView):
-#     template_name = 'createProduct.html'
-#     form_class = ProductForm
-#     success_url = reverse_lazy('main')
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['items'] = Product.objects.all()
-#         return context
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'usage/productDetail.html'
 
 
 class CreateProductView(View):
@@ -35,13 +31,27 @@ class CreateProductView(View):
 
     def post(self, request):
         form = self.form_class(request.POST)
-        if form.is_valid() and request.FILES.getlist('photos'):
+        photos = request.FILES.getlist('photos')
+        if form.is_valid() and photos:
             product = form.save(commit=False)
             product.save()
-            for image in request.FILES.getlist('images'):
-                ProductPhoto.objects.create(product=product, image=image)
+            for photo in photos:
+                ProductPhoto.objects.create(product=product, photo=photo)
             return redirect('main')
         return render(request, self.template_name, {'form': form})
+
+
+class UpdateProductView(UpdateView):
+    model = Product
+    fields = '__all__'
+    template_name = 'adm/createProduct.html'
+
+
+# @method_decorator(staff_member_required, name='dispatch')
+class DeleteProductView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('main')
+    template_name = ''
 
 
 class CreateCategoryView(CreateView):
