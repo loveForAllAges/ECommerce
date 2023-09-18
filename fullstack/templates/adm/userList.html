@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>USERS</h1>
+<a href="{% url 'user-create' %}">Create</a>
+{% for object in object_list %}
+<p>{{ object.name }}</p>
+<div class="">
+    <a href="{% url 'user-update' object.id %}">Edit</a>
+  
+    <form method="POST" action="{% url 'user-delete' object.id %}">
+      {% csrf_token %}<input type="submit" value="Delete" />
+    </form>
+  </div>
+  <br />
+{% endfor %}
+{% endblock %}

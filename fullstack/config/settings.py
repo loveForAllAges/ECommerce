@@ -14,6 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
+
 ALLOWED_HOSTS = []
 
 
@@ -103,7 +104,13 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = '/'
+
+
+# AUTH_USER_MODEL = 'account.User'
