@@ -7,13 +7,7 @@
 </head>
 <body>
     {% block header %}
-    <div class="">
-        <a href="{% url 'main' %}">Main</a>
-        <a href="{% url 'create-product' %}">Products</a>
-        <a href="{% url 'create-size' %}">Sizes</a>
-        <a href="{% url 'create-category' %}">Categories</a>
-        <a href="{% url 'create-brand' %}">Brands</a>
-    </div>
+    {% include '_partials/header.html' %}
     {% endblock %}  
 
     {% block content %}

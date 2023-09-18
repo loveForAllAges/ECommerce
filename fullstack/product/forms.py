@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Product, Category, Size, Brand, ProductPhoto
+from .models import Product, Category, Brand, ProductPhoto
 
 
 class ProductForm(ModelForm):
@@ -14,10 +14,10 @@ class ProductPhotoForm(ModelForm):
         fields = ('photo',)
 
 
-class SizeForm(ModelForm):
-    class Meta:
-        model = Size
-        fields = ('__all__')
+# class SizeForm(ModelForm):
+#     class Meta:
+#         model = Size
+#         fields = ('__all__')
 
 
 class CategoryForm(ModelForm):

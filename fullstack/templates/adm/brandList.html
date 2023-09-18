@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>BRANDS</h1>
+<a href="{% url 'brand-create' %}">Create</a>
+{% for object in object_list %}
+<p>{{ object }}</p>
+{% endfor %}
+{% endblock %}

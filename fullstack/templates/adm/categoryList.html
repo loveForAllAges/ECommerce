@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>CATEGORIES</h1>
+<a href="{% url 'category-create' %}">Create</a>
+{% for object in object_list %}
+<p>{{ object }}</p>
+{% endfor %}
+{% endblock %}
