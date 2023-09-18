@@ -1,0 +1,12 @@
+<h1>Product Detail</h1>
+<div>{{ object.name }}</div>
+<div>{{ object.brand }}</div>
+<div>{{ object.description }}</div>
+<div>{{ object.category }}</div>
+<div>{{ object.price }}</div>
+{% for photo in object.productphoto_set.all %}
+<img src="{{ photo.photo.url }}" alt="">
+{% empty %}
+<p>Нет фото</p>
+{% endfor %}
+<button data-product="{{ object.id }}" data-action="add">Buy</button>

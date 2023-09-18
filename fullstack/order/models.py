@@ -4,9 +4,13 @@ from product.models import Product
 
 
 class Order(models.Model):
+    ORDER_CHOICES = ((1, 'Создан'), (2, 'Оформлен'), (3, 'Собран'), (4, 'Отправлен'), 
+                     (5, 'Получен'), (6, 'Доставлен'), (7, 'Завершен'), (8, 'Отменен'))
+
     customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=1, choices=ORDER_CHOICES, default=1)
 
 
 class OrderItem(models.Model):

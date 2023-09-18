@@ -3,6 +3,10 @@ from order.models import Order
 from product.models import Product
 
 
+class Cart:
+    pass
+
+
 def cookieCart(request):
     cart = json.loads(request.COOKIES.get('cart'))
     items = []

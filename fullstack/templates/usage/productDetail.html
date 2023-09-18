@@ -1,15 +1,5 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Product Detail</h1>
-<div>{{ object.name }}</div>
-<div>{{ object.brand }}</div>
-<div>{{ object.description }}</div>
-<div>{{ object.category }}</div>
-<div>{{ object.price }}</div>
-{% for photo in object.productphoto_set.all %}
-<img src="{{ photo.photo.url }}" alt="">
-{% empty %}
-<p>Нет фото</p>
-{% endfor %}
+{{ include 'components/productCard.html' }}
 {% endblock %}
