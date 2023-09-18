@@ -5,6 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+        var user = '{{ request.user }}';
+        console.log(user);
+
+        function getCookie() {
+            var cookies = document.cookie.split(";");
+            console.log(cookies);
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].split("=");
+
+                if ("cart" == cookie[0].trim()) {
+                    return decodeURIComponent(cookie[1]);
+                }
+            }
+            return null;
+        }
+
+        var cart = JSON.parse(getCookie());
+        if (cart == undefined) {
+            cart = {}
+            console.log('cart created');
+            document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
+        }
+        console.log(cart);
+        console.log(document.cookie);
+    </script>
 </head>
 <body>
     {% block header %}
@@ -13,6 +39,6 @@
 
     {% block content %}
     {% endblock %}
-    <script type="text/script" src="{% static 'js/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 </body>
 </html>

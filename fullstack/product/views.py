@@ -1,3 +1,4 @@
+from typing import Any
 from django.shortcuts import render
 from .models import Product, Category, Brand, ProductPhoto
 from django.views import View
@@ -10,6 +11,11 @@ from django.shortcuts import redirect
 class ProductListView(ListView):
     template_name = 'products.html'
     model = Product
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['cookie'] = self.request.COOKIES
+        return context
 
 
 class ProductDetailView(DetailView):
