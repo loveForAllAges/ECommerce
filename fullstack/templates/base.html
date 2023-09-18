@@ -7,11 +7,27 @@
     <title>Document</title>
     <script>
         var user = '{{ request.user }}';
-        console.log(user);
+
+        function getToken() {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken' + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getToken();
 
         function getCookie() {
             var cookies = document.cookie.split(";");
-            console.log(cookies);
+            console.log(cookies)
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = cookies[i].split("=");
 
@@ -25,11 +41,10 @@
         var cart = JSON.parse(getCookie());
         if (cart == undefined) {
             cart = {}
-            console.log('cart created');
+            console.log('CART CREATED')
             document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
         }
         console.log(cart);
-        console.log(document.cookie);
     </script>
 </head>
 <body>

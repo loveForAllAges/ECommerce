@@ -15,8 +15,9 @@ def parseCookies(request):
         'total_price': 0
     }
 
+    print('='*10, cart, '='*10)
+
     for i in cart:
-        print(i)
         product = Product.objects.get(id=i)
         total = (product.price * cart[i]['quantity'])
         order['total_price'] += total
@@ -26,6 +27,7 @@ def parseCookies(request):
             'product': {
                 'id': product.id,
                 'name': product.name,
+                'description': product.description,
                 'price': product.price,
                 'photos': product.productphoto_set.all(),
             },
