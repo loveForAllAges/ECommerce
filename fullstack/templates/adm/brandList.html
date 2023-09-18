@@ -4,6 +4,14 @@
 <h1>BRANDS</h1>
 <a href="{% url 'brand-create' %}">Create</a>
 {% for object in object_list %}
-<p>{{ object }}</p>
+<p>{{ object.name }}</p>
+<div class="">
+    <a href="{% url 'brand-update' object.id %}">Edit</a>
+  
+    <form method="POST" action="{% url 'brand-delete' object.id %}">
+      {% csrf_token %}<input type="submit" value="Delete" />
+    </form>
+  </div>
+  <br />
 {% endfor %}
 {% endblock %}

@@ -4,6 +4,14 @@
 <h1>CATEGORIES</h1>
 <a href="{% url 'category-create' %}">Create</a>
 {% for object in object_list %}
-<p>{{ object }}</p>
+<p>{{ object.name }}</p>
+<div class="">
+    <a href="{% url 'category-update' object.id %}">Edit</a>
+  
+    <form method="POST" action="{% url 'category-delete' object.id %}">
+      {% csrf_token %}<input type="submit" value="Delete" />
+    </form>
+  </div>
+  <br />
 {% endfor %}
 {% endblock %}
