@@ -10,7 +10,19 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=1, choices=ORDER_CHOICES, default=1)
+    status = models.IntegerField(choices=ORDER_CHOICES, default=1)
+
+    @property
+    def number_of_items_in_cart(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total
+    
+    @property
+    def total_price(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total_price for item in orderitems])
+        return total
 
 
 class OrderItem(models.Model):

@@ -18,7 +18,7 @@
     {% csrf_token %}<input type="submit" value="Delete" />
   </form>
 </div>
-<button data-product="{{ object.id }}" data-action="add">Buy</button>
+<button data-product="{{ object.id }}" data-action="add" class="addToCart">В корзину</button>
 <br />
 {% endfor %}
 {% endblock %}

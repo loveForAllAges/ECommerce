@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 
 
 class ProductListView(ListView):
-    template_name = 'products.html'
+    template_name = 'usage/productList.html'
     model = Product
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

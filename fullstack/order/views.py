@@ -9,7 +9,7 @@ class CartListView(ListView):
     template_name = 'usage/cartList.html'
 
     def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user, status='1')
+        queryset = Order.objects.filter(customer=self.request.user, status=1)
         return queryset
 
 
@@ -18,6 +18,6 @@ class OrderListView(ListView):
     template_name = 'usage/orderList.html'
 
     def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user).exclude(status='1')
+        queryset = Order.objects.filter(customer=self.request.user).exclude(status=1)
         return queryset
 

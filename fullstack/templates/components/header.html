@@ -5,6 +5,6 @@
     <a href="{% url 'brand-list' %}">Brands</a>
     <!-- <a href="{% url 'brand-list' %}">Orders</a> -->
     ///
-    <a href="{% url 'cart-list' %}">Моя корзина</a>
+    <a href="{% url 'cart-list' %}">Моя корзина ({{ order.number_of_items_in_cart }})</a>
     <a href="{% url 'order-list' %}">История заказов</a>
 </div>
