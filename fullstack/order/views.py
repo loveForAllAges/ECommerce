@@ -77,7 +77,31 @@ class CheckoutView(UserPassesTestMixin, View):
         return render(request, self.template_name, context=context)
 
     def post(self, request):
-        pass
+        data = request.POST
+        address = data.get('address')
+        if request.user.is_authenticated:
+            first_name = request.user.first_name
+            last_name = request.user.last_name
+            email = request.user.email
+            phone = request.user.phone
+
+            order = Order.objects.get(customer=request.user, status=1)
+            order.first_name = first_name
+            order.last_name = last_name
+            order.email = email
+            order.phone = phone
+        else:
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            phone = data.get('phone')
+            order = Order.objects.create(first_name=first_name, last_name=last_name,
+                                         email=email, phone=phone)
+
+        order.address = address
+        order.status = 2
+        order.save()
+        return HttpResponse('OK')
 
     def test_func(self):
         if not cart(self.request)['items']:
@@ -98,7 +122,7 @@ class AddressCreateView(LoginRequiredMixin, CreateView):
 
 class AddressUpdateView(UserPassesTestMixin, UpdateView):
     model = Address
-    fields = ('city', 'address', 'zipcode')
+    fields = ('address',)
     template_name = 'usage/addressCreate.html'
     success_url = reverse_lazy('account')
 

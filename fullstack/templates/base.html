@@ -8,6 +8,8 @@
     <script>
         var user = '{{ request.user }}';
 
+        console.log('set-cookie', document.cookie)
+
         function getToken() {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -30,7 +32,6 @@
             console.log(cookies)
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = cookies[i].split("=");
-
                 if ("cart" == cookie[0].trim()) {
                     return decodeURIComponent(cookie[1]);
                 }
@@ -41,10 +42,9 @@
         var cart = JSON.parse(getCookie());
         if (cart == undefined) {
             cart = {}
-            console.log('CART CREATED')
             document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
         }
-        console.log(cart);
+        console.log(document.cookie);
     </script>
 </head>
 <body>

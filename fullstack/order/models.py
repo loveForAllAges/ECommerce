@@ -4,6 +4,11 @@ from product.models import Product
 from datetime import datetime
 
 
+class Address(models.Model):
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+
 class Order(models.Model):
     ORDER_CHOICES = ((1, 'Создан'), (2, 'Оформлен'), (3, 'Собран'), (4, 'Отправлен'), 
                      (5, 'Получен'), (6, 'Доставлен'), (7, 'Завершен'), (8, 'Отменен'))
@@ -12,8 +17,9 @@ class Order(models.Model):
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     email = models.EmailField(blank=True)
-    phone = models.PositiveIntegerField(blank=True)
+    phone = models.PositiveIntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    address = models.CharField(max_length=255)
     status = models.IntegerField(choices=ORDER_CHOICES, default=1)
 
     @property
@@ -42,11 +48,3 @@ class OrderItem(models.Model):
     @property
     def get_total_price(self):
         return self.product.price * self.quantity
-
-
-class Address(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    city = models.CharField(max_length=128)
-    address = models.CharField(max_length=255)
-    zipcode = models.CharField(max_length=128)

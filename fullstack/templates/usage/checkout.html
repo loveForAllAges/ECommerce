@@ -3,6 +3,9 @@
 {% block content %}
 <div class="">
     <h2>Корзина</h2>
+    <div class="">
+        <h3>Общая стоимость: {{ order.total_price }}</h3>
+    </div>
     {% for object in items %}
     <div>{{ object.product.name }}</div>
     <div>{{ object.product.brand }}</div>
@@ -22,10 +25,35 @@
 <h1>Оформление заказа</h1>
 <form action="" method="post">
     {% csrf_token %}
-    <input type="text" name="first_name" value="{{ request.user.first_name }}" placeholder="Имя" required>
-    <input type="text" name="last_name" value="{{ request.user.last_name }}" placeholder="Фамилия" required>
-    <input type="text" name="email" value="{{ request.user.email }}" placeholder="Почта" required>
-    <input type="text" name="phone" value="{{ request.user.phone }}" placeholder="Телефон" required>
+    <h2>Контактые данные</h2>
+    {% if request.user.is_authenticated %}
+    <input type="text" name="first_name" value="{{ request.user.first_name }}" placeholder="Имя" disabled>
+    <input type="text" name="last_name" value="{{ request.user.last_name }}" placeholder="Фамилия" disabled>
+    <input type="text" name="email" value="{{ request.user.email }}" placeholder="Почта" disabled>
+    <input type="text" name="phone" value="{{ request.user.phone }}" placeholder="Телефон" disabled>
+    {% else %}
+    <input type="text" name="first_name" placeholder="Имя" required>
+    <input type="text" name="last_name" placeholder="Фамилия" required>
+    <input type="text" name="email" placeholder="Почта" required>
+    <input type="text" name="phone" placeholder="Телефон" required>
+    {% endif %}
+
+    <h2>Адрес</h2>
+    <div class="">
+        {% if not request.user.is_authenticated or not request.user.address_set.all %}
+        <input type="text" name="address" placeholder="Введите адрес" required>
+        {% else %}
+        <h3>Выберите адрес доставки</h3>
+        {% for address in request.user.address_set.all %}
+        <div class="">
+            <input type="radio" id="address{{address.id}}" name="address" value="{{ address.id }}" required>
+            <label for="address{{address.id}}">{{ address.city }}, {{ address.address }}, {{ address.zipcode }}</label>    
+        </div>
+        {% endfor %}
+        <a href="{% url 'address-create' %}">Добавить адрес</a>
+        {% endif %}
+    </div>
+    <br>
     <button type="submit">Оплатить</button>
 </form>
 {% endblock %}

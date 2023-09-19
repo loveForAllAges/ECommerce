@@ -21,6 +21,10 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'account.User'
 
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 0
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

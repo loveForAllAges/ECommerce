@@ -1,13 +1,11 @@
 
 import json
 from .models import *
+from django.shortcuts import HttpResponse
 
 
 def parseCookies(request):
-    try:
-        cart = json.loads(request.COOKIES['cart'])
-    except:
-        cart = {}
+    cart = json.loads(request.COOKIES.get('cart', '{}'))
 
     items = []
     order = {
@@ -15,7 +13,7 @@ def parseCookies(request):
         'total_price': 0
     }
 
-    for i in cart:
+    for i in list(cart.keys()):
         try:
             product = Product.objects.get(id=i)
             total = (product.price * cart[i]['quantity'])
@@ -29,7 +27,7 @@ def parseCookies(request):
             }
             items.append(item)
         except Exception as error:
-            pass
+            del cart[i]
 
     return {
         'order': order,

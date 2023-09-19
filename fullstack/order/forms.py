@@ -5,7 +5,7 @@ from .models import Address, Order
 class AddressForm(ModelForm):
     class Meta:
         model = Address
-        fields = ('city', 'address', 'zipcode')
+        fields = ('name',)
 
 
 class OrderForm(ModelForm):
