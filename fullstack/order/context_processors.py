@@ -18,23 +18,20 @@ def parseCookies(request):
     print('='*10, cart, '='*10)
 
     for i in cart:
-        product = Product.objects.get(id=i)
-        total = (product.price * cart[i]['quantity'])
-        order['total_price'] += total
-        order['number_of_items_in_cart'] += cart[i]['quantity']
+        try:
+            product = Product.objects.get(id=i)
+            total = (product.price * cart[i]['quantity'])
+            order['total_price'] += total
+            order['number_of_items_in_cart'] += cart[i]['quantity']
 
-        item = {
-            'product': {
-                'id': product.id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'photos': product.productphoto_set.all(),
-            },
-            'quantity': cart[i]['quantity'],
-            'get_total_price': total,
-        }
-        items.append(item)
+            item = {
+                'product': product,
+                'quantity': cart[i]['quantity'],
+                'get_total_price': total,
+            }
+            items.append(item)
+        except:
+            pass
 
     return {
         'order': order,
@@ -44,8 +41,7 @@ def parseCookies(request):
 
 def cart(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order = Order.objects.get_or_create(customer=customer, status=1)
+        order, created = Order.objects.get_or_create(customer=request.user, status=1)
         items = order.orderitem_set.all()
     else:
         print('NOT AUTH')

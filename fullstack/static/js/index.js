@@ -36,7 +36,7 @@ $(document).ready(function(){
     }
 
     function updateOrder(productId, action){
-        fetch('cart-update', {
+        fetch('/cart/update/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

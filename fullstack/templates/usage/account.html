@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Корзина</h1>
-{% for object in items %}
+<h1>Аккаунт</h1>
+<p>{{ request.user.first_name }} - {{ request.user.last_name }} - {{ request.user.email }} - Staff: {{ request.user.is_staff }} - Total orders: {{ request.user.order_set.all|length }}</p>
+<h1>История заказов</h1>
+{% for object in object_list %}
+<div>{{ object }}</div>
 <div>{{ object.product.name }}</div>
 <div>{{ object.product.brand }}</div>
 <div>{{ object.product.description }}</div>
@@ -10,14 +13,12 @@
 <div>{{ object.product.price }}</div>
 <h4>Количество: {{ object.quantity }}</h4>
 <h4>Общая цена: {{ object.get_total_price }}</h4>
-{% for photo in object.product.productphoto_set.all %}
+{% for photo in object.product.photos %}
 <img src="{{ photo.photo.url }}" alt="">
 {% empty %}
 <p>Нет фото</p>
 {% endfor %}
-<button data-product="{{ object.product.id }}" data-action="remove" class="addToCart">Меньше</button>
-<button data-product="{{ object.product.id }}" data-action="add" class="addToCart">Больше</button>
 {% empty %}
-<p>Корзина пустая</p>
+<p>Заказов нет</p>
 {% endfor %}
 {% endblock %}

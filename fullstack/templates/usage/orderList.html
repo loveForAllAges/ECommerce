@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>История заказов</h1>
+{% for object in object_list %}
+<div>{{ object }}</div>
+<div>{{ object.product.name }}</div>
+<div>{{ object.product.brand }}</div>
+<div>{{ object.product.description }}</div>
+<div>{{ object.product.category }}</div>
+<div>{{ object.product.price }}</div>
+<h4>Количество: {{ object.quantity }}</h4>
+<h4>Общая цена: {{ object.get_total_price }}</h4>
+{% for photo in object.product.photos %}
+<img src="{{ photo.photo.url }}" alt="">
+{% empty %}
+<p>Нет фото</p>
+{% endfor %}
+{% empty %}
+<p>Заказов нет</p>
+{% endfor %}
+{% endblock %}

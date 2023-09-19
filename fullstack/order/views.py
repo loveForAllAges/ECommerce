@@ -1,12 +1,12 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.views.generic import ListView
-from .models import Order
+from .models import Order, Product, OrderItem
 import json
 from django.http import JsonResponse
+from django.contrib import messages
 
 
-# TODO private func
 class CartListView(ListView):
     template_name = 'usage/cartList.html'
 
@@ -31,5 +31,24 @@ class OrderListView(ListView):
 
 def cart_update(request):
     data = json.loads(request.body)
-    print([data])
-    return JsonResponse('Success')
+
+    productId = data['productId']
+    action = data['action']
+
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=request.user, status=1)
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        orderItem.quantity = (orderItem.quantity + 1)
+    elif action == 'remove':
+        orderItem.quantity = (orderItem.quantity - 1)
+
+    orderItem.save()
+
+    if orderItem.quantity <= 0:
+        orderItem.delete()
+
+    messages.add_message(request, messages.INFO, 'Корзина обновлена')
+
+    return JsonResponse('Success', safe=False)
