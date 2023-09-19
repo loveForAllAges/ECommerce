@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from product.models import Product
 
 
@@ -7,7 +7,7 @@ class Order(models.Model):
     ORDER_CHOICES = ((1, 'Создан'), (2, 'Оформлен'), (3, 'Собран'), (4, 'Отправлен'), 
                      (5, 'Получен'), (6, 'Доставлен'), (7, 'Завершен'), (8, 'Отменен'))
 
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=ORDER_CHOICES, default=1)

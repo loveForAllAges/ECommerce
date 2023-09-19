@@ -18,6 +18,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+AUTH_USER_MODEL = 'account.User'
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,8 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
     'product',
-    'order'
+    'order',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +117,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_REDIRECT_URL = '/'
-
-
-# AUTH_USER_MODEL = 'account.User'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'

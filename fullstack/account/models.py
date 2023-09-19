@@ -1,79 +1,49 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin, UserManager, AbstractBaseUser
 
 
-# class User(AbstractUser):
-#     email = models.EmailField(unique=True, blank=False)
+class UserManager(UserManager):
+    def _create_user(self, first_name, last_name, email, password, **extra_fields):
+        if not email:
+            raise ValueError("You have not provided a valid e-mail address")
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, first_name=first_name, last_name=last_name, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
 
-#     USERNAME_FIELD = 'email'
-
-
-
-
-
-# class MyUserManager(BaseUserManager):
-#     def create_user(self, email, date_of_birth, password=None):
-#         """
-#         Creates and saves a User with the given email, date of
-#         birth and password.
-#         """
-#         if not email:
-#             raise ValueError("Users must have an email address")
-
-#         user = self.model(
-#             email=self.normalize_email(email),
-#             date_of_birth=date_of_birth,
-#         )
-
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-
-#     def create_superuser(self, email, date_of_birth, password=None):
-#         """
-#         Creates and saves a superuser with the given email, date of
-#         birth and password.
-#         """
-#         user = self.create_user(
-#             email,
-#             password=password,
-#             date_of_birth=date_of_birth,
-#         )
-#         user.is_admin = True
-#         user.save(using=self._db)
-#         return user
+        return user
+    
+    def create_user(self, first_name=None, last_name=None, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(first_name, last_name, email, password, **extra_fields)
+    
+    def create_superuser(self, first_name=None, last_name=None, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self._create_user(first_name, last_name, email, password, **extra_fields)
 
 
-# class MyUser(AbstractBaseUser):
-#     email = models.EmailField(
-#         verbose_name="email address",
-#         max_length=255,
-#         unique=True,
-#     )
-#     date_of_birth = models.DateField()
-#     is_active = models.BooleanField(default=True)
-#     is_admin = models.BooleanField(default=False)
 
-#     objects = MyUserManager()
+class User(AbstractBaseUser, PermissionsMixin):
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+    email = models.EmailField(max_length=255, unique=True)
 
-#     USERNAME_FIELD = "email"
-#     REQUIRED_FIELDS = ["date_of_birth"]
+    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return self.email
+    objects = UserManager()
 
-#     def has_perm(self, perm, obj=None):
-#         "Does the user have a specific permission?"
-#         # Simplest possible answer: Yes, always
-#         return True
+    USERNAME_FIELD = "email"
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-#     def has_module_perms(self, app_label):
-#         "Does the user have permissions to view the app `app_label`?"
-#         # Simplest possible answer: Yes, always
-#         return True
-
-#     @property
-#     def is_staff(self):
-#         "Is the user a member of staff?"
-#         # Simplest possible answer: All admins are staff
-#         return self.is_admin
+    def __str__(self):
+        return self.email
+    

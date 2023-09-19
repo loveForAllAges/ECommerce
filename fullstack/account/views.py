@@ -1,14 +1,17 @@
 # from django.shortcuts import render
-# from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 # from django.views import View
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.conf import settings
-# from django.urls import reverse_lazy
-# from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+from .forms import SignupForm
+# from django.contrib.auth.forms import UserCreationForm
 
 
-# class MyLoginView(LoginView):
-#     template_name = 'usage/login.html'
+class SignupView(CreateView):
+    template_name = 'auth/signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('main')
 
 
 # class AccountView(LoginRequiredMixin, View):
