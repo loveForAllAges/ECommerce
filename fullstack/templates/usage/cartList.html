@@ -18,6 +18,10 @@
 <button data-product="{{ object.product.id }}" data-action="remove" class="addToCart">Удалить</button>
 <button data-product="{{ object.product.id }}" data-action="minus" class="addToCart">Меньше</button>
 <button data-product="{{ object.product.id }}" data-action="plus" class="addToCart">Больше</button>
+
+<div class="">
+    <a href="{% url 'checkout' %}">Оформить заказ</a>
+</div>
 {% empty %}
 <p>Корзина пустая</p>
 {% endfor %}

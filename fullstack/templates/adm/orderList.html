@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Заказы</h1>
+{% for object in object_list %}
+<div>{{ object.id }}</div>
+<div>{{ object.get_status_display }}</div>
+<div>{{ object.get_created_date }}</div>
+<div>{{ object.description }}</div>
+<div>{{ object.category }}</div>
+<div>{{ object.price }}</div>
+<ul>
+    {% for item in object.orderitem_set.all %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+{% empty %}
+<p>Ничего не найдено</p>
+{% endfor %}
+{% endblock %}

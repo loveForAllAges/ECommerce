@@ -1,10 +1,18 @@
 from typing import Any
 from django.db.models.query import QuerySet
-from django.views.generic import ListView
-from .models import Order, Product, OrderItem
+from django.forms.models import BaseModelForm
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views import View
+from .models import Order, Product, OrderItem, Address
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
+from .forms import AddressForm, OrderForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import Http404
+from django.shortcuts import render
 
 
 class CartListView(ListView):
@@ -17,15 +25,6 @@ class CartListView(ListView):
         else:
             queryset = ''
 
-        return queryset
-
-
-# TODO private func
-class OrderListView(ListView):
-    template_name = 'usage/orderList.html'
-
-    def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user).exclude(status=1)
         return queryset
 
 
@@ -53,3 +52,70 @@ def cart_update(request):
     messages.add_message(request, messages.INFO, 'Корзина обновлена')
 
     return JsonResponse('Success', safe=False)
+
+
+class OrderListView(UserPassesTestMixin, ListView):
+    template_name = 'adm/orderList.html'
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(status=1)
+
+    def test_func(self):
+        if not self.request.user.is_authenticated or not self.request.user.is_staff:
+            raise Http404
+        return True
+
+
+class CheckoutView(View):
+    template_name = 'usage/checkout.html'
+
+    def get(self, request):
+        context = {
+            'order_form': OrderForm,
+        }
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        pass
+
+
+
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    model = Address
+    form_class = AddressForm
+    template_name = 'usage/addressCreate.html'
+    success_url = reverse_lazy('account')
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        form.instance.customer = self.request.user
+        return super().form_valid(form)
+    
+
+class AddressUpdateView(UserPassesTestMixin, UpdateView):
+    model = Address
+    fields = ('city', 'address', 'zipcode')
+    template_name = 'usage/addressCreate.html'
+    success_url = reverse_lazy('account')
+
+    def test_func(self):
+        pk = self.kwargs.get('pk')
+        item = Address.objects.get(id=pk)
+        user = self.request.user
+        if not user.is_authenticated or not item.customer == user:
+            raise Http404
+        return True
+
+
+class AddressDeleteView(UserPassesTestMixin, DeleteView):
+    model = Address
+    success_url = reverse_lazy('account')
+    template_name = ''
+
+    def test_func(self):
+        pk = self.kwargs.get('pk')
+        item = Address.objects.get(id=pk)
+        user = self.request.user
+        if not self.request.user.is_authenticated or not item.customer == user:
+            raise Http404
+        return True
+    

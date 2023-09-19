@@ -15,11 +15,10 @@ from django.db.models import Q
 
 class ProductListView(View):
     template_name = 'usage/productList.html'
-    # model = Product
 
     def get(self, request):
         context = {}
-        q = request.GET.get('q') if request.GET.get('q') != None else ''
+        q = request.GET.get('q', '')
 
         context['object_list'] = Product.objects.filter(
             Q(name__icontains=q) | Q(description__icontains=q) | Q(brand__name__icontains=q) | Q(category__name__icontains=q)
@@ -28,11 +27,6 @@ class ProductListView(View):
         context['brands'] = Brand.objects.all()
 
         return render(request, self.template_name, context)
-
-    # def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-    #     context = super().get_context_data(**kwargs)
-    #     context['cookie'] = self.request.COOKIES
-    #     return context
 
 
 class ProductDetailView(DetailView):
@@ -98,7 +92,7 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
         if not self.request.user.is_authenticated or not self.request.user.is_staff:
             raise Http404
         return True
-    
+
 
 class ProductDeleteView(UserPassesTestMixin, DeleteView):
     model = Product

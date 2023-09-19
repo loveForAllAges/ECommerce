@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from .forms import SignupForm, UserUpdateForm
 from django.contrib.auth.views import PasswordChangeView
 # from django.contrib.auth.forms import PasswordChangeForm
-from order.models import Order
+from order.models import Order, Address
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
@@ -32,6 +32,11 @@ class UserListView(UserPassesTestMixin, ListView):
 
 class AccountView(LoginRequiredMixin, ListView):
     template_name = 'usage/account.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['addresses'] = Address.objects.filter(customer=self.request.user)
+        return context
 
     def get_queryset(self):
         queryset = Order.objects.filter(customer=self.request.user).exclude(status=1)

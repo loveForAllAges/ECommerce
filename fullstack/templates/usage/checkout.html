@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="">
+    <h2>Корзина</h2>
+    {% for object in items %}
+    <div>{{ object.product.name }}</div>
+    <div>{{ object.product.brand }}</div>
+    <div>{{ object.product.description }}</div>
+    <div>{{ object.product.category }}</div>
+    <div>{{ object.product.price }}</div>
+    <h4>Количество: {{ object.quantity }}</h4>
+    <h4>Общая цена: {{ object.get_total_price }}</h4>
+    {% for photo in object.product.productphoto_set.all %}
+    <img src="{{ photo.photo.url }}" alt="">
+    {% empty %}
+    <p>Нет фото</p>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+<h1>Оформление заказа</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="first_name" value="{{ request.user.first_name }}" placeholder="Имя" required>
+    <input type="text" name="last_name" value="{{ request.user.last_name }}" placeholder="Фамилия" required>
+    <input type="text" name="email" value="{{ request.user.email }}" placeholder="Почта" required>
+    <input type="text" name="phone" value="{{ request.user.phone }}" placeholder="Телефон" required>
+    <button type="submit">Оплатить</button>
+</form>
+{% endblock %}

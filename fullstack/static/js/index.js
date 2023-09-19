@@ -60,4 +60,26 @@ $(document).ready(function(){
             location.reload()
         })
     }
+
+
+    var deleteAddressBtns = document.getElementsByClassName('deleteAddress');
+
+    for(var i = 0; i < deleteAddressBtns.length; i++){
+        deleteAddressBtns[i].addEventListener('click', function(){
+            var addressId = this.dataset.address;
+            var listItem = this.parentNode;
+
+            fetch(`/address/delete/${addressId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                }
+            })
+    
+            .then(() =>{
+                listItem.remove();
+            })            
+        })
+    }
 })

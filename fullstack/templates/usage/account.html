@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Аккаунт</h1>
-<p>{{ request.user.first_name }} - {{ request.user.last_name }} - {{ request.user.email }} - Staff: {{ request.user.is_staff }} - Total orders: {{ request.user.order_set.all|length }}</p>
+<p>{{ request.user.first_name }} - {{ request.user.last_name }} - {{ request.user.email }} - Staff: {{ request.user.is_staff }} - Total orders: {{ object_list|length }}</p>
 <h1>История заказов</h1>
 {% for object in object_list %}
 <div>{{ object }}</div>
@@ -22,4 +22,15 @@
 <p>Заказов нет</p>
 {% endfor %}
 <a href="{% url 'change-password' %}">Изменить пароль</a>
+<div class="">
+    <h3>Мои адресы</h3>
+    <ul>
+        {% for address in addresses %}
+        <li>{{ address.city }}, {{ address.address }}, {{ address.zipcode }} -- <a href="{% url 'address-update' address.id %}">Изменить</a>, <button data-address="{{ address.id }}" class="deleteAddress">Удалить</button></li>
+        {% empty %}
+        <li>Нет адресов</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'address-create' %}">Добавить адрес</a>
+</div>
 {% endblock %}
