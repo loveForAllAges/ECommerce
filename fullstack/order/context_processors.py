@@ -15,8 +15,6 @@ def parseCookies(request):
         'total_price': 0
     }
 
-    print('='*10, cart, '='*10)
-
     for i in cart:
         try:
             product = Product.objects.get(id=i)
@@ -30,7 +28,7 @@ def parseCookies(request):
                 'get_total_price': total,
             }
             items.append(item)
-        except:
+        except Exception as error:
             pass
 
     return {
@@ -44,7 +42,6 @@ def cart(request):
         order, created = Order.objects.get_or_create(customer=request.user, status=1)
         items = order.orderitem_set.all()
     else:
-        print('NOT AUTH')
         cookieData = parseCookies(request)
         order = cookieData['order']
         items = cookieData['items']

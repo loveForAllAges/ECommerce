@@ -38,6 +38,10 @@ class AccountView(LoginRequiredMixin, ListView):
         return queryset
 
 
+class MyPasswordChangeView(PasswordChangeView):
+    template_name= "auth/change-password.html"
+    success_url= reverse_lazy('account')
+
 # class UserCreateView(UserPassesTestMixin, CreateView):
 #     template_name = 'adm/userCreate.html'
 #     form_class = CreateView

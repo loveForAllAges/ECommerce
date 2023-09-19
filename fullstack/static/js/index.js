@@ -15,7 +15,7 @@ $(document).ready(function(){
     }
 
     function addCookieItem(productId, action){
-        if (action == 'add'){
+        if (action == 'plus'){
             if (cart[productId] === undefined){
                 cart[productId] = {'quantity': 1}
             }else{
@@ -23,13 +23,18 @@ $(document).ready(function(){
             }
         }
 
-        if (action == 'remove'){
+        if (action == 'minus'){
             cart[productId]['quantity'] -= 1
 
             if (cart[productId]['quantity'] <= 0){
                 delete cart[productId]
             }
         }
+
+        if (action == 'remove'){
+            delete cart[productId]
+        }
+
         console.log('Cart:', cart)
         document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
         location.reload()
