@@ -13,6 +13,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
 from django.shortcuts import render
+from order.context_processors import cart
 
 
 class CartListView(ListView):
@@ -66,7 +67,7 @@ class OrderListView(UserPassesTestMixin, ListView):
         return True
 
 
-class CheckoutView(View):
+class CheckoutView(UserPassesTestMixin, View):
     template_name = 'usage/checkout.html'
 
     def get(self, request):
@@ -78,6 +79,10 @@ class CheckoutView(View):
     def post(self, request):
         pass
 
+    def test_func(self):
+        if not cart(self.request)['items']:
+            raise Http404
+        return True
 
 
 class AddressCreateView(LoginRequiredMixin, CreateView):
