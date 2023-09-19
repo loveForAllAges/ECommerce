@@ -1,15 +1,24 @@
 <div class="">
-    <a href="{% url 'main' %}">Main</a>
-    <a href="{% url 'product-list' %}">Products</a>
-    <a href="{% url 'category-list' %}">Categories</a>
-    <a href="{% url 'brand-list' %}">Brands</a>
-    <a href="{% url 'user-list' %}">Users</a>
-    ///
-    <a href="{% url 'cart-list' %}">Моя корзина ({{ order.number_of_items_in_cart }})</a>
-    <a href="{% url 'account' %}">Аккаунт</a>
-    {% if request.user.is_authenticated %}
-    <a href="{% url 'logout' %}">Выйти</a>
-    {% else %}
-    <a href="{% url 'login' %}">Войти</a>
-    {% endif %}
+    <div class="">
+        <a href="{% url 'main' %}">Main</a>
+        <a href="{% url 'product-list' %}">Products</a>
+        <a href="{% url 'category-list' %}">Categories</a>
+        <a href="{% url 'brand-list' %}">Brands</a>
+        <a href="{% url 'user-list' %}">Users</a>
+        <a href="{% url 'order-list' %}">Заказы</a>
+    </div>
+    <div class="">
+        <form action="{% url 'main' %}" method="get">
+            <input name="q" placeholder="Поиск">
+        </form>
+    </div>
+    <div class="">
+        <a href="{% url 'cart-list' %}">Моя корзина ({{ order.number_of_items_in_cart }})</a>
+        <a href="{% url 'account' %}">Аккаунт</a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+        <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
 </div>

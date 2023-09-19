@@ -10,16 +10,29 @@ from utils.imageManager import isImage, squareTheImage
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
+from django.db.models import Q
 
 
-class ProductListView(ListView):
+class ProductListView(View):
     template_name = 'usage/productList.html'
-    model = Product
+    # model = Product
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['cookie'] = self.request.COOKIES
-        return context
+    def get(self, request):
+        context = {}
+        q = request.GET.get('q') if request.GET.get('q') != None else ''
+
+        context['object_list'] = Product.objects.filter(
+            Q(name__icontains=q) | Q(description__icontains=q) | Q(brand__name__icontains=q) | Q(category__name__icontains=q)
+        )
+        context['categories'] = Category.objects.all()
+        context['brands'] = Brand.objects.all()
+
+        return render(request, self.template_name, context)
+
+    # def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    #     context = super().get_context_data(**kwargs)
+    #     context['cookie'] = self.request.COOKIES
+    #     return context
 
 
 class ProductDetailView(DetailView):

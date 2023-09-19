@@ -1,16 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>PRODUCTS</h1>
+
+<div class="">
+<h3>Категории</h3>
+{% for category in categories %}
+  <a href="{% url 'main' %}?q={{ category.name }}">{{category.name}} ({{ category.product_set.all|length }})</a>
+{% endfor %}
+</div>
+<div class="">
+<h3>Бренды</h3>
+{% for brand in brands %}
+  <a href="{% url 'main' %}?q={{ brand.name }}">{{brand.name}} ({{ brand.product_set.all|length }})</a>
+{% endfor %}
+</div>
+<div class="">
+<h3>Товары</h3>
 {% for object in object_list %}
 <div>{{ object.name }}</div>
 <div>{{ object.brand }}</div>
 <div>{{ object.description }}</div>
 <div>{{ object.category }}</div>
 <div>{{ object.price }}</div>
-{% for photo in object.productphoto_set.all %}
+<!-- {% for photo in object.productphoto_set.all %}
 <img src="{{ photo.photo.url }}" alt="" />
-{% endfor %}
+{% endfor %} -->
 <div class="">
   <a href="{% url 'product-detail' object.id %}">View</a>
   <a href="{% url 'product-update' object.id %}">Edit</a>
@@ -21,5 +35,8 @@
 </div>
 <button data-product="{{ object.id }}" data-action="plus" class="addToCart">Buy</button>
 <br />
+{% empty %}
+<p>Ничего не найдено</p>
 {% endfor %}
+</div>
 {% endblock %}
