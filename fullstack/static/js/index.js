@@ -6,12 +6,12 @@ $(document).ready(function(){
             var productId = this.dataset.product;
             var action = this.dataset.action;
 
-            if(user == 'AnonymousUser'){
-                addCookieItem(productId, action);
-            }else{
-                updateOrder(productId, action);
-            }
+            updateCart(productId, action);
         })
+    }
+
+    function updateCart(itemId, action) {
+        pass
     }
 
     function addCookieItem(productId, action){

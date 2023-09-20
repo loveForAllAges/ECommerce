@@ -1,6 +1,6 @@
 from typing import Any
 from django.shortcuts import render
-from .models import Product, Category, Brand, ProductPhoto
+from .models import Product, Category, Brand, ProductImage
 from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 from .forms import ProductForm, CategoryForm, BrandForm, ProductPhotoForm
@@ -68,8 +68,8 @@ class ProductCreateView(UserPassesTestMixin, View):
             for photo in photos:
                 new_filename, new_image = squareTheImage(photo)
                 print(new_filename, new_image)
-                new_photo = ProductPhoto.objects.create(product=product)
-                new_photo.photo.save(new_filename, new_image, save=False)
+                new_photo = ProductImage.objects.create(product=product)
+                new_photo.image.save(new_filename, new_image, save=False)
 
                 new_photo.save()
                 

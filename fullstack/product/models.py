@@ -29,7 +29,7 @@ class Product(models.Model):
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.PositiveIntegerField()
-    cover = models.ImageField(upload_to='productImages/')
+    # cover = models.ImageField(upload_to='productImages/')
 
     def __str__(self):
         return self.name

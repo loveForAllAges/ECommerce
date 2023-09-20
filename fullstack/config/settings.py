@@ -24,8 +24,8 @@ AUTH_USER_MODEL = 'account.User'
 CART_SESSION_ID = 'cart'
 
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 0
+SESSION_SAVE_EVERY_REQUEST = True 
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 
 INSTALLED_APPS = [
@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'account',
     'product',
     'order',
+    'cart',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'order.context_processors.cart',
+                'cart.context_processors.cart',
             ],
         },
     },

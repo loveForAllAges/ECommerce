@@ -9,20 +9,20 @@ class Cart(models.Model):
 
     @property
     def get_number_of_items_in_cart(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.quantity for item in orderitems])
+        cartitems = self.cartitem_set.all()
+        total = sum([item.quantity for item in cartitems])
         return total
     
     @property
     def get_total_price(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.get_total_price for item in orderitems])
+        cartitems = self.cartitem_set.all()
+        total = sum([item.get_total_price for item in cartitems])
         return total
 
 
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
     @property

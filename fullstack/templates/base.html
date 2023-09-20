@@ -27,24 +27,24 @@
 
         var csrftoken = getToken();
 
-        function getCookie() {
-            var cookies = document.cookie.split(";");
-            console.log(cookies)
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].split("=");
-                if ("cart" == cookie[0].trim()) {
-                    return decodeURIComponent(cookie[1]);
-                }
-            }
-            return null;
-        }
+        // function getCookie() {
+        //     var cookies = document.cookie.split(";");
+        //     console.log(cookies)
+        //     for (var i = 0; i < cookies.length; i++) {
+        //         var cookie = cookies[i].split("=");
+        //         if ("cart" == cookie[0].trim()) {
+        //             return decodeURIComponent(cookie[1]);
+        //         }
+        //     }
+        //     return null;
+        // }
 
-        var cart = JSON.parse(getCookie());
-        if (cart == undefined) {
-            cart = {}
-            document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
-        }
-        console.log(document.cookie);
+        // var cart = JSON.parse(getCookie());
+        // if (cart == undefined) {
+        //     cart = {}
+        //     document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
+        // }
+        // console.log(document.cookie);
     </script>
 </head>
 <body>
