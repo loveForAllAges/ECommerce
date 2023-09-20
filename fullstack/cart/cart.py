@@ -16,8 +16,6 @@ class Cart:
     def add(self, product):
         user = self.request.user
 
-        print(self.cart)
-
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:

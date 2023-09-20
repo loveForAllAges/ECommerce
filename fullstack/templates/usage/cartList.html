@@ -2,27 +2,30 @@
 
 {% block content %}
 <h1>Корзина</h1>
+<h4>Количество: {{ total_quantity }}</h4>
+<h4>Общая цена: {{ total_price }}</h4>
 {% for object in items %}
-<div>{{ object.product.name }}</div>
-<div>{{ object.product.brand }}</div>
-<div>{{ object.product.description }}</div>
-<div>{{ object.product.category }}</div>
-<div>{{ object.product.price }}</div>
-<h4>Количество: {{ object.quantity }}</h4>
-<h4>Общая цена: {{ object.get_total_price }}</h4>
-{% for photo in object.product.productphoto_set.all %}
-<img src="{{ photo.photo.url }}" alt="">
-{% empty %}
-<p>Нет фото</p>
-{% endfor %}
-<button data-product="{{ object.product.id }}" data-action="remove" class="addToCart">Удалить</button>
-<button data-product="{{ object.product.id }}" data-action="minus" class="addToCart">Меньше</button>
-<button data-product="{{ object.product.id }}" data-action="plus" class="addToCart">Больше</button>
-
-<div class="">
-    <a href="{% url 'checkout' %}">Оформить заказ</a>
+<div class="" style="padding: 20px 0px;">
+    <div>{{ object.product.name }}</div>
+    <div>{{ object.product.brand }}</div>
+    <div>{{ object.product.description }}</div>
+    <div>{{ object.product.category }}</div>
+    <div>{{ object.product.price }}</div>
+    <div>{{ object.quantity }}</div>
+    {% for photo in object.product.productphoto_set.all %}
+    <img src="{{ photo.photo.url }}" alt="">
+    {% empty %}
+    Нет фото
+    {% endfor %}
+    <button data-product="{{ object.product.id }}" data-action="delete" class="addToCart">Удалить</button>
+    <button data-product="{{ object.product.id }}" data-action="minus" class="addToCart">Меньше</button>
+    <button data-product="{{ object.product.id }}" data-action="plus" class="addToCart">Больше</button>
 </div>
 {% empty %}
 <p>Корзина пустая</p>
 {% endfor %}
+<div class="">
+    <a href="{% url 'checkout' %}">Оформить заказ</a>
+    <a href="{% url 'cart-clear' %}">Очистить корзину</a>
+</div>
 {% endblock %}

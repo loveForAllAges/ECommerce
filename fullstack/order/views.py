@@ -13,7 +13,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
 from django.shortcuts import render
-from order.context_processors import cart
+from cart.context_processors import cart
 
 
 class CartListView(ListView):
@@ -27,32 +27,6 @@ class CartListView(ListView):
             queryset = ''
 
         return queryset
-
-
-def cart_update(request):
-    data = json.loads(request.body)
-
-    productId = data['productId']
-    action = data['action']
-
-    product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(customer=request.user, status=1)
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-
-    if action == 'plus':
-        orderItem.quantity = (orderItem.quantity + 1)
-        orderItem.save()
-    elif action == 'minus':
-        orderItem.quantity = (orderItem.quantity - 1)
-        orderItem.save()
-        if orderItem.quantity <= 0:
-            orderItem.delete()
-    elif action == 'remove':
-        orderItem.delete()
-
-    messages.add_message(request, messages.INFO, 'Корзина обновлена')
-
-    return JsonResponse('Success', safe=False)
 
 
 class OrderListView(UserPassesTestMixin, ListView):
