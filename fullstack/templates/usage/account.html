@@ -26,7 +26,11 @@
     <h3>Мои адресы</h3>
     <ul>
         {% for address in addresses %}
-        <li>{{ address.city }}, {{ address.address }}, {{ address.zipcode }} -- <a href="{% url 'address-update' address.id %}">Изменить</a>, <button data-address="{{ address.id }}" class="deleteAddress">Удалить</button></li>
+        <li>{{ address.name }} -- 
+            <a href="{% url 'address-update' address.id %}">Изменить</a>, 
+            <button data-address="{{ address.id }}" class="deleteAddress">Удалить</button>
+            <button data-address="{{ address.id }}" class="mainAddress">Сделать основным</button>
+        </li>
         {% empty %}
         <li>Нет адресов</li>
         {% endfor %}

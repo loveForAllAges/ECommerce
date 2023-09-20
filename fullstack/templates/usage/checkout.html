@@ -47,7 +47,7 @@
         {% for address in request.user.address_set.all %}
         <div class="">
             <input type="radio" id="address{{address.id}}" name="address" value="{{ address.id }}" required>
-            <label for="address{{address.id}}">{{ address.city }}, {{ address.address }}, {{ address.zipcode }}</label>    
+            <label for="address{{address.id}}">{{ address.name }}</label>    
         </div>
         {% endfor %}
         <a href="{% url 'address-create' %}">Добавить адрес</a>

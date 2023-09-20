@@ -1,11 +1,7 @@
-# from django.shortcuts import render
-from typing import Any
-from django.db.models.query import QuerySet
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from django.views import View
+from django.views.generic import ListView, CreateView
 from .models import User
 from django.urls import reverse_lazy
-from .forms import SignupForm, UserUpdateForm
+from .forms import SignupForm
 from django.contrib.auth.views import PasswordChangeView
 from order.models import Order
 from address.models import Address
@@ -33,9 +29,9 @@ class UserListView(UserPassesTestMixin, ListView):
 class AccountView(LoginRequiredMixin, ListView):
     template_name = 'usage/account.html'
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['addresses'] = Address.objects.filter(customer=self.request.user)
+        context['addresses'] = Address.objects.filter(customer=self.request.user, is_deleted=False)
         return context
 
     def get_queryset(self):

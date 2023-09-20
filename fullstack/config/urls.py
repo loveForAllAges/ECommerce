@@ -12,11 +12,11 @@ def get_cookies(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('address/', include('address.urls')),
+    path('cart/', include('cart.urls')),
     path('', include('order.urls')),
     path('', include('account.urls')),
     path('', include('product.urls')),
-    path('cart/', include('cart.urls')),
-    path('address/', include('address.urls')),
     path('cookies', get_cookies),
 ]
 
