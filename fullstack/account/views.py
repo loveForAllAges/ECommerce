@@ -35,7 +35,7 @@ class AccountView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user).exclude(status=1)
+        queryset = Order.objects.filter(customer=self.request.user)
         return queryset
 
 

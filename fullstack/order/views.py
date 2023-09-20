@@ -1,5 +1,5 @@
 from django.db.models.query import QuerySet
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
 from django.views import View
 from .models import Order
 from django.http import HttpResponse, JsonResponse
@@ -9,19 +9,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
 from django.shortcuts import render
 from cart.context_processors import cart
-
-
-class CartListView(ListView):
-    template_name = 'usage/cartList.html'
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated:
-            queryset = Order.objects.filter(customer=user, status=1)
-        else:
-            queryset = ''
-
-        return queryset
+from cart.cart import Cart
 
 
 class OrderListView(UserPassesTestMixin, ListView):
@@ -53,26 +41,25 @@ class CheckoutView(UserPassesTestMixin, View):
             last_name = request.user.last_name
             email = request.user.email
             phone = request.user.phone
-
-            order = Order.objects.get(customer=request.user, status=1)
-            order.first_name = first_name
-            order.last_name = last_name
-            order.email = email
-            order.phone = phone
+            user = request.user
         else:
             first_name = data.get('first_name')
             last_name = data.get('last_name')
             email = data.get('email')
             phone = data.get('phone')
-            order = Order.objects.create(first_name=first_name, last_name=last_name,
-                                         email=email, phone=phone)
+            user = None
 
-        order.address = address
-        order.status = 2
-        order.save()
+        Order.objects.create(
+            first_name=first_name, last_name=last_name,
+            email=email, phone=phone, address=address, customer=user
+        )
+
+        cart = Cart(request)
+        cart.clear()
+
         return HttpResponse('OK')
 
     def test_func(self):
-        if not cart(self.request)['items']:
+        if cart(self.request)['total_quantity'] == 0:
             raise Http404
         return True

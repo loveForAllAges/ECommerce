@@ -25,7 +25,9 @@
 <p>Корзина пустая</p>
 {% endfor %}
 <div class="">
+    {% if total_quantity > 0 %}
     <a href="{% url 'checkout' %}">Оформить заказ</a>
     <a href="{% url 'cart-clear' %}">Очистить корзину</a>
+    {% endif %}
 </div>
 {% endblock %}

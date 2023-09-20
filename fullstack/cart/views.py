@@ -6,6 +6,15 @@ from django.shortcuts import get_object_or_404
 import json
 from django.http import Http404
 from django.contrib import messages
+from django.views.generic import ListView
+
+
+class CartListView(ListView):
+    template_name = 'usage/cartList.html'
+
+    def get_queryset(self):
+        queryset = ''
+        return queryset
 
 
 def cart_update(request):

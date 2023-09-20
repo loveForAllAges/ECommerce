@@ -150,8 +150,13 @@ class Cart:
             self.save()
 
     def clear(self):
-        del self.session[settings.CART_SESSION_ID]
-        self.save()
+        user = self.request.user
+
+        if user.is_authenticated:
+            DBCart.objects.get(customer=user).delete()
+        else:
+            del self.session[settings.CART_SESSION_ID]
+            self.save()
 
     def save(self):
         self.session.modified = True
