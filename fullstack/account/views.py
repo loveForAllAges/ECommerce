@@ -7,8 +7,8 @@ from .models import User
 from django.urls import reverse_lazy
 from .forms import SignupForm, UserUpdateForm
 from django.contrib.auth.views import PasswordChangeView
-# from django.contrib.auth.forms import PasswordChangeForm
-from order.models import Order, Address
+from order.models import Order
+from address.models import Address
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404

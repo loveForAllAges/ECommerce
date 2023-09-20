@@ -4,10 +4,7 @@ from . import views
 
 urlpatterns = [
     path('cart/', views.CartListView.as_view(), name='cart-list'),
-    path('address/create/', views.AddressCreateView.as_view(), name='address-create'),
-    path('address/edit/<int:pk>/', views.AddressUpdateView.as_view(), name='address-update'),
-    path('address/delete/<int:pk>/', views.AddressDeleteView.as_view(), name='address-delete'),
-    
+
     path('checkout/', views.CheckoutView.as_view(), name='checkout'),
 
     path('adm/orders/', views.OrderListView.as_view(), name='order-list'),

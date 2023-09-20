@@ -1,11 +1,5 @@
 from django.forms import ModelForm
-from .models import Address, Order
-
-
-class AddressForm(ModelForm):
-    class Meta:
-        model = Address
-        fields = ('name',)
+from .models import Order
 
 
 class OrderForm(ModelForm):

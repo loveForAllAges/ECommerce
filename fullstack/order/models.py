@@ -4,12 +4,6 @@ from product.models import Product
 from datetime import datetime
 
 
-class Address(models.Model):
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    is_main = models.BooleanField(default=False)
-    name = models.CharField(max_length=255)
-
-
 class Order(models.Model):
     ORDER_CHOICES = ((1, 'Создан'), (2, 'Собран'), (3, 'Отправлен'), 
                      (4, 'Доставлен'), (5, 'Получен'), (6, 'Завершен'), (7, 'Отменен'), (8, 'Удален'))
