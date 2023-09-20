@@ -21,6 +21,9 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'account.User'
 
 
+CART_SESSION_ID = 'cart'
+
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 0
 
@@ -60,7 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'order.context_processors.cart',
+                # 'order.context_processors.cart',
             ],
         },
     },

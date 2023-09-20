@@ -21,23 +21,23 @@ class Category(models.Model):
 
 #     def __str__(self):
 #         return self.name
-    
+
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    # size = models.ForeignKey(Size, on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.PositiveIntegerField()
+    cover = models.ImageField(upload_to='productImages/')
 
     def __str__(self):
         return self.name
     
 
-class ProductPhoto(models.Model):
+class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='productsPhotos/')
+    image = models.ImageField(upload_to='productImages/')
 
     def __str__(self):
         return self.id
