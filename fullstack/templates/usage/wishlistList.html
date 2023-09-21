@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block content %}
+<div class="">
+  <h3>Список желаемого</h3>
+  {% for object in request.user.wishlist.all %}
+  <div>{{ object.name }}</div>
+  <div>{{ object.brand }}</div>
+  <div>{{ object.description }}</div>
+  <div>{{ object.category }}</div>
+  <div>{{ object.price }}</div>
+  <!-- {% for photo in object.productphoto_set.all %}
+<img src="{{ photo.photo.url }}" alt="" />
+{% endfor %} -->
+  <div class="">
+    <button data-product="{{ object.id }}" data-action="add" class="addToCart">
+      Buy
+    </button>
+    <button
+      data-product="{{ object.id }}"
+      data-action="delete"
+      class="addToWishlist"
+    >
+      Из избранного
+    </button>
+    <a href="{% url 'product-detail' object.id %}">Посмотреть</a>
+
+    <form method="POST" action="{% url 'product-delete' object.id %}">
+      {% csrf_token %}<input type="submit" value="Delete" />
+    </form>
+  </div>
+  <br />
+  {% empty %}
+  <p>Ничего не найдено</p>
+  {% endfor %}
+</div>
+{% endblock %}

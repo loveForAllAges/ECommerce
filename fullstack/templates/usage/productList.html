@@ -34,6 +34,11 @@
   </form>
 </div>
 <button data-product="{{ object.id }}" data-action="add" class="addToCart">Buy</button>
+{% if object in request.user.wishlist.all %}
+<button data-product="{{ object.id }}" data-action="delete" class="addToWishlist">Из избранного</button>
+{% else %}
+<button data-product="{{ object.id }}" data-action="add" class="addToWishlist">Лайк</button>
+{% endif %}
 <br />
 {% empty %}
 <p>Ничего не найдено</p>

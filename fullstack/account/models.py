@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, UserManager, AbstractBaseUser
+from product.models import Product
 
 
 class UserManager(UserManager):
@@ -37,6 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
+
+    wishlist = models.ManyToManyField(Product)
 
     objects = UserManager()
 
