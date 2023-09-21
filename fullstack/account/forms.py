@@ -1,6 +1,10 @@
 from django import forms
 from .models import User
-from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, SetPasswordForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import (
+    UserCreationForm, PasswordResetForm, 
+    SetPasswordForm, UserChangeForm, 
+    AuthenticationForm, PasswordChangeForm
+)
 from django.core.validators import validate_email
 
 
@@ -18,7 +22,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
-        if len(phone) != 10:
+        if len(phone) != 10 and phone.isdigit():
             raise forms.ValidationError("Неверный номер телефона!")
         return phone
 
@@ -84,29 +88,132 @@ class CustomAuthenticationForm(AuthenticationForm):
     }
 
 
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label="Старый пароль",
+        widget=forms.PasswordInput(attrs={
+            "autocomplete": "current-password", 
+            "autofocus": True,
+            'placeholder': 'Придумайте пароль'
+            }
+        ),
+    )
+    new_password1 = forms.CharField(
+        label= "Новый пароль",
+        widget=forms.PasswordInput(attrs={
+            "autocomplete": "new-password",
+            'placeholder': 'Придумайте пароль',
+            'class': 'form-control mb-3', 'id': 'form-newpass'
+            }
+        ),
+    )
+    new_password2 = forms.CharField(
+        label= "Повторите пароль",
+        widget=forms.PasswordInput(attrs={
+            "autocomplete": "new-password",
+            'placeholder': 'Повторите новый пароль'
+            }
+        ),
+    )
+    error_messages = {
+        "password_incorrect": (
+            "Неверный пароль!"
+        ),
+        "password_mismatch": (
+            "Пароли не совпадают!"
+        ),
+    }
+
+
 class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField(
+        label='Почта', max_length=255, widget=forms.EmailInput(
+            attrs={
+                'class': '',
+                'placeholder': 'Введите почту',
+                'readonly': 'readonly'
+            }
+        )
+    )
+    phone = forms.CharField(
+        label='Номер телефона', max_length=10, widget=forms.TextInput(
+            attrs={
+                'class': '',
+                'placeholder': 'Введите номер телефона',
+            }
+        )
+    )
+    first_name = forms.CharField(
+        label='Имя', max_length=128, widget=forms.TextInput(
+            attrs={
+                'class': '',
+                'placeholder': 'Введите имя',
+            }
+        )
+    )
+    last_name = forms.CharField(
+        label='Фамилия', max_length=128, widget=forms.TextInput(
+            attrs={
+                'class': '',
+                'placeholder': 'Введите фамилию',
+            }
+        )
+    )
+
     class Meta:
         model = User
-        fields = ('first_name', 'phone', 'last_name')
+        fields = ('phone', 'email', 'first_name', 'last_name')
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+        if len(phone) != 10 and phone.isdigit():
+            raise forms.ValidationError("Неверный номер телефона!")
+        return phone
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['phone'].required = True
+        self.fields['email'].required = True
 
 
-class PasswordResetForm(PasswordResetForm):
-    email = forms.EmailField(max_length=254, widget=forms.TextInput(
-        attrs={'class': 'form-control mb-3', 'placeholder': 'Email', 'id': 'form-email'}))
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        max_length=255,
+        label= 'Почта',
+        error_messages={'invalid': 'Неверный формат!'},
+        widget=forms.EmailInput(
+            attrs={
+                'class': '', 
+                'placeholder': 'Введите почту',
+                "autocomplete": "email"
+            }
+        )
+    )
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        u = User.objects.filter(email=email)
-        if not u:
-            raise forms.ValidationError(
-                'Unfortunatley we can not find that email address')
-        return email
 
+class CustomSetPasswordForm(SetPasswordForm):
+    error_messages = {
+        "password_mismatch": "Пароли не совпадают!",
+    }
 
-class PasswordResetConfirmForm(SetPasswordForm):
     new_password1 = forms.CharField(
-        label='New password', widget=forms.PasswordInput(
-            attrs={'class': 'form-control mb-3', 'placeholder': 'New Password', 'id': 'form-newpass'}))
+        label="Новый пароль",
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                'placeholder': 'Придумайте пароль'
+            }
+        ),
+    )
+
     new_password2 = forms.CharField(
-        label='Repeat password', widget=forms.PasswordInput(
-            attrs={'class': 'form-control mb-3', 'placeholder': 'New Password', 'id': 'form-new-pass2'}))
+        label="Повторите пароль",
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                'placeholder': 'Повторите новый пароль'
+            }
+        ),
+    )

@@ -1,11 +1,12 @@
+from typing import Any
 from django.forms.models import BaseModelForm
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from .models import User
 from django.urls import reverse_lazy
 from .forms import (
     CustomUserCreationForm, UserUpdateForm, 
-    PasswordResetConfirmForm, PasswordResetForm,
-    CustomAuthenticationForm
+    CustomSetPasswordForm, CustomPasswordResetForm,
+    CustomAuthenticationForm, CustomPasswordChangeForm
 )
 from django.contrib.auth.views import PasswordChangeView
 from order.models import Order
@@ -45,7 +46,7 @@ class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
 
 
-class SignupView(CreateView):
+class SignupView(UserPassesTestMixin, CreateView):
     template_name = 'auth/signup.html'
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
@@ -82,6 +83,12 @@ class SignupView(CreateView):
         messages.add_message(self.request, messages.SUCCESS, 'Аккаунт создан! Проверьте почту для активации аккаунта')
         return super().form_valid(form)
     
+    def test_func(self):
+        user = self.request.user
+        if user.is_authenticated:
+            raise Http404
+        return True
+
 
 class ActivationView(View):
     def get(self, request, uidb64, token):
@@ -100,26 +107,45 @@ class ActivationView(View):
         return redirect('login')
 
 
-class CustomPasswordResetView(PasswordResetView):
+class CustomPasswordResetView(UserPassesTestMixin, PasswordResetView):
     template_name = "auth/passwordReset.html"
     email_template_name = 'email/resetPassword.html'
     subject_template_name = 'email/resetPasswordSubject.txt'
     html_email_template_name = 'email/resetPassword.html'
+    form_class = CustomPasswordResetForm
+    
+    def test_func(self):
+        user = self.request.user
+        if user.is_authenticated:
+            raise Http404
+        return True
+    
 
-
-class CustomPasswordResetDoneView(PasswordResetDoneView):
+class CustomPasswordResetDoneView(UserPassesTestMixin, PasswordResetDoneView):
     template_name = "auth/passwordResetDone.html"
+    
+    def test_func(self):
+        user = self.request.user
+        if user.is_authenticated:
+            raise Http404
+        return True
+    
 
-
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmView):
     template_name = "auth/passwordResetConfirm.html"
     success_url = reverse_lazy('login')
-    # form_class = PasswordResetConfirmForm
+    form_class = CustomSetPasswordForm
     post_reset_login = True
 
     def form_valid(self, form):
-        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен')
+        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен!')
         return super().form_valid(form)
+    
+    def test_func(self):
+        user = self.request.user
+        if user.is_authenticated:
+            raise Http404
+        return True
 
 
 class UserListView(UserPassesTestMixin, ListView):
@@ -146,28 +172,16 @@ class AccountView(LoginRequiredMixin, ListView):
 
 
 class CustomPasswordChangeView(PasswordChangeView):
-    template_name= "auth/changePassword.html"
+    template_name= "auth/passwordChange.html"
     success_url= reverse_lazy('account')
+    form_class = CustomPasswordChangeForm
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен!')
+        return super().form_valid(form)
 
 
-# class UserUpdateView(UserPassesTestMixin, FormView):
-    # template_name = 'usage/settings.html'
-    # success_url = reverse_lazy('account')
-    # model = User
-    # form_class = UserUpdateForm
-
-#     def form_valid(self, form):
-#         form.save()
-#         return super().form_valid(form)
-
-    # def test_func(self):
-    #     user = self.request.user
-    #     if not user.is_authenticated:
-    #         raise Http404
-    #     return True
-
-
-class UserUpdateView(UserPassesTestMixin, View):
+class UserUpdateView(LoginRequiredMixin, View):
     template_name = 'usage/settings.html'
     success_url = reverse_lazy('account')
 
@@ -179,13 +193,8 @@ class UserUpdateView(UserPassesTestMixin, View):
 
         if form.is_valid():
             form.save()
-
+            messages.add_message(self.request, messages.SUCCESS, 'Изменения сохранены!')
             return redirect('account')
 
         return render(request, self.template_name, {'form': form})
 
-    def test_func(self):
-        user = self.request.user
-        if not user.is_authenticated:
-            raise Http404
-        return True

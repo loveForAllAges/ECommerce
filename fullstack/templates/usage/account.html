@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Аккаунт</h1>
-<p>{{ request.user.first_name }} - {{ request.user.last_name }} - {{ request.user.email }} - Staff: {{ request.user.is_staff }} - Total orders: {{ object_list|length }}</p>
+<p>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.email }} - {{ request.user.phone }} - Staff: {{ request.user.is_staff }} - Total orders: {{ object_list|length }}</p>
 <a href="{% url 'password-change' %}">Изменить пароль</a>
 <a href="{% url 'settings' %}">Настройки</a>
 <h1>История заказов</h1>
