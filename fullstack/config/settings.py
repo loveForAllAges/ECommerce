@@ -13,8 +13,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 DEBUG = True
-
-
 ALLOWED_HOSTS = []
 
 
@@ -35,7 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tailwindcss',
+    'tailwind',
+    'theme',
     # 'mailer',
     'wishlist',
     'account',
@@ -44,6 +43,9 @@ INSTALLED_APPS = [
     'cart',
     'address',
 ]
+
+
+TAILWIND_APP_NAME = 'theme'
 
 
 MIDDLEWARE = [
@@ -56,7 +58,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -74,6 +78,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -103,26 +108,16 @@ DATABASES = {
 
 
 LANGUAGE_CODE = 'en-us'
-
-
 TIME_ZONE = 'UTC'
-
-
 USE_I18N = True
-
-
 USE_TZ = True
 
 
 STATIC_URL = 'static/'
-
-
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
-
-
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
