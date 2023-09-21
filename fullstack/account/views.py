@@ -1,19 +1,97 @@
 from django.views.generic import ListView, CreateView
 from .models import User
 from django.urls import reverse_lazy
-from .forms import SignupForm
-from django.contrib.auth.views import PasswordChangeView
+from .forms import SignupForm, PasswordResetForm
+from django.contrib.auth.views import PasswordChangeView, PasswordResetView
 from order.models import Order
 from address.models import Address
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
+from django.views import View
+from django.contrib.sites.shortcuts import get_current_site
+import threading
+from .utils import account_activation_token
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.core.mail import EmailMultiAlternatives
+from django.utils.encoding import force_bytes, force_str
+from django.utils.html import strip_tags
+from django.urls import reverse
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+
+
+class EmailThread(threading.Thread):
+    def __init__(self, email):
+        super().__init__()
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send(fail_silently=False)
 
 
 class SignupView(CreateView):
     template_name = 'auth/signup.html'
     form_class = SignupForm
-    success_url = reverse_lazy('main')
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        user = form.save()
+
+        current_site = get_current_site(self.request)
+        email_body = {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        }
+        
+        link = reverse('activate', kwargs={
+                       'uidb64': email_body['uid'], 'token': email_body['token']})
+        
+        email_body.update({'url': 'http://'+current_site.domain+link})
+        
+        email_subject = 'Активация аккаунта'
+        html_content = render_to_string('email/activateAccount.html', email_body)
+        text_content = strip_tags(html_content)
+        
+        email = EmailMultiAlternatives(
+            email_subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+        )
+        email.attach_alternative(html_content, "text/html")
+        EmailThread(email).start()
+    
+
+        return super().form_valid(form)
+
+
+class ActivationView(View):
+    def get(self, request, uidb64, token):
+        id = force_str(urlsafe_base64_decode(uidb64))
+        user = get_object_or_404(User, pk=id)
+
+        if not account_activation_token.check_token(user, token) or user.is_active:
+            messages.add_message(request, messages.WARNING, 'Аккаунт уже активирован')
+        else:
+            messages.add_message(request, messages.WARNING, 'Аккаунт успешно активирован')
+
+        user.is_active = True
+        user.save()
+
+        return render(request, 'auth/login.html')
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = "auth/resetPassword.html"
+    success_url = reverse_lazy('login')
+    # email_template_name = "account/password_reset/password_reset_email.html",
+    form_class = PasswordResetForm
 
 
 class UserListView(UserPassesTestMixin, ListView):
@@ -40,7 +118,7 @@ class AccountView(LoginRequiredMixin, ListView):
 
 
 class MyPasswordChangeView(PasswordChangeView):
-    template_name= "auth/change-password.html"
+    template_name= "auth/changePassword.html"
     success_url= reverse_lazy('account')
 
 # class UserCreateView(UserPassesTestMixin, CreateView):
