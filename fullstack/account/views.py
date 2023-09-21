@@ -1,9 +1,12 @@
-from typing import Any
-from django.db import models
+from django.forms.models import BaseModelForm
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from .models import User
 from django.urls import reverse_lazy
-from .forms import SignupForm, UserUpdateForm, PasswordResetConfirmForm, PasswordResetForm
+from .forms import (
+    CustomUserCreationForm, UserUpdateForm, 
+    PasswordResetConfirmForm, PasswordResetForm,
+    CustomAuthenticationForm
+)
 from django.contrib.auth.views import PasswordChangeView
 from order.models import Order
 from address.models import Address
@@ -22,7 +25,8 @@ from django.utils.html import strip_tags
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, LoginView
+from django.contrib.auth import login
 
 
 class EmailThread(threading.Thread):
@@ -35,9 +39,15 @@ class EmailThread(threading.Thread):
         self.email.send(fail_silently=False)
 
 
+class CustomLoginView(LoginView):
+    template_name='auth/login.html'
+    redirect_authenticated_user = True
+    form_class = CustomAuthenticationForm
+
+
 class SignupView(CreateView):
     template_name = 'auth/signup.html'
-    form_class = SignupForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
@@ -69,8 +79,9 @@ class SignupView(CreateView):
         email.attach_alternative(html_content, "text/html")
         EmailThread(email).start()
 
+        messages.add_message(self.request, messages.SUCCESS, 'Аккаунт создан! Проверьте почту для активации аккаунта')
         return super().form_valid(form)
-
+    
 
 class ActivationView(View):
     def get(self, request, uidb64, token):
@@ -78,57 +89,15 @@ class ActivationView(View):
         user = get_object_or_404(User, pk=id)
 
         if not account_activation_token.check_token(user, token) or user.is_active:
-            messages.add_message(request, messages.WARNING, 'Аккаунт уже активирован')
-        else:
-            messages.add_message(request, messages.WARNING, 'Аккаунт успешно активирован')
+            raise Http404
+
+        messages.add_message(request, messages.SUCCESS, 'Аккаунт активирован!')
 
         user.is_active = True
+        login(request, user)
         user.save()
 
         return redirect('login')
-
-
-
-
-
-
-
-# class CustomPasswordResetView(FormView):
-#     template_name = "auth/resetPassword.html"
-#     success_url = reverse_lazy('password-reset-done')
-#     form_class = PasswordResetForm
-
-#     def form_valid(self, form):
-#         email = form.cleaned_data.get('email')
-#         user = get_object_or_404(User, email=email)
-
-#         current_site = get_current_site(self.request)
-#         email_body = {
-#             'user': user,
-#             'domain': current_site.domain,
-#             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#             'token': account_activation_token.make_token(user),
-#         }
-        
-#         link = reverse('password-reset-confirm', kwargs={
-#                        'uidb64': email_body['uid'], 'token': email_body['token']})
-        
-#         email_body.update({'url': 'http://'+current_site.domain+link})
-
-#         email_subject = 'Сброс пароля'
-#         html_content = render_to_string('email/resetPassword.html', email_body)
-#         text_content = strip_tags(html_content)
-        
-#         email = EmailMultiAlternatives(
-#             email_subject,
-#             text_content,
-#             settings.EMAIL_HOST_USER,
-#             [user.email],
-#         )
-#         email.attach_alternative(html_content, "text/html")
-#         EmailThread(email).start()
-
-#         return super().form_valid(form)
 
 
 class CustomPasswordResetView(PasswordResetView):
@@ -148,24 +117,9 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     # form_class = PasswordResetConfirmForm
     post_reset_login = True
 
-    def form_valid(self, form: Any) -> HttpResponse:
+    def form_valid(self, form):
         messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен')
         return super().form_valid(form)
-
-
-# class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-#     template_name = "auth/PasswordResetComplete.html"
-
-
-
-
-
-
-
-
-
-
-
 
 
 class UserListView(UserPassesTestMixin, ListView):

@@ -5,7 +5,7 @@ from django.contrib.auth.models import PermissionsMixin, UserManager, AbstractBa
 class UserManager(UserManager):
     def _create_user(self, first_name, last_name, email, phone, password, **extra_fields):
         if not email:
-            raise ValueError("You have not provided a valid e-mail address")
+            raise ValueError("Неверная почта")
         
         email = self.normalize_email(email)
         user = self.model(email=email, first_name=first_name, phone=phone, last_name=last_name, **extra_fields)
@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     email = models.EmailField(max_length=255, unique=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=10)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
