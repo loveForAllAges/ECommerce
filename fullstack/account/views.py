@@ -216,8 +216,6 @@ class CustomPasswordChangeView(PasswordChangeView):
 class UserUpdateView(UserPassesTestMixin, View):
     template_name = 'usage/settings.html'
     success_url = reverse_lazy('account')
-    # model = User
-    # form_class = UserUpdateForm
 
     def get(self, request):
         return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
@@ -231,7 +229,6 @@ class UserUpdateView(UserPassesTestMixin, View):
             return redirect('account')
 
         return render(request, self.template_name, {'form': form})
-
 
     def test_func(self):
         user = self.request.user
