@@ -1,6 +1,6 @@
 from django import forms
 from .models import User
-from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, SetPasswordForm, UserChangeForm
 
 
 class SignupForm(UserCreationForm):
@@ -10,11 +10,9 @@ class SignupForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'phone', 'last_name', 'password']
+        fields = ('first_name', 'phone', 'last_name')
 
 
 class PasswordResetForm(PasswordResetForm):
@@ -28,9 +26,9 @@ class PasswordResetForm(PasswordResetForm):
             raise forms.ValidationError(
                 'Unfortunatley we can not find that email address')
         return email
-    
 
-class PwdResetConfirmForm(SetPasswordForm):
+
+class PasswordResetConfirmForm(SetPasswordForm):
     new_password1 = forms.CharField(
         label='New password', widget=forms.PasswordInput(
             attrs={'class': 'form-control mb-3', 'placeholder': 'New Password', 'id': 'form-newpass'}))

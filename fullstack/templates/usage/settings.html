@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>изменение профиля</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <!-- <input type="text" name="first_name" value="{{ request.user.first_name }}"> -->
+    <!-- <input type="text" name="last_name" value="{{ request.user.last_name }}"> -->
+    <!-- <input type="text" name="phone" value="{{ request.user.phone }}"> -->
+    <button type="submit">сохранить</button>
+</form>
+{% endblock %}

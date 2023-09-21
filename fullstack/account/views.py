@@ -1,13 +1,14 @@
-from django.views.generic import ListView, CreateView
+from typing import Any
+from django.db import models
+from django.views.generic import ListView, CreateView, UpdateView, FormView
 from .models import User
 from django.urls import reverse_lazy
-from .forms import SignupForm, PasswordResetForm
-from django.contrib.auth.views import PasswordChangeView, PasswordResetView
+from .forms import SignupForm, UserUpdateForm, PasswordResetConfirmForm, PasswordResetForm
+from django.contrib.auth.views import PasswordChangeView
 from order.models import Order
 from address.models import Address
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import Http404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import Http404, HttpResponse
 from django.views import View
 from django.contrib.sites.shortcuts import get_current_site
 import threading
@@ -87,23 +88,84 @@ class ActivationView(View):
         return redirect('login')
 
 
+
+
+
+
+
+# class CustomPasswordResetView(FormView):
+#     template_name = "auth/resetPassword.html"
+#     success_url = reverse_lazy('password-reset-done')
+#     form_class = PasswordResetForm
+
+#     def form_valid(self, form):
+#         email = form.cleaned_data.get('email')
+#         user = get_object_or_404(User, email=email)
+
+#         current_site = get_current_site(self.request)
+#         email_body = {
+#             'user': user,
+#             'domain': current_site.domain,
+#             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#             'token': account_activation_token.make_token(user),
+#         }
+        
+#         link = reverse('password-reset-confirm', kwargs={
+#                        'uidb64': email_body['uid'], 'token': email_body['token']})
+        
+#         email_body.update({'url': 'http://'+current_site.domain+link})
+
+#         email_subject = 'Сброс пароля'
+#         html_content = render_to_string('email/resetPassword.html', email_body)
+#         text_content = strip_tags(html_content)
+        
+#         email = EmailMultiAlternatives(
+#             email_subject,
+#             text_content,
+#             settings.EMAIL_HOST_USER,
+#             [user.email],
+#         )
+#         email.attach_alternative(html_content, "text/html")
+#         EmailThread(email).start()
+
+#         return super().form_valid(form)
+
+
 class CustomPasswordResetView(PasswordResetView):
-    template_name = "auth/resetPassword.html"
-    success_url = reverse_lazy('password-reset-done')
-    email_template_name = "email/resetPassword.html"
+    template_name = "auth/passwordReset.html"
+    email_template_name = 'email/resetPassword.html'
+    subject_template_name = 'email/resetPasswordSubject.txt'
+    html_email_template_name = 'email/resetPassword.html'
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = "auth/resetPasswordDone.html"
+    template_name = "auth/passwordResetDone.html"
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = "auth/resetPasswordConfirm.html"
-    success_url = reverse_lazy('password-reset-complete')
+    template_name = "auth/passwordResetConfirm.html"
+    success_url = reverse_lazy('login')
+    # form_class = PasswordResetConfirmForm
+    post_reset_login = True
+
+    def form_valid(self, form: Any) -> HttpResponse:
+        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен')
+        return super().form_valid(form)
 
 
-class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = "auth/resetPasswordComplete.html"
+# class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+#     template_name = "auth/PasswordResetComplete.html"
+
+
+
+
+
+
+
+
+
+
+
 
 
 class UserListView(UserPassesTestMixin, ListView):
@@ -132,3 +194,47 @@ class AccountView(LoginRequiredMixin, ListView):
 class CustomPasswordChangeView(PasswordChangeView):
     template_name= "auth/changePassword.html"
     success_url= reverse_lazy('account')
+
+
+# class UserUpdateView(UserPassesTestMixin, FormView):
+    # template_name = 'usage/settings.html'
+    # success_url = reverse_lazy('account')
+    # model = User
+    # form_class = UserUpdateForm
+
+#     def form_valid(self, form):
+#         form.save()
+#         return super().form_valid(form)
+
+    # def test_func(self):
+    #     user = self.request.user
+    #     if not user.is_authenticated:
+    #         raise Http404
+    #     return True
+
+
+class UserUpdateView(UserPassesTestMixin, View):
+    template_name = 'usage/settings.html'
+    success_url = reverse_lazy('account')
+    # model = User
+    # form_class = UserUpdateForm
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
+
+    def post(self, request):
+        form = UserUpdateForm(instance=request.user, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('account')
+
+        return render(request, self.template_name, {'form': form})
+
+
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            raise Http404
+        return True

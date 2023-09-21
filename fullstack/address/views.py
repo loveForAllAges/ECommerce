@@ -33,7 +33,7 @@ class AddressUpdateView(UserPassesTestMixin, UpdateView):
         item = Address.objects.get(id=pk)
         user = self.request.user
         if not user.is_authenticated or not item.customer == user:
-            reverse_lazy('main')
+            raise Http404
         return True
 
 
@@ -47,7 +47,7 @@ class AddressDeleteView(UserPassesTestMixin, DeleteView):
         item = Address.objects.get(id=pk)
         user = self.request.user
         if not self.request.user.is_authenticated or not item.customer == user:
-            reverse_lazy('main')
+            raise Http404
         return True
 
 
@@ -59,7 +59,8 @@ def address_delete(request):
         Address.objects.filter(customer=request.user, id=address_id, is_deleted=False).update(is_deleted=True)
         return HttpResponse('Updated')
     
-    reverse_lazy('main')
+    raise Http404
+
 
 @login_required
 def address_make_main(request):
@@ -70,5 +71,5 @@ def address_make_main(request):
         Address.objects.filter(customer=user, is_main=True).update(is_main=False)
         Address.objects.filter(customer=user, id=address_id, is_main=False).update(is_main=True)
         return HttpResponse('Updated')
-    
-    reverse_lazy('main')
+
+    raise Http404
