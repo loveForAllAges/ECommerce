@@ -19,8 +19,9 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.encoding import force_bytes, force_str
 from django.utils.html import strip_tags
 from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 
 class EmailThread(threading.Thread):
@@ -66,7 +67,6 @@ class SignupView(CreateView):
         )
         email.attach_alternative(html_content, "text/html")
         EmailThread(email).start()
-    
 
         return super().form_valid(form)
 
@@ -84,14 +84,26 @@ class ActivationView(View):
         user.is_active = True
         user.save()
 
-        return render(request, 'auth/login.html')
+        return redirect('login')
 
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = "auth/resetPassword.html"
-    success_url = reverse_lazy('login')
-    # email_template_name = "account/password_reset/password_reset_email.html",
-    form_class = PasswordResetForm
+    success_url = reverse_lazy('password-reset-done')
+    email_template_name = "email/resetPassword.html"
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = "auth/resetPasswordDone.html"
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "auth/resetPasswordConfirm.html"
+    success_url = reverse_lazy('password-reset-complete')
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = "auth/resetPasswordComplete.html"
 
 
 class UserListView(UserPassesTestMixin, ListView):
@@ -117,39 +129,6 @@ class AccountView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class MyPasswordChangeView(PasswordChangeView):
+class CustomPasswordChangeView(PasswordChangeView):
     template_name= "auth/changePassword.html"
     success_url= reverse_lazy('account')
-
-# class UserCreateView(UserPassesTestMixin, CreateView):
-#     template_name = 'adm/userCreate.html'
-#     form_class = CreateView
-#     success_url = reverse_lazy('user-list')
-
-#     def test_func(self):
-#         if not self.request.user.is_authenticated or not self.request.user.is_staff:
-#             raise Http404
-#         return True
-
-
-# class UserUpdateView(UserPassesTestMixin, UpdateView):
-#     model = User
-#     form_class = UserUpdateForm
-#     template_name = 'adm/userUpdate.html'
-#     success_url = reverse_lazy('user-list')
-
-#     def test_func(self):
-#         if not self.request.user.is_authenticated or not self.request.user.is_staff:
-#             raise Http404
-#         return True
-
-
-# class UserDeleteView(UserPassesTestMixin, DeleteView):
-#     model = User
-#     success_url = reverse_lazy('user-list')
-#     template_name = ''
-
-#     def test_func(self):
-#         if not self.request.user.is_authenticated or not self.request.user.is_staff:
-#             raise Http404
-#         return True
