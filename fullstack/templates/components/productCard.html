@@ -1,12 +1,7 @@
-<h1>Product Detail</h1>
-<div>{{ object.name }}</div>
-<div>{{ object.brand }}</div>
-<div>{{ object.description }}</div>
-<div>{{ object.category }}</div>
-<div>{{ object.price }}</div>
-{% for photo in object.productphoto_set.all %}
-<img src="{{ photo.photo.url }}" alt="">
-{% empty %}
-<p>Нет фото</p>
-{% endfor %}
-<button data-product="{{ object.id }}" data-action="add" class="addToCart">Buy</button>
+<a href="{% url 'product-detail' object.id %}" class="group">
+    <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+      <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg" alt="Tall slender porcelain bottle with natural clay textured body and cork stopper." class="h-full w-full object-cover object-center group-hover:opacity-75">
+    </div>
+    <h3 class="mt-4 text-sm text-gray-700">{{ object.name }}</h3>
+    <p class="mt-1 text-lg font-medium text-gray-900">$ {{ object.price }}</p>
+</a>

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
-{% load static tailwind_tags %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Document</title> 
     <script>
         var user = '{{ request.user }}';
@@ -50,9 +49,11 @@
     </script>
 </head>
 <body>
+    
     {% block header %}
-    {% include 'components/header.html' %}
+    {% include 'components/header1.html' %}
     {% endblock %}  
+
     ===
     {% include 'components/message.html' %}
     ===

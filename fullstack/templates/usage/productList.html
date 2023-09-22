@@ -3,85 +3,46 @@
 {% block content %}
 
 <div class="">
-<h3>Категории</h3>
-{% for category in categories %}
-  <a href="{% url 'main' %}?q={{ category.name }}">{{category.name}} ({{ category.product_set.all|length }})</a>
-{% endfor %}
-</div>
-<div class="">
-<h3>Бренды</h3>
-{% for brand in brands %}
-  <a href="{% url 'main' %}?q={{ brand.name }}">{{brand.name}} ({{ brand.product_set.all|length }})</a>
-{% endfor %}
-</div>
-<div class="">
 <h3>Товары</h3>
 {% for object in object_list %}
-<div>{{ object.name }}</div>
-<div>{{ object.brand }}</div>
-<div>{{ object.description }}</div>
-<div>{{ object.category }}</div>
-<div>{{ object.price }}</div>
 <!-- {% for photo in object.productphoto_set.all %}
 <img src="{{ photo.photo.url }}" alt="" />
 {% endfor %} -->
 <div class="">
-  <a href="{% url 'product-detail' object.id %}">View</a>
   <a href="{% url 'product-update' object.id %}">Edit</a>
-
-  <form method="POST" action="{% url 'product-delete' object.id %}">
-    {% csrf_token %}<input type="submit" value="Delete" />
-  </form>
 </div>
+
 <button data-product="{{ object.id }}" data-action="add" class="addToCart">Buy</button>
 {% if object in request.user.wishlist.all %}
 <button data-product="{{ object.id }}" data-action="delete" class="addToWishlist">Из избранного</button>
 {% else %}
 <button data-product="{{ object.id }}" data-action="add" class="addToWishlist">Лайк</button>
 {% endif %}
-<br />
-{% empty %}
-<p>Ничего не найдено</p>
 {% endfor %}
 </div>
 
 
-
 <div class="bg-white">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+    <div class="pb-8">
+      <div class="flex flex-wrap gap-4">
+        {% for brand in brands %}
+        <a href="{% url 'main' %}?q={{ brand.name }}" class="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-3 cursor-pointer bg-white text-gray-900 shadow-sm undefined" x-state:on:size.instock="In Stock" x-state:off:size.instock="Out of Stock" x-description="Active: &quot;ring-2 ring-indigo-500&quot;" :class="{ 'ring-2 ring-indigo-500': (active === 'XS'), 'undefined': !(active === 'XS') }">
+            <input type="radio" x-model="value" name="size-choice" value="XS" class="sr-only" aria-labelledby="size-choice-1-label">
+            <span id="size-choice-1-label">{{brand.name}}</span>
+            <span class="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent" aria-hidden="true" x-description="Active: &quot;border&quot;, Not Active: &quot;border-2&quot;	Checked: &quot;border-indigo-500&quot;, Not Checked: &quot;border-transparent&quot;" :class="{ 'border': (active === 'XS'), 'border-2': !(active === 'XS'), 'border-indigo-500': (value === 'XS'), 'border-transparent': !(value === 'XS') }"></span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
     <h2 class="sr-only">Products</h2>
-
     <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-      <a href="#" class="group">
-        <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-          <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg" alt="Tall slender porcelain bottle with natural clay textured body and cork stopper." class="h-full w-full object-cover object-center group-hover:opacity-75">
-        </div>
-        <h3 class="mt-4 text-sm text-gray-700">Earthen Bottle</h3>
-        <p class="mt-1 text-lg font-medium text-gray-900">$48</p>
-      </a>
-      <a href="#" class="group">
-        <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-          <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg" alt="Olive drab green insulated bottle with flared screw lid and flat top." class="h-full w-full object-cover object-center group-hover:opacity-75">
-        </div>
-        <h3 class="mt-4 text-sm text-gray-700">Nomad Tumbler</h3>
-        <p class="mt-1 text-lg font-medium text-gray-900">$35</p>
-      </a>
-      <a href="#" class="group">
-        <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-          <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg" alt="Person using a pen to cross a task off a productivity paper card." class="h-full w-full object-cover object-center group-hover:opacity-75">
-        </div>
-        <h3 class="mt-4 text-sm text-gray-700">Focus Paper Refill</h3>
-        <p class="mt-1 text-lg font-medium text-gray-900">$89</p>
-      </a>
-      <a href="#" class="group">
-        <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-          <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg" alt="Hand holding black machined steel mechanical pencil with brass tip and top." class="h-full w-full object-cover object-center group-hover:opacity-75">
-        </div>
-        <h3 class="mt-4 text-sm text-gray-700">Machined Mechanical Pencil</h3>
-        <p class="mt-1 text-lg font-medium text-gray-900">$35</p>
-      </a>
-
-      <!-- More products... -->
+      {% for object in object_list %}
+      {% include 'components/productCard.html' %}
+      {% empty %}
+      <p>Ничего не найдено</p>
+      {% endfor %}
     </div>
   </div>
 </div>
