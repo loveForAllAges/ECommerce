@@ -1,18 +1,35 @@
 from django.db.models.query import QuerySet
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views import View
 from .models import Order
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from .forms import OrderForm
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render
 from cart.context_processors import cart
 from cart.cart import Cart
 
 
-class OrderListView(UserPassesTestMixin, ListView):
+class OrderListView(LoginRequiredMixin, ListView):
+    template_name = 'usage/orderList.html'
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(customer=self.request.user)
+
+
+class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    template_name = 'orderDetail.html'
+
+    def test_func(self, pk):
+        user = self.request.user
+        if not Order.objects.get(pk=pk, customer=user):
+            raise Http404
+        return True
+
+
+class AdmOrderListView(UserPassesTestMixin, ListView):
     template_name = 'adm/orderList.html'
 
     def get_queryset(self):
