@@ -158,19 +158,6 @@ class UserListView(UserPassesTestMixin, ListView):
         return True
 
 
-class AccountView(LoginRequiredMixin, ListView):
-    template_name = 'usage/account.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['addresses'] = Address.objects.filter(customer=self.request.user, is_deleted=False)
-        return context
-
-    def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user)
-        return queryset
-
-
 class CustomPasswordChangeView(PasswordChangeView):
     template_name= "auth/passwordChange.html"
     success_url= reverse_lazy('account')
@@ -181,12 +168,14 @@ class CustomPasswordChangeView(PasswordChangeView):
         return super().form_valid(form)
 
 
-class UserUpdateView(LoginRequiredMixin, View):
-    template_name = 'usage/settings.html'
+class AccountView(LoginRequiredMixin, View):
+    template_name = 'usage/account.html'
     success_url = reverse_lazy('account')
 
     def get(self, request):
-        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
+        addresses = Address.objects.filter(customer=self.request.user, is_deleted=False)
+
+        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user), 'addresses': addresses})
 
     def post(self, request):
         form = UserUpdateForm(instance=request.user, data=request.POST)
@@ -198,3 +187,15 @@ class UserUpdateView(LoginRequiredMixin, View):
 
         return render(request, self.template_name, {'form': form})
 
+
+# class AccountView(LoginRequiredMixin, ListView):
+#     template_name = 'usage/account.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['addresses'] = Address.objects.filter(customer=self.request.user, is_deleted=False)
+#         return context
+
+#     def get_queryset(self):
+#         queryset = Order.objects.filter(customer=self.request.user)
+#         return queryset
