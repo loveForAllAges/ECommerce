@@ -1,41 +1,88 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
+
 
 {% block content %}
-<h1>Аккаунт</h1>
-<p>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.email }} - {{ request.user.phone }} - Staff: {{ request.user.is_staff }} - Total orders: {{ object_list|length }}</p>
-<a href="{% url 'password-change' %}">Изменить пароль</a>
-<a href="{% url 'settings' %}">Настройки</a>
-<h1>История заказов</h1>
-{% for object in object_list %}
-<div>{{ object }}</div>
-<div>{{ object.product.name }}</div>
-<div>{{ object.product.brand }}</div>
-<div>{{ object.product.description }}</div>
-<div>{{ object.product.category }}</div>
-<div>{{ object.product.price }}</div>
-<h4>Количество: {{ object.quantity }}</h4>
-<h4>Общая цена: {{ object.get_total_price }}</h4>
-{% for photo in object.product.photos %}
-<img src="{{ photo.photo.url }}" alt="">
-{% empty %}
-<p>Нет фото</p>
-{% endfor %}
-{% empty %}
-<p>Заказов нет</p>
-{% endfor %}
-<div class="">
-    <h3>Мои адресы</h3>
-    <ul>
-        {% for address in addresses %}
-        <li>{{ address.name }} -- 
-            <a href="{% url 'address-update' address.id %}">Изменить</a>, 
-            <button data-address="{{ address.id }}" class="deleteAddress">Удалить</button>
-            <button data-address="{{ address.id }}" class="mainAddress">Сделать основным</button>
-        </li>
-        {% empty %}
-        <li>Нет адресов</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'address-create' %}">Добавить адрес</a>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="relative mx-auto max-w-3xl py-4">
+    <div class="space-y-6 sm:px-6 lg:col-span-9 lg:px-0">
+      <div class="mx-auto max-w-3xl py-8">
+        <h1 class="text-center text-3xl font-bold leading-tight tracking-tight text-gray-900">Аккаунт</h1>
+      </div>
+    
+      <div class="overflow-hidden rounded-lg mb-3 bg-white shadow">
+        <div class="p-5">
+          <form action="" method="POST">
+            {% csrf_token %}
+              <h2 class="text-lg font-medium leading-6 text-gray-900">Личные данные</h2>
+    
+              <div class="mt-6 grid grid-cols-4 gap-6">
+                <div class="col-span-4 sm:col-span-2">
+                  <label for="id_first_name" class="block text-sm font-medium text-gray-700">Имя</label>
+                  {{ form.first_name }}
+                </div>
+    
+                <div class="col-span-4 sm:col-span-2">
+                  <label for="id_last_name" class="block text-sm font-medium text-gray-700">Фамилия</label>
+                  {{ form.last_name }}
+                </div>
+    
+                <div class="col-span-4 sm:col-span-2">
+                  <label for="id_email" class="block text-sm font-medium text-gray-700">Почта</label>
+                  {{ form.email }}
+                </div>
+    
+                <div class="col-span-4 sm:col-span-2">
+                  <label for="id_phone" class="block text-sm font-medium text-gray-700">Номер телефона</label>
+                  {{ form.phone }}
+                  {% if form.errors.phone %}
+                  <div class="mt-4">
+                    <span class="flex items-center rounded-md bg-red-100 px-2.5 py-1.5 text-sm font-medium text-red-800">{{ form.errors.phone }}</span>
+                  </div>
+                  {% endif %}
+                </div>
+    
+                {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                  <div>
+                    <span class="flex items-center rounded-md bg-red-100 px-2.5 py-1.5 text-sm font-medium text-red-800">{{ error }}</span>
+                  </div>
+                {% endfor %}
+                {% endif %}
+    
+              </div>
+              <div class="mt-6 text-right">
+                <button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50">Сохранить изменения</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    
+      <div class="overflow-hidden rounded-lg mb-3 bg-white shadow">
+        <div class="p-5">
+          <form action="#" method="POST">
+              <h2 class="text-lg font-medium leading-6 text-gray-900">Адресы</h2>
+              <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                {% for address in addresses %}
+                <div class="{% if address.is_main %}border-blue-500 border-2{% else %}border-gray-300 border{% endif %} rounded-lg px-6 py-4 shadow-sm flex space-x-2 justify-between">
+                  <button type="button" data-address="{{ address.id }}" class="mainAddress text-gray-500 text-sm text-left w-full">{{ address.name }}</button>
+                  <button type="button" data-address="{{ address.id }}" class="deleteAddress rounded-full p-1 text-gray-400 hover:text-gray-500">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+                {% endfor %}
+                <a href="{% url 'address-create' %}" class="border-gray-300 rounded-lg border px-6 py-4 shadow-sm flex space-x-2 justify-center items-center text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>                                         
+                </a>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock %}
+
+{% endblock content %}
