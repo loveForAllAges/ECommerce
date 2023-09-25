@@ -19,23 +19,10 @@ class AddressCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         form.instance.customer = self.request.user
+        if not Address.objects.filter(customer=self.request.user, is_main=True).exists():
+            form.instance.is_main = True
         return super().form_valid(form)
     
-
-class AddressUpdateView(UserPassesTestMixin, UpdateView):
-    model = Address
-    fields = ('name',)
-    template_name = 'usage/addressCreate.html'
-    success_url = reverse_lazy('account')
-
-    def test_func(self):
-        pk = self.kwargs.get('pk')
-        item = Address.objects.get(id=pk)
-        user = self.request.user
-        if not user.is_authenticated or not item.customer == user:
-            raise Http404
-        return True
-
 
 class AddressDeleteView(UserPassesTestMixin, DeleteView):
     model = Address
@@ -56,7 +43,7 @@ def address_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         address_id = int(data['addressId'])
-        Address.objects.filter(customer=request.user, id=address_id, is_deleted=False).update(is_deleted=True)
+        Address.objects.filter(customer=request.user, id=address_id, is_deleted=False).update(is_deleted=True, is_main=False)
         return HttpResponse('Updated')
     
     raise Http404
