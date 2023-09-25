@@ -18,13 +18,14 @@ class ProductListView(View):
 
     def get(self, request):
         context = {}
-        q = request.GET.get('q', '')
+        search_data = request.GET.get('search', '')
 
         context['object_list'] = Product.objects.filter(
-            Q(name__icontains=q) | Q(description__icontains=q) | Q(brand__name__icontains=q) | Q(category__name__icontains=q)
+            Q(name__icontains=search_data) | Q(description__icontains=search_data) | Q(brand__name__icontains=search_data) | Q(category__name__icontains=search_data)
         )
         context['categories'] = Category.objects.all()
         context['brands'] = Brand.objects.all()
+        context['search_data'] = search_data
 
         return render(request, self.template_name, context)
 
