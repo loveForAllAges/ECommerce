@@ -10,6 +10,7 @@ from django.http import Http404
 from django.shortcuts import render
 from cart.context_processors import cart
 from cart.cart import Cart
+from address.models import Address
 
 
 class OrderListView(LoginRequiredMixin, ListView):
@@ -45,8 +46,12 @@ class CheckoutView(UserPassesTestMixin, View):
     template_name = 'usage/checkout.html'
 
     def get(self, request):
+        addresses = []
+        if request.user.is_authenticated:
+            addresses = Address.objects.filter(customer=request.user, is_deleted=False)
         context = {
             'order_form': OrderForm,
+            'addresses': addresses
         }
         return render(request, self.template_name, context=context)
 
