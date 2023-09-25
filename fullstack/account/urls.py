@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth.views import LoginView, LogoutView
-
+from django.shortcuts import render
 
 urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
@@ -10,8 +10,8 @@ urlpatterns = [
 
     path('activate/<uidb64>/<token>/', views.ActivationView.as_view(), name='activate'),
 
+    path('menu/', views.menu, name='menu'),
     path('account/', views.AccountView.as_view(), name='account'),
-    # path('settings/', views.UserUpdateView.as_view(), name='settings'),
 
     path("password-change/", views.CustomPasswordChangeView.as_view(), name='password-change'),
 

@@ -199,3 +199,7 @@ class AccountView(LoginRequiredMixin, View):
 #     def get_queryset(self):
 #         queryset = Order.objects.filter(customer=self.request.user)
 #         return queryset
+
+
+def menu(request):
+    return render(request, 'usage/menu.html')
