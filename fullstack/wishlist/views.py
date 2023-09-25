@@ -17,9 +17,11 @@ class WishlistView(LoginRequiredMixin, View):
     def post(self, request):
         data = json.loads(request.body)
         product_id = data.get('productId')
+        print(product_id)
         if not request.user.wishlist.filter(id=product_id).exists():
             product = get_object_or_404(Product, id=product_id)
             request.user.wishlist.add(product)
+            print('OK')
 
         return HttpResponse(200)
 
