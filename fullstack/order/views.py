@@ -1,13 +1,14 @@
+from typing import Any
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 from django.views import View
-from .models import Order
+from .models import Order, OrderItem
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from .forms import OrderForm
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from cart.context_processors import cart
 from cart.cart import Cart
 from address.models import Address
@@ -18,7 +19,8 @@ class OrderListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = Order.objects.filter(customer=self.request.user)
-
+        return queryset
+    
 
 class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     template_name = 'orderDetail.html'
@@ -57,7 +59,7 @@ class CheckoutView(UserPassesTestMixin, View):
 
     def post(self, request):
         data = request.POST
-        address = data.get('address')
+        address = 'test address'
         if request.user.is_authenticated:
             first_name = request.user.first_name
             last_name = request.user.last_name
@@ -71,15 +73,20 @@ class CheckoutView(UserPassesTestMixin, View):
             phone = data.get('phone')
             user = None
 
-        Order.objects.create(
+        order = Order.objects.create(
             first_name=first_name, last_name=last_name,
             email=email, phone=phone, address=address, customer=user
         )
 
         cart = Cart(request)
+        cart_items = cart.get_items()
+
+        for i in cart_items:
+            OrderItem.objects.create(order=order, product=i.product, quantity=i.quantity, price=i.get_total_price)
+
         cart.clear()
 
-        return HttpResponse('OK')
+        return redirect('order_list')
 
     def test_func(self):
         if cart(self.request)['total_quantity'] == 0:
