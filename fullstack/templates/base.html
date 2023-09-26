@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>Document</title> 
+    <title>{% block title %}Title{% endblock %}</title> 
     <script>
         var user = '{{ request.user }}';
 
@@ -27,40 +27,22 @@
         }
 
         var csrftoken = getToken();
-
-        // function getCookie() {
-        //     var cookies = document.cookie.split(";");
-        //     console.log(cookies)
-        //     for (var i = 0; i < cookies.length; i++) {
-        //         var cookie = cookies[i].split("=");
-        //         if ("cart" == cookie[0].trim()) {
-        //             return decodeURIComponent(cookie[1]);
-        //         }
-        //     }
-        //     return null;
-        // }
-
-        // var cart = JSON.parse(getCookie());
-        // if (cart == undefined) {
-        //     cart = {}
-        //     document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=path=/'
-        // }
-        // console.log(document.cookie);
     </script>
 </head>
-<body>
-    
-    {% block header %}
-    {% include 'components/header1.html' %}
-    {% endblock %}  
-
-    ===
-    {% include 'components/message.html' %}
-    ===
-
-    {% block content %}
+<body class="flex flex-col justify-between min-h-screen {% block bgColor %}{% endblock bgColor %}">
+    {% block messages %}
     {% endblock %}
-    <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+
+    {% block header %}
+    {% endblock %} 
+    <div class="mb-auto" style="margin-top: 65px;"> 
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% block footer %}
+    {% endblock footer %}    
+
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>
