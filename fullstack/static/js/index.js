@@ -73,7 +73,7 @@ $(document).ready(function(){
                 location.reload()
             })            
         })
-    }    
+    }
 
     for(var i = 0; i < addToWishlistBtns.length; i++){
         addToWishlistBtns[i].addEventListener('click', function(){
@@ -100,7 +100,28 @@ $(document).ready(function(){
     
             .then(() =>{
                 location.reload()
-            })            
+            })
         })
     }
+
+    function openSlideOver() {
+        $('.menuModal').removeClass('hidden');
+        $('body').addClass('overflow-hidden');
+      }
+  
+      // Функция, которая закрывает slide-over
+    //   function closeSlideOver() {
+    //     $('.menuModal').addClass('hidden');
+    //     $('body').removeClass('overflow-hidden');
+    //   }
+  
+    //   // Обработчик события для кнопки закрытия slide-over
+    //   $('.menuModal button').click(function() {
+    //     closeSlideOver();
+    //   });
+
+    //   // Функция, которая открывает slide-over по нажатию на кнопку или элемент
+    //   $('.menuBtn').click(function() {
+    //     openSlideOver();
+    //   });
 })
