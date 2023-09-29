@@ -1,49 +1,249 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 
 {% block content %}
 
-<div class="">
-<h3>Товары</h3>
-{% for object in object_list %}
-<!-- {% for photo in object.productphoto_set.all %}
-<img src="{{ photo.photo.url }}" alt="" />
-{% endfor %} -->
-<div class="">
-  <a href="{% url 'product-update' object.id %}">Edit</a>
-</div>
+<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+  <section class="pt-6">
 
-<button data-product="{{ object.id }}" data-action="add" class="addToCart">Buy</button>
-{% if object in request.user.wishlist.all %}
-<button data-product="{{ object.id }}" data-action="delete" class="addToWishlist">Из избранного</button>
-{% else %}
-<button data-product="{{ object.id }}" data-action="add" class="addToWishlist">Лайк</button>
-{% endif %}
-{% endfor %}
-</div>
+    <div class="flex items-center justify-between">
+      <div x-data="Components.menu({ open: false })" x-init="init()" @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative inline-block text-left">
+        <div>
+          <button type="button" class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" id="menu-button" x-ref="button" @click="onButtonClick()" @keyup.space.prevent="onButtonEnter()" @keydown.enter.prevent="onButtonEnter()" aria-expanded="false" aria-haspopup="true" x-bind:aria-expanded="open.toString()" @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()">
+            Sort
+            <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: mini/chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+</svg>
+          </button>
+        </div>
 
+        
+          <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" x-ref="menu-items" x-description="Dropdown menu, show/hide based on menu state." x-bind:aria-activedescendant="activeDescendant" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1" @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()" @keydown.tab="open = false" @keydown.enter.prevent="open = false; focusButton()" @keyup.space.prevent="open = false; focusButton()" style="display: none;">
+            <div class="py-1" role="none">
+              
+                <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100': activeIndex === 0 }" role="menuitem" tabindex="-1" id="menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">Most Popular</a>
+              
+                <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" :class="{ 'bg-gray-100': activeIndex === 1 }" role="menuitem" tabindex="-1" id="menu-item-1" @mouseenter="activeIndex = 1" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">Best Rating</a>
+              
+                <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" :class="{ 'bg-gray-100': activeIndex === 2 }" role="menuitem" tabindex="-1" id="menu-item-2" @mouseenter="activeIndex = 2" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">Newest</a>
+              
+                <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" :class="{ 'bg-gray-100': activeIndex === 3 }" role="menuitem" tabindex="-1" id="menu-item-3" @mouseenter="activeIndex = 3" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">Price: Low to High</a>
+              
+                <a href="#" class="block px-4 py-2 text-sm font-medium text-gray-900" :class="{ 'bg-gray-100': activeIndex === 4 }" role="menuitem" tabindex="-1" id="menu-item-4" @mouseenter="activeIndex = 4" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">Price: High to Low</a>
+              
+            </div>
+          </div>
+        
+      </div>
 
-<div class="bg-white">
-  <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-    <div class="pb-8">
-      <div class="flex flex-wrap gap-4">
-        {% for brand in brands %}
-        <a href="{% url 'main' %}?q={{ brand.name }}" class="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-3 cursor-pointer bg-white text-gray-900 shadow-sm undefined" x-state:on:size.instock="In Stock" x-state:off:size.instock="Out of Stock" x-description="Active: &quot;ring-2 ring-indigo-500&quot;" :class="{ 'ring-2 ring-indigo-500': (active === 'XS'), 'undefined': !(active === 'XS') }">
-            <input type="radio" x-model="value" name="size-choice" value="XS" class="sr-only" aria-labelledby="size-choice-1-label">
-            <span id="size-choice-1-label">{{brand.name}}</span>
-            <span class="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent" aria-hidden="true" x-description="Active: &quot;border&quot;, Not Active: &quot;border-2&quot;	Checked: &quot;border-indigo-500&quot;, Not Checked: &quot;border-transparent&quot;" :class="{ 'border': (active === 'XS'), 'border-2': !(active === 'XS'), 'border-indigo-500': (value === 'XS'), 'border-transparent': !(value === 'XS') }"></span>
-        </a>
-        {% endfor %}
+      <button type="button" x-description="Mobile filter dialog toggle, controls the 'mobileFilterDialogOpen' state." class="inline-block text-sm font-medium text-gray-700 hover:text-gray-900 sm:hidden" @click="open = true">Filters</button>
+
+      <div class="hidden sm:flex sm:items-baseline sm:space-x-8" x-data="Components.popoverGroup()" x-init="init()">
+        
+          <div id="menu" class="relative inline-block text-left" x-data="Components.popover({ open: false, focus: false })" x-init="init()" @keydown.escape="onEscape" @close-popover-group.window="onClosePopoverGroup">
+            <div>
+              <button type="button" class="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900" @click="toggle" @mousedown="if (open) $event.preventDefault()" aria-expanded="false" :aria-expanded="open.toString()">
+                <span>Category</span>
+                
+                  <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">1</span>
+                <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: mini/chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+</svg>
+              </button>
+            </div>
+
+            
+              <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" x-ref="panel" @click.away="open = false" style="display: none;">
+                <form class="space-y-4">
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-0" name="category[]" value="tees" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-0" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Tees</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-1" name="category[]" value="crewnecks" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-1" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Crewnecks</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-2" name="category[]" value="hats" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-2" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Hats</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-3" name="category[]" value="bundles" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-3" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Bundles</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-4" name="category[]" value="carry" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-4" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Carry</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-category-5" name="category[]" value="objects" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-category-5" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Objects</label>
+                    </div>
+                  
+                </form>
+              </div>
+            
+          </div>
+        
+          <div id="menu" class="relative inline-block text-left" x-data="Components.popover({ open: false, focus: false })" x-init="init()" @keydown.escape="onEscape" @close-popover-group.window="onClosePopoverGroup">
+            <div>
+              <button type="button" class="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900" @click="toggle" @mousedown="if (open) $event.preventDefault()" aria-expanded="false" :aria-expanded="open.toString()">
+                <span>Brand</span>
+                <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: mini/chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+</svg>
+              </button>
+            </div>
+
+            
+              <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" x-ref="panel" @click.away="open = false" style="display: none;">
+                <form class="space-y-4">
+                  
+                    <div class="flex items-center">
+                      <input id="filter-brand-0" name="brand[]" value="clothing-company" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-brand-0" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Clothing Company</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-brand-1" name="brand[]" value="fashion-inc" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-brand-1" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Fashion Inc.</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-brand-2" name="brand[]" value="shoes-n-more" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-brand-2" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Shoes 'n More</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-brand-3" name="brand[]" value="supplies-n-stuff" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-brand-3" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Supplies 'n Stuff</label>
+                    </div>
+                  
+                </form>
+              </div>
+            
+          </div>
+        
+          <div id="menu" class="relative inline-block text-left" x-data="Components.popover({ open: false, focus: false })" x-init="init()" @keydown.escape="onEscape" @close-popover-group.window="onClosePopoverGroup">
+            <div>
+              <button type="button" class="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900" @click="toggle" @mousedown="if (open) $event.preventDefault()" aria-expanded="false" :aria-expanded="open.toString()">
+                <span>Color</span>
+                <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: mini/chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+</svg>
+              </button>
+            </div>
+
+            
+              <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" x-ref="panel" @click.away="open = false" style="display: none;">
+                <form class="space-y-4">
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-0" name="color[]" value="white" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-0" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">White</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-1" name="color[]" value="black" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-1" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Black</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-2" name="color[]" value="grey" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-2" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Grey</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-3" name="color[]" value="blue" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-3" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Blue</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-4" name="color[]" value="olive" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-4" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Olive</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-color-5" name="color[]" value="tan" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-color-5" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">Tan</label>
+                    </div>
+                  
+                </form>
+              </div>
+            
+          </div>
+        
+          <div id="menu" class="relative inline-block text-left" x-data="Components.popover({ open: false, focus: false })" x-init="init()" @keydown.escape="onEscape" @close-popover-group.window="onClosePopoverGroup">
+            <div>
+              <button type="button" class="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900" @click="toggle" @mousedown="if (open) $event.preventDefault()" aria-expanded="false" :aria-expanded="open.toString()">
+                <span>Sizes</span>
+                <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: mini/chevron-down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
+</svg>
+              </button>
+            </div>
+
+            
+              <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none" x-ref="panel" @click.away="open = false" style="display: none;">
+                <form class="space-y-4">
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-0" name="sizes[]" value="xs" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-0" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">XS</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-1" name="sizes[]" value="s" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-1" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">S</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-2" name="sizes[]" value="m" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-2" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">M</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-3" name="sizes[]" value="l" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-3" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">L</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-4" name="sizes[]" value="xl" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-4" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">XL</label>
+                    </div>
+                  
+                    <div class="flex items-center">
+                      <input id="filter-sizes-5" name="sizes[]" value="2xl" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                      <label for="filter-sizes-5" class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-gray-900">2XL</label>
+                    </div>
+                  
+                </form>
+              </div>
+            
+          </div>
+        
       </div>
     </div>
+  </section>
 
-    <h2 class="sr-only">Products</h2>
-    <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-      {% for object in object_list %}
-      {% include 'components/productCard.html' %}
-      {% empty %}
-      <p>Ничего не найдено</p>
-      {% endfor %}
+
+  <section class="mt-8">
+    <div class="grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-5 xl:gap-x-8 pb-24">
+        {% for object in object_list %}
+        <a href="{% url 'product-detail' object.id %}" class="group">
+          <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
+            <img src="https://tailwindui.com/img/ecommerce-images/category-page-01-image-card-01.jpg" class="h-full w-full object-cover object-center group-hover:opacity-75">
+          </div>
+          <h3 class="mt-4 text-sm text-gray-700">{{ object.name }}</h3>
+          <p class="mt-1 text-lg font-medium text-gray-900">₽ {{ object.price }}</p>
+        </a>
+        {% endfor %}
     </div>
-  </div>
+  </section>
 </div>
 {% endblock %}
