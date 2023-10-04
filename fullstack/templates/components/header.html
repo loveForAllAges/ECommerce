@@ -42,404 +42,40 @@
    -->
 
 
-<div class="relative z-40 hidden" id="menu" role="dialog" aria-modal="true">
-  <div class="fixed inset-0 bg-black bg-opacity-25"></div>
-  <div class="fixed inset-0 z-40 flex">
-    <div class="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
-      <div class="flex px-4 pt-5 pb-2">
-        <button type="button" class="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400">
-          <!-- Heroicon name: outline/x-mark -->
-          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Links -->
-      <div class="mt-2">
-        <div class="border-b border-gray-200">
-          <div class="-mb-px flex space-x-8 px-4" aria-orientation="horizontal" role="tablist">
-            <!-- Selected: "text-indigo-600 border-indigo-600", Not Selected: "text-gray-900 border-transparent" -->
-            <button id="tabs-1-tab-1" class="text-gray-900 border-transparent flex-1 whitespace-nowrap border-b-2 py-4 px-1 text-base font-medium" aria-controls="tabs-1-panel-1" role="tab" type="button">Одежда</button>
-
-            <!-- Selected: "text-indigo-600 border-indigo-600", Not Selected: "text-gray-900 border-transparent" -->
-            <button id="tabs-1-tab-2" class="text-gray-900 border-transparent flex-1 whitespace-nowrap border-b-2 py-4 px-1 text-base font-medium" aria-controls="tabs-1-panel-2" role="tab" type="button">Обувь</button>
-            <button id="tabs-1-tab-3" class="text-gray-900 border-transparent flex-1 whitespace-nowrap border-b-2 py-4 px-1 text-base font-medium" aria-controls="tabs-1-panel-2" role="tab" type="button">Аксессуары</button>
-          </div>
-        </div>
-
-        <!-- 'Women' tab panel, show/hide based on tab state. -->
-        <div id="tabs-1-panel-1" class="space-y-10 px-4 pt-10 pb-8" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
-          <div class="space-y-4">
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-01.jpg" alt="Models sitting back to back, wearing Basic Tee in black and bone." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    New Arrivals
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg" alt="Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    Basic Tees
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-03.jpg" alt="Model wearing minimalist watch with black wristband and white watch face." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    Accessories
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="women-shoes-heading-mobile" class="font-medium text-gray-900">Shoes &amp; Accessories</p>
-              <ul role="list" aria-labelledby="women-shoes-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sneakers</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Boots</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Flats</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sandals</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Heels</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Socks</a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p id="women-collection-heading-mobile" class="font-medium text-gray-900">Shop Collection</p>
-              <ul role="list" aria-labelledby="women-collection-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Everything</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Core</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">New Arrivals</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sale</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Accessories</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="women-clothing-heading-mobile" class="font-medium text-gray-900">All Clothing</p>
-              <ul role="list" aria-labelledby="women-clothing-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Basic Tees</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Artwork Tees</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Tops</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Bottoms</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Swimwear</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Underwear</a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p id="women-accessories-heading-mobile" class="font-medium text-gray-900">All Accessories</p>
-              <ul role="list" aria-labelledby="women-accessories-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Watches</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Wallets</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Bags</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sunglasses</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Hats</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Belts</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="women-brands-heading-mobile" class="font-medium text-gray-900">Brands</p>
-              <ul role="list" aria-labelledby="women-brands-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Full Nelson</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">My Way</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Re-Arranged</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Counterfeit</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Significant Other</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- 'Men' tab panel, show/hide based on tab state. -->
-        <div id="tabs-1-panel-2" class="space-y-10 px-4 pt-10 pb-8" aria-labelledby="tabs-1-tab-2" role="tabpanel" tabindex="0">
-          <div class="space-y-4">
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/home-page-03-category-01.jpg" alt="Wooden shelf with gray and olive drab green baseball caps, next to wooden clothes hanger with sweaters." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    Accessories
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg" alt="Drawstring top with elastic loop closure and textured interior padding." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    New Arrivals
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="group aspect-w-1 aspect-h-1 relative overflow-hidden rounded-md bg-gray-100">
-              <img src="https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg" alt="Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt." class="object-cover object-center group-hover:opacity-75">
-              <div class="flex flex-col justify-end">
-                <div class="bg-white bg-opacity-60 p-4 text-base sm:text-sm">
-                  <a href="#" class="font-medium text-gray-900">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                    Artwork Tees
-                  </a>
-                  <p aria-hidden="true" class="mt-0.5 text-gray-700 sm:mt-1">Shop now</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="men-shoes-heading-mobile" class="font-medium text-gray-900">Shoes &amp; Accessories</p>
-              <ul role="list" aria-labelledby="men-shoes-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sneakers</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Boots</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sandals</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Socks</a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p id="men-collection-heading-mobile" class="font-medium text-gray-900">Shop Collection</p>
-              <ul role="list" aria-labelledby="men-collection-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Everything</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Core</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">New Arrivals</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sale</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="men-clothing-heading-mobile" class="font-medium text-gray-900">All Clothing</p>
-              <ul role="list" aria-labelledby="men-clothing-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Basic Tees</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Artwork Tees</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Pants</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Hoodies</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Swimsuits</a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p id="men-accessories-heading-mobile" class="font-medium text-gray-900">All Accessories</p>
-              <ul role="list" aria-labelledby="men-accessories-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Watches</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Wallets</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Bags</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Sunglasses</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Hats</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Belts</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="space-y-10">
-            <div>
-              <p id="men-brands-heading-mobile" class="font-medium text-gray-900">Brands</p>
-              <ul role="list" aria-labelledby="men-brands-heading-mobile" class="mt-6 flex flex-col space-y-6">
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Re-Arranged</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Counterfeit</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">Full Nelson</a>
-                </li>
-
-                <li class="flow-root">
-                  <a href="#" class="-m-2 block p-2 text-gray-500">My Way</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-6 border-t border-gray-200 py-6 px-4">
-        <div class="flow-root">
-          <a href="#" class="-m-2 block p-2 font-medium text-gray-900">О компании</a>
-        </div>
-
-        <div class="flow-root">
-          <a href="#" class="-m-2 block p-2 font-medium text-gray-900">Stores</a>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600 flex align-middle justify-between px-4 sm:px-8">
+    <a href="#" class="p-5 group">
+        <svg class="w-6 h-6 text-gray-700 hover:text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
+    </a>
+    <a href="#" class="p-5 group">
+        <svg class="w-6 h-6 text-gray-700 hover:text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+        </svg>          
+    </a>
+    <a href="#" class="p-5 group">
+        <svg class="w-6 h-6 text-gray-700 hover:text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+        </svg>
+    </a>
+    <a href="#" class="relative p-5 group">
+        <svg class="h-6 w-6 text-gray-700 hover:text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
+        </svg>
+        <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-blue-900 bg-blue-200 border-white rounded-full top-2 right-2 p-0.5">8</div>
+    </a>
+    <a href="#" class="p-5 group">
+        <svg class="h-6 w-6 text-gray-700 hover:text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+        </svg>
+    </a>
 </div>
+
 
 <header class="bg-white z-30 fixed top-0 inset-x-0">
     <div class="bg-gray-900">
         <div class="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div class="hidden lg:block lg:flex-1">
+            <div class="hidden md:block md:flex-1">
             </div>
 
             <p class="flex-1 text-center text-sm font-medium text-white lg:flex-none">Закажите сейчас и получите бесплатную доставку!</p>
@@ -452,24 +88,36 @@
         </div>
     </div>
     
-    <nav aria-label="Top" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <nav aria-label="Top" class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
         <div class="border-b border-gray-200">
             <div class="flex h-16 items-center justify-between">
-                <div class="flex flex-1 items-center lg:hidden">
-                    <button type="button" class="-ml-2 rounded-md bg-white p-2 text-gray-400">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                <!-- <form class="block md:hidden w-full">   
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="search" id="default-search" class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Поиск по магазину" required>
+                        <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Найти</button>
+                    </div>
+                </form> -->
+                <div class="w-full align-middle flex md:hidden">
+                    <div class="w-full relative">
+                      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"></path>
                         </svg>
-                    </button>
-
-                    <a href="#" class="ml-2 p-2 text-gray-400 hover:text-gray-500">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                        </svg>
-                    </a>
+                      </div>
+                      <input name="search" class="block w-full rounded-md border border-gray-300 bg-gray-50 py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none sm:text-sm" placeholder="Поиск по магазину" type="search">
+                    </div>
+                    {% if 1 > 2 %}
+                    <div class="my-auto ml-4">
+                        <a href="#" class="text-blue-600 dark:text-blue-500">Отменить</a>
+                    </div>
+                    {% endif %}
                 </div>
-
-                <div class="hidden lg:block lg:flex-1 lg:self-stretch">
+                <div class="hidden md:block md:flex-1 md:self-stretch">
                     <div class="flex h-full space-x-8">  
                         <a href="#" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Одежда</a>
                         <a href="#" class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">Обувь</a>
@@ -478,26 +126,26 @@
                 </div>
 
                 <!-- Logo -->
-                <a href="{% url 'main' %}" class="flex">
+                <a href="{% url 'main' %}" class="md:flex hidden">
                     <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600" alt="">
                 </a>
 
-                <div class="flex flex-1 items-center justify-end">
-                    <button type="button" data-modal-target="searchModal" data-modal-toggle="searchModal" class="ml-6 hidden p-2 text-gray-400 hover:text-gray-500 lg:block">
+                <div class="md:flex flex-1 items-center justify-end hidden">
+                    <button type="button" data-modal-target="searchModal" data-modal-toggle="searchModal" class="ml-6 hidden p-2 text-gray-400 hover:text-gray-500 md:block">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                     </button>
 
                     <!-- Account -->
-                    <a href="#" class="p-2 text-gray-400 hover:text-gray-500 lg:ml-4">
+                    <a href="#" class="p-2 text-gray-400 hover:text-gray-500 md:ml-4">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                         </svg>
                     </a>
 
                     <!-- Cart -->
-                    <div class="ml-4 flow-root lg:ml-6">
+                    <div class="ml-4 flow-root md:ml-6">
                         <a href="{% url 'cart-list' %}" class="group -m-2 flex items-center p-2">
                         <svg class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
