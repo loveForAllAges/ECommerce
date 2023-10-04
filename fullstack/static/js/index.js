@@ -104,24 +104,23 @@ $(document).ready(function(){
         })
     }
 
-    function openSlideOver() {
-        $('.menuModal').removeClass('hidden');
-        $('body').addClass('overflow-hidden');
-      }
-  
-      // Функция, которая закрывает slide-over
-    //   function closeSlideOver() {
-    //     $('.menuModal').addClass('hidden');
-    //     $('body').removeClass('overflow-hidden');
-    //   }
-  
-    //   // Обработчик события для кнопки закрытия slide-over
-    //   $('.menuModal button').click(function() {
-    //     closeSlideOver();
-    //   });
 
-    //   // Функция, которая открывает slide-over по нажатию на кнопку или элемент
-    //   $('.menuBtn').click(function() {
-    //     openSlideOver();
-    //   });
+    const openModalButton = document.getElementById('searchBtn');
+    const modal = document.getElementById('searchModal');
+    const closeSearchModal = document.getElementById('searchClose');
+    
+    function openModal() {
+        modal.classList.remove('hidden');
+        modal.querySelector('.transform').classList.add('opacity-100', 'scale-100');
+      }
+      
+      // Функция для закрытия модального окна
+      function closeModal() {
+        modal.querySelector('.transform').classList.remove('opacity-100', 'scale-100');
+        modal.classList.add('hidden');
+      }
+      
+      // Обработчики событий для кнопки и фона
+      openModalButton.addEventListener('click', openModal);
+      closeSearchModal.addEventListener('click', closeModal);
 })

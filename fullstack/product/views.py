@@ -14,7 +14,8 @@ from django.db.models import Q
 
 
 class ProductListView(View):
-    template_name = 'usage/productList.html'
+    template_name = 'usage/productCategoryList.html'
+    # template_name = 'usage/test.html'
 
     def get(self, request):
         context = {}

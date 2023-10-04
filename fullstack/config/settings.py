@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'compressor',
     # 'tailwind',
     # 'theme',
     # 'mailer',
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
 
 
 TAILWIND_APP_NAME = 'theme'
+
+
+COMPRESS_ROOT = BASE_DIR / 'static'
+COMPRESS_ENABLED = True
+STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 
 MIDDLEWARE = [

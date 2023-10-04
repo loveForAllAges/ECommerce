@@ -2,22 +2,23 @@
 {% load static %}
 
 {% block bgColor %}
-bg-gray-50
 {% endblock bgColor %}
 
-{% block header %}
+<!-- {% block header %}
 {% include 'components/header.html' %}
-{% endblock %}
+{% endblock %} -->
 
-{% block messages %}
+<!-- {% block messages %}
 {% include 'components/message.html' %}
-{% endblock %}
+{% endblock %} -->
 
 {% block content %}
 {% endblock %}
 
 {% block footer %}
-<div class="relative z-20 invisible" id="menuModal">
+{% include 'components/search.html' %}
+{% include 'components/chat.html' %}
+<!-- <div class="relative z-20 invisible" id="menuModal">
   <div id="menuModalBg" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
   <div class="fixed inset-0 overflow-hidden">
@@ -111,15 +112,11 @@ bg-gray-50
       </div>
     </div>
   </div>
-</div>
+</div> -->
 {% endblock footer %}
 
 {% block scripts %}
-    <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
-    <script>
-      function toggleSlideOver() {
-        document.getElementById('menuModal').classList.toggle('invisible');
-    }
-    </script>
+    <!-- <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/index.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/bootstrap.bundle.min.js' %}"></script> -->
 {% endblock %}
