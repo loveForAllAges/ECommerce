@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filters %}
+
+{% block content %}
+<div class="relative overflow-hidden">
+  <div class="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
+    <div class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
+      <div class="sm:max-w-lg">
+        <h1 class="font text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Магазин брендовой одежды, обуви и аксессуаров</h1>
+        <p class="mt-4 text-xl text-gray-500"></p>
+      </div>
+      <div>
+        <div class="mt-10">
+          <div aria-hidden="true" class="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl">
+            <div class="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
+              <div class="flex items-center space-x-6 lg:space-x-8">
+                <div class="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-44 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
+                    <img src="{% static 'images/exampleProduct/1.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg hidden sm:block">
+                    <img src="{% static 'images/exampleProduct/2.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/3.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg hidden sm:block">
+                    <img src="{% static 'images/exampleProduct/4.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                </div>
+                <div class="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/2.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/3.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/4.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                </div>
+                <div class="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/1.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg hidden sm:block">
+                    <img src="{% static 'images/exampleProduct/2.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/exampleProduct/3.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                  <div class="h-44 w-44 overflow-hidden rounded-lg hidden sm:block">
+                    <img src="{% static 'images/exampleProduct/4.jpeg' %}" alt="" class="h-full w-full object-cover object-center">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <a href="#" class="inline-block rounded-md border border-transparent bg-blue-600 py-3 px-8 text-center font-medium text-white hover:bg-blue-700">Каталог</a> -->
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+
+
+<div class="mx-auto max-w-7xl py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+    <div class="">
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-900">Новинки</h2>
+            <a href="#" class="text-sm font-semibold text-blue-600 hover:text-blue-500 block">
+                Смотреть все
+                <span aria-hidden="true"> →</span>
+            </a>
+        </div>
+        <div class="mt-8">
+            <div class="grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
+                {% for object in new_products_list %}
+                <div class="relative group hover:opacity-75 duration-150">
+                    <div>
+                        <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
+                            {% for image in object.productimage_set.all %}
+                            {% if image.is_main %}
+                                <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center">
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <h3 class="mt-4 font-semibold text-gray-900">
+                            <a href="{% url 'product-detail' object.id %}">
+                                <span aria-hidden="true" class="absolute inset-0"></span>
+                                {{ object.name }}
+                            </a>
+                        </h3>
+                        <p class="mt-1 text-gray-900">{{ object.price|add_space_separator }} ₽</p>
+                    </div>
+                    <div class="absolute top-0 right-0 flex overflow-hidden pt-2 pr-2">
+                        {% if object in request.user.wishlist.all %}
+                        <button type="button" data-product="{{ object.id }}" data-action="delete" class="addToWishlist p-1 text-gray-400 hover:text-gray-500">               
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-rose-500 hover:text-rose-600">
+                                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                            </svg>
+                        </button>
+                        {% else %}
+                        <button type="button" data-product="{{ object.id }}" data-action="add" class="addToWishlist p-1 text-gray-400 hover:text-gray-500">               
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
+                            </svg>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% if request.user.is_anonymous %}
+<div class="relative">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <a href="{% url 'login' %}" class="block relative overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-600 to-green-400 px-6 py-10 shadow-xl sm:px-12 sm:py-20">
+            <div class="relative">
+                <div class="sm:text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        <span class="block">Зарегистрируйтесь</span>
+                        <span class="block text-cyan-900">И покупайте дешевле</span>
+                    </h2>
+                    <p class="mt-4 text-lg leading-6 text-cyan-100">Совершая покупки с авторизованного аккаунта, сохраняется история заказов, накапливаются баллы</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- <div class="mx-auto max-w-7xl py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+  <div class="">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900">Категории</h2>
+    </div>
+
+
+    <div class="mt-8 mx-auto grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 lg:gap-x-8">
+        {% for category in categories %}
+        <a href="{% url 'category' %}" class="duration-150 group relative h-96 overflow-hidden sm:aspect-w-4 sm:aspect-h-5 rounded-xl hover:opacity-75 flex flex-col xl:w-auto">
+            <span aria-hidden="true" class="absolute inset-0">
+                <img src="{{ category.logo }}" alt="" class="h-full w-full object-cover object-center">
+            </span>
+            <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-gray-800 opacity-50"></span>
+            <span class="relative mt-auto flex justify-center items-end p-6 text-xl font-bold text-white">{{ category.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+  </div>
+</div> -->
+
+
+<div class="relative">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <a href="#" class="block relative overflow-hidden rounded-2xl bg-blue-500 duration-300 hover:bg-blue-600 px-6 py-10 shadow-xl sm:px-12 sm:py-20">
+      <div aria-hidden="true" class="absolute inset-0 -mt-72 sm:-mt-32 md:mt-0">
+        <svg class="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1463 360">
+          <path class="text-blue-400 text-opacity-40" fill="currentColor" d="M-82.673 72l1761.849 472.086-134.327 501.315-1761.85-472.086z"></path>
+          <path class="text-blue-600 text-opacity-40" fill="currentColor" d="M-217.088 544.086L1544.761 72l134.327 501.316-1761.849 472.086z"></path>
+        </svg>
+      </div>
+      <div class="relative">
+        <div class="sm:text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Доставка от 1 дня</h2>
+          <p class="mx-auto mt-6 max-w-2xl text-lg text-blue-100">Каталог товаров, которые находятся в Москве. Доставка от 1 дня</p>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- <div class="relative">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <a href="#" class="block relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-400 to-pink-500 px-6 py-10 shadow-xl sm:px-12 sm:py-20">
+            <div class="relative">
+                <div class="sm:text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        <span class="block">Отзывы</span>
+                        <span class="block text-red-900">Что о нас думают наши клиенты</span>
+                      </h2>
+                </div>
+            </div>
+        </a>
+    </div>
+</div> -->
+
+<!-- <div class="relative">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <a href="#" class="block relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-800 to-cyan-700 px-6 py-10 shadow-xl sm:px-12 sm:py-20">
+            <div class="relative">
+                <div class="sm:text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        <span class="block">Зарегистрируйтесь</span>
+                        <span class="block">И покупайте дешевле</span>
+                    </h2>
+                    <p class="mt-4 text-lg text-cyan-100">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui Lorem cupidatat commodo. Elit sunt amet fugiat.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div> -->
+
+
+<div class="mx-auto max-w-7xl py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-8 pb-24">
+        {% for object in object_list %}
+        {% include 'components/productCard.html' %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
