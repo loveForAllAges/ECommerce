@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load my_filters %}
+
+
+<div class="mx-auto max-w-3xl px-4 lg:max-w-7xl xl:px-0">
+    <div class="pt-16">
+        <div class="flex items-center justify-between">
+            <div class="relative inline-block text-left">
+                <div>
+                    <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" type="button" class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                        Сортировать
+                        <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="sortDropdown" class="z-10 hidden w-64 bg-white divide-y divide-gray-100 rounded-xl shadow-lg">
+                    <ul class="p-3 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
+                        <li>
+                            <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=popular{% else %}?{{ request.GET.urlencode }}&sort=popular{% endif %}" class="{% if not request.GET.sort or 'popular' == request.GET.sort %}bg-gray-100{% endif %} flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                <label class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала популярные</label>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=new{% else %}?{{ request.GET.urlencode }}&sort=new{% endif %}" class="{% if 'new' == request.GET.sort %}bg-gray-100{% endif %} flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                <label class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала новые</label>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=expensive{% else %}?{{ request.GET.urlencode }}&sort=expensive{% endif %}" class="{% if 'expensive' == request.GET.sort %}bg-gray-100{% endif %} flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                <label class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала дороже</label>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=cheaper{% else %}?{{ request.GET.urlencode }}&sort=cheaper{% endif %}" class="{% if 'cheaper' == request.GET.sort %}bg-gray-100{% endif %} flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                <label class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала дешевле</label>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- <form action="" method="GET" id="sortForm">
+                        <ul class="p-3 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
+                            <li>
+                                <div class="flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                    <input checked id="sort-1" type="radio" value="1" name="sort" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+                                    <label for="sort-1" class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала популярные</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                    <input id="sort-2" type="radio" value="2" name="sort" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+                                    <label for="sort-2" class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала новые</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                    <input id="sort-3" type="radio" value="3" name="sort" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+                                    <label for="sort-3" class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала дороже</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="flex items-center p-2 rounded-xl hover:bg-gray-100">
+                                    <input id="sort-4" type="radio" value="4" name="sort" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+                                    <label for="sort-4" class="-m-2 ml-0 p-2 w-full text-sm font-medium text-gray-900 rounded">Сначала дешевле</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </form> -->
+                </div>
+            </div>
+
+            <button type="button" data-drawer-target="menuSort" data-drawer-show="menuSort" data-drawer-placement="right" aria-controls="menuSort" class="inline-block text-sm font-medium text-gray-700 hover:text-gray-900">
+                Фильтры
+                {% if total_active_tags_count %}
+                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ total_active_tags_count }}</span>
+                {% endif %}
+                <!-- <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">1</span> -->
+            </button>
+        </div>
+    </div>
+  
+  
+    {% if object_list %}
+    <div class="mt-8">
+        <div class="products grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-8 pb-24">
+            {% for object in object_list %}
+            {% include 'components/productCard.html' %}
+            {% endfor %}
+        </div>
+        <div class="waiting-products">
+        </div>
+    </div>
+    {% else %}
+    <!-- <div class="py-14 px-6 text-center text-sm sm:px-14">
+        <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"></path>
+        </svg>
+        <p class="mt-4 font-semibold text-gray-900">Ничего не найдено</p>
+        <p class="mt-2 text-gray-500">По вашему запросу ничего не найдено! Попробуйте снова или очистите фильтры</p>
+    </div> -->
+
+    <div class="py-14 px-6 text-center text-sm sm:px-14">
+        <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"></path>
+        </svg>
+        <p class="mt-4 text-sm text-gray-900">Ничего не найдено</p>
+    </div>
+    {% endif %}
+</div>
+
+
+{% include 'components/menuSort.html' %}
+{% endblock content %}

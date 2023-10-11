@@ -13,8 +13,6 @@
     <script>
         var user = '{{ request.user }}';
 
-        console.log('set-cookie', document.cookie)
-
         function getToken() {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -33,23 +31,27 @@
         var csrftoken = getToken();
     </script>
 </head>
-<div class="bg-gray-900 bg-opacity-50 dark:bg-opacity-80"></div>
-<body class="flex flex-col justify-between min-h-screen {% block bgColor %}{% endblock bgColor %}">
-    {% block messages %}
-    {% endblock %}
+<body class="flex flex-col justify-between min-h-screen">
+    {% include 'components/preloader.html' %}
+    {% include 'components/header.html' %}
+    {% include 'components/message.html' %}
 
-    {% block header %}
-    {% endblock %} 
-    <div class="mb-auto" style="margin-top: 105px;"> 
+    <div class="mb-auto mt-12 sm:mt-16"> 
         {% block content %}
         {% endblock %}
     </div>
-    {% block footer %}
-    {% endblock footer %}
 
-    {% block scripts %}
-    {% endblock %}
+    {% if request.user.is_anonymous %}
+    {% include 'components/permissionModal.html' %}
+    {% endif %}
+
+    {% include 'components/searchModal.html' %}
+    {% include 'components/chat.html' %}
+    {% include 'components/footer.html' %}
+    <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
     <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script> -->
+
 </body>
 </html>
