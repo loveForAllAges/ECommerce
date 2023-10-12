@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                        <a href="{% url 'product-detail' object.product.id %}" class="group-hover:opacity-75 duration-150">
+                        <a href="{% url 'product' object.product.id %}" class="group-hover:opacity-75 duration-150">
                             <div class="flex justify-between">
                                 <h4 class="font-medium text-gray-900">
                                     <span aria-hidden="true" class="absolute inset-0"></span>
@@ -30,7 +30,7 @@
             
                         <div class="flex items-center justify-between">
                             <span class="isolate inline-flex rounded-md shadow-sm">
-                                <button type="button" data-product="{{ object.product.id }}" data-action="minus" {% if object.quantity == 1 %}disabled{% endif %} class="addToCart relative inline-flex items-center rounded-l-md border border-gray-300 justify-center bg-white w-8 h-8 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <button type="button" data-product="{{ object.product.id }}" data-action="minus"  {% if object.quantity == 1 %}disabled{% endif %} class="addToCart relative inline-flex items-center rounded-l-md border border-gray-300 justify-center bg-white w-8 h-8 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                     </svg>
