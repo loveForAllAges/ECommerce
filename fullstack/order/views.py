@@ -1,8 +1,9 @@
 from typing import Any
+from django.db import models
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 from django.views import View
-from .models import Order, OrderItem
+from .models import Order, OrderItem, DeliveryType, ORDER_CHOICES
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from .forms import OrderForm
@@ -11,29 +12,30 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from cart.context_processors import cart
 from cart.cart import Cart
-from address.models import Address
+from account.models import LastUserAddress
+from django.shortcuts import get_object_or_404
 
 
 class OrderListView(LoginRequiredMixin, ListView):
-    template_name = 'usage/orderList.html'
+    template_name = 'usage/orders.html'
 
     def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user)
+        queryset = Order.objects.filter(customer=self.request.user).order_by('-id')
         return queryset
-    
 
-class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    template_name = 'orderDetail.html'
 
-    def test_func(self, pk):
-        user = self.request.user
-        if not Order.objects.get(pk=pk, customer=user):
-            raise Http404
-        return True
+class OrderDetailView(DetailView):
+    template_name = 'usage/orderDetail.html'
+    model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['statuses'] = [i[1] for i in ORDER_CHOICES if i[0] != 5]
+        return context
 
 
 class AdmOrderListView(UserPassesTestMixin, ListView):
-    template_name = 'adm/orderList.html'
+    template_name = 'adm/orders.html'
 
     def get_queryset(self):
         queryset = Order.objects.filter(status=1)
@@ -48,18 +50,25 @@ class CheckoutView(UserPassesTestMixin, View):
     template_name = 'usage/checkout.html'
 
     def get(self, request):
-        addresses = []
-        if request.user.is_authenticated:
-            addresses = Address.objects.filter(customer=request.user, is_deleted=False)
         context = {
-            'order_form': OrderForm,
-            'addresses': addresses
+            'form': OrderForm,
+            'current_delivery': 2,
+            'delivery_types': DeliveryType.objects.all(),
         }
+        if request.user.is_authenticated:
+            context['address'] = LastUserAddress.objects.filter(customer=request.user)[0]
+            print(context['address'])
+            context['first_name'] = request.user.first_name
+            context['last_name'] = request.user.last_name
+            context['email'] = request.user.email
+            context['phone'] = request.user.phone
+            context['disabled'] = 'disabled'
+
         return render(request, self.template_name, context=context)
 
     def post(self, request):
         data = request.POST
-        address = 'test address'
+        current_delivery = int(data.get('delivery'))
         if request.user.is_authenticated:
             first_name = request.user.first_name
             last_name = request.user.last_name
@@ -73,20 +82,52 @@ class CheckoutView(UserPassesTestMixin, View):
             phone = data.get('phone')
             user = None
 
+        address = {
+            'address': data.get('address', None), 
+            'zip_code': data.get('zip_code', None), 
+            'city': data.get('city', None)
+        }
+
+        if current_delivery != 1 and (not address['address'] or not address['zip_code'] or not address['city']):
+            messages.add_message(request, messages.ERROR, 'Введите корректные данные адреса для доставки')
+            context = {
+                'form': OrderForm,
+                'address': address,
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email,
+                'phone': phone,
+                'delivery_types': DeliveryType.objects.all(),
+                'current_delivery': int(current_delivery)
+            }
+            print(current_delivery)
+            if request.user.is_authenticated:
+                context['disabled'] = 'disabled'
+
+            return render(request, self.template_name, context=context)
+
+        delivery_type = get_object_or_404(DeliveryType, id=int(current_delivery))
+
         order = Order.objects.create(
-            first_name=first_name, last_name=last_name,
-            email=email, phone=phone, address=address, customer=user
+            first_name=first_name, last_name=last_name, email=email, phone=phone,
+            delivery_type=delivery_type, zip_code=address['zip_code'], city=address['city'], address=address['address'], customer=user
         )
+
+        if request.user.is_authenticated:
+            LastUserAddress.objects.update_or_create(customer=request.user, address=address['address'], zip_code=address['zip_code'], city=address['city'])
 
         cart = Cart(request)
         cart_items = cart.get_items()
 
         for i in cart_items:
-            OrderItem.objects.create(order=order, product=i.product, quantity=i.quantity, price=i.get_total_price)
+            OrderItem.objects.create(
+                order=order, product=i.product, quantity=i.quantity, 
+                price=i.get_total_price, size=i.size
+            )
 
         cart.clear()
 
-        return redirect('order_list')
+        return redirect('orders')
 
     def test_func(self):
         if cart(self.request)['total_quantity'] == 0:

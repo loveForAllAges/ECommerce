@@ -5,4 +5,4 @@ from .models import Order
 class OrderForm(ModelForm):
     class Meta:
         model = Order
-        fields = ('first_name', 'last_name', 'email', 'phone')
+        fields = ('first_name', 'last_name', 'email', 'phone', 'zip_code', 'city', 'address')
