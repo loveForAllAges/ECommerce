@@ -36,7 +36,7 @@
     {% include 'components/header.html' %}
     {% include 'components/message.html' %}
 
-    <div class="mb-auto mt-12 sm:mt-16"> 
+    <div class="md:mb-auto md:mt-16 mb-12"> 
         {% block content %}
         {% endblock %}
     </div>
@@ -46,10 +46,12 @@
     {% endif %}
 
     {% include 'components/searchModal.html' %}
+    {% include 'components/cartModal.html' %}
     {% include 'components/chat.html' %}
     {% include 'components/footer.html' %}
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
     <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script> -->
 
