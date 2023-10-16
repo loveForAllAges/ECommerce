@@ -3,7 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('create/', views.AddressCreateView.as_view(), name='address-create'),
-    path('make-main/', views.address_make_main, name='address-make-main'),
-    path('delete/', views.address_delete, name='address-delete'),
+    path('', views.AddressView.as_view(), name='address'),
+    path('<int:pk>/delete/', views.AddressDeleteView.as_view(), name='address-delete'),
 ]

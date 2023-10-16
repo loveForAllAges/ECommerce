@@ -1,4 +1,5 @@
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import AddressForm
 from .models import Address
@@ -8,55 +9,52 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-import json
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
-class AddressCreateView(LoginRequiredMixin, CreateView):
-    model = Address
-    form_class = AddressForm
-    template_name = 'usage/addressCreate.html'
-    success_url = reverse_lazy('account')
-
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        form.instance.customer = self.request.user
-        if not Address.objects.filter(customer=self.request.user, is_main=True).exists():
-            form.instance.is_main = True
-        return super().form_valid(form)
+class AddressView(UserPassesTestMixin, View):
+    template_name = 'usage/addresses.html'
     
+    def get(self, request):
+        context = {
+            'object_list': Address.objects.filter(customer=request.user, is_deleted=False),
+            'form': AddressForm
+        }
+        return render(self.request, self.template_name, context)
 
-class AddressDeleteView(UserPassesTestMixin, DeleteView):
-    model = Address
-    success_url = reverse_lazy('account')
-    template_name = ''
+    def post(self, request):
+        data = request.POST
+        form = AddressForm(data)
+
+        if form.is_valid():
+            Address.objects.create(city=data.get('address'), address=data.get('address'), customer=request.user)
+            messages.add_message(request, messages.SUCCESS, 'Адрес сохранен')
+        else:
+            messages.add_message(request, messages.ERROR, 'Введены неверные данные')
+        return redirect('address')
 
     def test_func(self):
-        pk = self.kwargs.get('pk')
-        item = Address.objects.get(id=pk)
-        user = self.request.user
-        if not self.request.user.is_authenticated or not item.customer == user:
+        if  self.request.user.is_anonymous:
             raise Http404
         return True
 
 
-@login_required
-def address_delete(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        address_id = int(data['addressId'])
-        Address.objects.filter(customer=request.user, id=address_id, is_deleted=False).update(is_deleted=True, is_main=False)
-        return HttpResponse('Updated')
+class AddressDeleteView(UserPassesTestMixin, View):
+    model = Address
+    success_url = reverse_lazy('account')
+    template_name = 'usage/addresses.html'
+
+    def post(self, request, pk):
+        Address.objects.filter(customer=request.user, id=pk, is_deleted=False).update(is_deleted=True, is_main=False)
+        messages.add_message(request, messages.SUCCESS, 'Адрес удален')
+        return redirect('address')
     
-    raise Http404
-
-
-@login_required
-def address_make_main(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        address_id = int(data['addressId'])
-        user = request.user
-        Address.objects.filter(customer=user, is_main=True).update(is_main=False)
-        Address.objects.filter(customer=user, id=address_id, is_main=False).update(is_main=True)
-        return HttpResponse('Updated')
-
-    raise Http404
+    def test_func(self):
+        pk = self.kwargs.get('pk')
+        item = Address.objects.filter(id=pk)
+        user = self.request.user
+        if self.request.user.is_anonymous or not item or item[0].customer != user:
+            # messages.add_message(self.request, messages.ERROR, 'Ошибка удаления адреса')
+            return False
+        return True
