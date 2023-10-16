@@ -5,31 +5,29 @@
 {% block content %}
 <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
     <div class="">
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Заказы</h1>
-        <p class="mt-2 text-sm text-gray-500">История заказов</p>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Заказ #{{ object.number }}</h1>
+        <p class="mt-2 text-sm text-gray-500">Детали заказа</p>
     </div>
 
     <div class="mt-16">
         <div class="space-y-10">
-            {% for order in object_list %}
-            <div class="border-gray-200 bg-white shadow-sm rounded-lg border">
-                <div class="p-4 border-b flex items-center w-full">
-                    <div class="flex flex-1 items-center justify-start"></div>
-                    <div class="flex items-center space-x-2 justify-center">
-                        <h2 class="text-lg font-medium text-gray-900">Заказ #{{ order.number }}</h2>
-                    </div>
-                    <div class="-m-2 flex flex-1 items-center justify-end">
-                        <a href="{% url 'order' order.pk %}" class="p-2 text-sm duration-150 text-gray-400 hover:text-gray-500">
-                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                            </svg>
-                        </a>
-                    </div>
+            <div class="mt-6 text-sm">
+                <div class="overflow-hidden rounded-full bg-gray-200">
+                    <div class="h-2 rounded-full bg-blue-600 w- {% if order.status != 0 %}w-{% widthratio order.status 1 3 %}/12{% else %}w-1/12{% endif %}"></div>
                 </div>
+                <div class="mt-6 grid-cols-5 text-gray-600 grid">
+                    <div class="">{{ statuses.0 }}</div>
+                    <div class="">{{ statuses.1 }}</div>
+                    <div class="text-center">{{ statuses.2 }}</div>
+                    <div class="text-right">{{ statuses.3 }}</div>
+                    <div class="text-right">{{ statuses.4 }}</div>
+                </div>
+            </div>
 
+            <div class="">
                 <ul class=" divide-y divide-gray-200">
-                    {% for product in order.orderitem_set.all %}
-                    <li class="flex group p-4 relative">
+                    {% for product in object.orderitem_set.all %}
+                    <li class="flex group relative">
                         <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
                         {% for image in product.product.productimage_set.all %}
                         {% if image.is_main %}
@@ -74,14 +72,45 @@
                     </li>
                     {% endfor %}
                 </ul>
-                <div class="p-4">
-                    <div class="flex items-center justify-between border-t border-gray-200 pt-4 text-black">
-                        {% include 'components/orderStatus.html' %}
-                        <div class="text-base font-medium">{{ order.total_price|add_space_separator }} ₽</div>
+            </div>
+            <div class="">
+                <div class="grid grid-cols-2 border-t border-gray-200 gap-x-6 py-10 text-sm">
+                    <div>
+                        <p class="font-medium text-gray-900">Адрес доставки</p>
+                        <div class="mt-2 text-gray-700">
+                            <p>г. {{ order.city }}</p>
+                            <p>{{ order.address }}</p>
+                            <p>{{ order.zip_code }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Способ оплаты</p>
+                        <div class="mt-2 text-gray-700">
+                            <span class="block">Mastercard</span>
+                            <span class="block">•••• 1234</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
+                    <div class="flex items-center justify-between">
+                        <p class="font-medium text-gray-500">Подытог</p>
+                        <p>177 000 ₽</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <p class="font-medium text-gray-500">Доставка</p>
+                        <p>177 000 ₽</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <p class="font-medium text-gray-500">Скидка<span class="ml-2 rounded-full bg-gray-200 py-0.5 px-2 text-xs text-gray-600">STUDENT50</span></p>
+                        <p>177 000 ₽</p>
+                    </div>
+    
+                    <div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
+                        <div class="text-base">Итого</div>
+                        <div class="text-base">177 000 ₽</div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </div>

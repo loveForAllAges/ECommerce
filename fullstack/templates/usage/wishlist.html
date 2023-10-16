@@ -2,79 +2,27 @@
 {% load static %}
 
 {% block content %}
-<div class="mx-auto py-16 px-4 sm:py-24 sm:px-0 sm:max-w-lg">
-    <div class="sm:px-6 lg:col-span-9 lg:px-0">
-        <div class="mx-auto max-w-3xl">
-            <div class="justify-center space-x-4 flex items-center">
-                <!-- <a href="{% url 'account' %}" class="p-1 hover:text-gray-500 text-gray-400">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
-                </a> -->
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                    Избранное
-                </h1>
-            </div>
-        </div>
-        <div class="mt-12">
-            {% if request.user.wishlist.all %}
-            <ul class="divide-y divide-gray-200">
-                {% for object in request.user.wishlist.all %}
-                <li class="flex py-4">
-                    <a href="{% url 'product-detail' object.id %}" class="flex-shrink-0">
-                        <img src="{% static 'images/exampleProduct/1.jpeg' %}" class="h-24 w-24 border rounded-xl object-cover object-center sm:h-32 sm:w-32"/>
-                    </a>
+<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
+    <div class="max-w-xl">
+      <h1 id="your-orders-heading" class="text-3xl font-bold tracking-tight text-gray-900">Избранное</h1>
+      <p class="mt-2 text-sm text-gray-500">Список вещей, которые вы добавили в избранное</p>
+    </div>
 
-                    <div class="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                        <a href="{% url 'product-detail' object.id %}">
-                            <div class="flex justify-between">
-                                <h4 class="font-medium text-gray-900">
-                                    {{ object.name }}
-                                </h4>
-                                <p class="font-medium text-gray-900">₽ {{ object.price }}</p>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-500">{{ object.description }}</p>
-                        </a>
-            
-                        <div class="flex items-center justify-between">
-                            <span class="isolate inline-flex rounded-md shadow-sm">
-                                <button data-product="{{ object.id }}" data-action="add" type="button" class="addToCart inline-flex items-center rounded-md border border-transparent bg-blue-600 px-2.5 py-1.5 text-sm font-medium leading-4 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">В корзину</button>
-                            </span>
-                            <div class="flex space-x-3">
-                            {% if object in request.user.wishlist.all %}
-                            <button type="button" data-product="{{ object.id }}" data-action="delete" class="addToWishlist flex items-center justify-center bg-white p-2 text-gray-400 hover:text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-rose-500 hover:text-rose-600">
-                                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-                                </svg>
-                            </button>
-                            {% else %}
-                            <button type="button" data-product="{{ object.id }}" data-action="add" class="addToWishlist flex items-center justify-center bg-white p-2 text-gray-400 hover:text-gray-500">               
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                                </svg>
-                            </button>
-                            {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <div class="text-center block">
-                <div class="flex-shrink-0">
-                    <div class="flow-root">
-                        <svg class="w-24 h-24 sm:w-32 sm:h-32 mx-auto text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <p class="mt-2 text-gray-500">Список желаемого пуст</p>
-                </div>
-            </div>
-            {% endif %}
+    <div class="">
+        {% if request.user.wishlist.all %}
+        <div class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3">
+            {% for product in request.user.wishlist.all %}
+            {% include 'components/productCard.html' %}
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="mt-10 text-center text-sm">
+            <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+            <p class="mt-4 text-sm text-gray-900">Список избранного пуст</p>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

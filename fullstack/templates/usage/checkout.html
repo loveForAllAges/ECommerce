@@ -1,147 +1,168 @@
 {% extends 'base.html' %}
+{% load my_filters %}
 
-{% block bgColor %}{% endblock %}
 
 {% block content %}
-<div class="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-2xl lg:max-w-none">
-        <h1 class="sr-only">Формирование заказа</h1>
+<!-- <div class="fixed top-0 left-0 hidden h-full w-1/2 bg-white md:block"></div> -->
+<!-- <div class="fixed top-0 right-0 hidden h-full w-1/2 bg-black md:block"></div> -->
 
-        <form method="POST" class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
-          {% csrf_token %}
-          <div>
-            <h2 class="text-lg font-medium leading-6 text-gray-900">Личные данные</h2>
-  
-            <div class="mt-6 grid grid-cols-4 gap-6">
-              <div class="col-span-4 sm:col-span-2">
-                <label for="id_first_name" class="block text-sm font-medium text-gray-700">Имя</label>
-                <input type="text" name="first_name" id="id_first_name" autocomplete="first_name" value="{{ request.user.first_name }}" {% if request.user.is_authenticated %}disabled{% endif %} class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500">
-              </div>
-  
-              <div class="col-span-4 sm:col-span-2">
-                <label for="id_last_name" class="block text-sm font-medium text-gray-700">Фамилия</label>
-                <input type="text" name="last_name" id="id_last_name" autocomplete="last_name" value="{{ request.user.last_name }}" {% if request.user.is_authenticated %}disabled{% endif %} class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500">
-              </div>
-  
-              <div class="col-span-4 sm:col-span-2">
-                <label for="id_email" class="block text-sm font-medium text-gray-700">Почта</label>
-                <input type="email" name="email" id="id_email" autocomplete="email" value="{{ request.user.email }}" {% if request.user.is_authenticated %}disabled{% endif %} class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500">
-              </div>
-  
-              <div class="col-span-4 sm:col-span-2">
-                <label for="id_phone" class="block text-sm font-medium text-gray-700">Номер телефона</label>
-                <input type="text" name="phone" id="id_phone" autocomplete="phone" value="{{ request.user.phone }}" {% if request.user.is_authenticated %}disabled{% endif %} class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500">
-              </div>
-            </div>
+<div class="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-16 md:grid-cols-2 md:px-8 md:pt-16">
+	<div class="py-12 md:col-start-2 md:row-start-1 md:mx-auto md:w-full md:max-w-lg md:bg-transparent md:px-0 md:pt-0 md:pb-24">
+		<div class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
+			<div>
+				<div class="text-sm text-gray-500">Итоговая стоимость</div>
+				<div class="mt-1 text-3xl font-bold tracking-tight text-black">{{ total_price|add_space_separator }} ₽</div>
+			</div>
+			<ul class=" divide-y divide-gray-200">
+				{% for product in cart %}
+				<li class="flex group py-4 relative">
+					<div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
+					{% for image in product.product.productimage_set.all %}
+					{% if image.is_main %}
+						<img src="{{ image.image.url }}" class="h-full w-full object-cover object-center">
+					{% endif %}
+					{% endfor %}
+					</div>
+					<div class="flex flex-col flex-1 space-y-1 justify-between">
+						<a href="{% url 'product' product.product.id %}" class="flex space-x-4">
+							<span aria-hidden="true" class="absolute inset-0"></span>
+							<div class="flex flex-col">
+								<p class="duration-150 text-sm group-hover:text-blue-600">{{ product.product.name }}</p>
+								<p class="mt-1 text-sm text-gray-500">{{ product.size }} размер</p>
+								<p class="mt-1 text-sm text-gray-500">{{ product.quantity }} шт.</p>
+							</div>
+						</a>
+					</div>
+					
+					<div class="flex flex-col justify-between items-end">
+						<div class="ml-4 flex flex-col justify-between items-end">
+							<p class="font-medium">{{ product.get_total_price|add_space_separator }} ₽</p>
+							{% if product.quantity > 1 %}
+							<p class="text-sm text-gray-500">1 шт. / {{ product.product.price|add_space_separator }} ₽</p>
+							{% endif %}
+						</div>
+						<div class="flex justify-between">
+							{% if product.product in request.user.wishlist.all %}
+							<button type="button" data-product="{{ product.product.id }}" data-action="delete" class="isolate addToWishlist flex items-center justify-center bg-white p-1 text-rose-500 hover:text-rose-600">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
+								</svg>
+							</button>
+							{% else %}
+							<button type="button" {% if request.user.is_anonymous %}data-modal-target="permissionModal" data-modal-toggle="permissionModal"{% else %}data-product="{{ product.product.id }}" data-action="add"{% endif %} class="{% if request.user.is_authenticated %}addToWishlist{% endif %} isolate flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">               
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+								</svg>
+							</button>
+							{% endif %}
+						</div>
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
 
-            <div class="mt-10 border-t border-gray-200 pt-10">
-              <h2 class="text-lg font-medium text-gray-900">Адрес доставки</h2>
-            
-              <div class="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                {% for address in addresses %}
-                <div class="{% if address.is_main %}border-blue-500 border-2{% else %}border-gray-300 border{% endif %} rounded-lg px-6 py-4 shadow-sm flex space-x-2 justify-between">
-                  <button type="button" data-address="{{ address.id }}" class="mainAddress text-gray-500 text-sm text-left w-full">{{ address.name }}</button>
-                  <button type="button" data-address="{{ address.id }}" class="deleteAddress rounded-full p-1 text-gray-400 hover:text-gray-500">
-                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                </div>
-                {% endfor %}
-                <a href="{% url 'address-create' %}" class="border-gray-300 rounded-lg border px-6 py-4 shadow-sm flex space-x-2 justify-center items-center text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>                                         
-                </a>
-              </div>
-            </div>
-          </div>
+			<div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
+				<div class="flex items-center justify-between">
+					<p class="font-medium text-gray-500">Подытог</p>
+					<p>{{ total_price|add_space_separator }} ₽</p>
+				</div>
+				<div class="flex items-center justify-between">
+					<p class="font-medium text-gray-500">Доставка</p>
+					<p>{{ total_price|add_space_separator }} ₽</p>
+				</div>
+				<div class="flex items-center justify-between">
+					<p class="font-medium text-gray-500">Скидка<span class="ml-2 rounded-full bg-gray-200 py-0.5 px-2 text-xs text-gray-600">STUDENT50</span></p>
+					<p>{{ total_price|add_space_separator }} ₽</p>
+				</div>
 
-          <div class="mt-10 lg:mt-0">
-            <h2 class="text-lg font-medium leading-6 text-gray-900">Заказ</h2>
+				<div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
+					<div class="text-base">Итого</div>
+					<div class="text-base">{{ total_price|add_space_separator }} ₽</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-            <div class="mt-6 rounded-lg border border-gray-200 bg-white shadow-sm">
-              <ul class="divide-y divide-gray-200">
-                {% for object in items %}
-                <li class="flex px-6 py-4">
-                    <div class="flex-shrink-0">
-                        <img src="https://tailwindui.com/img/ecommerce-images/checkout-page-03-product-04.jpg" class="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32"/>
-                    </div>
-  
-                    <div class="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                        <div class="">
-                            <div class="flex justify-between">
-                            <h4 class="">
-                                <a href="/6/" class="font-medium text-gray-900">{{ object.product.name }}</a>
-                            </h4>
-                            <p class="font-medium text-gray-900">₽ {{ object.product.price }}</p>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-500">{{ object.product.description }}</p>
-                        </div>
-            
-                        <div class="flex items-center justify-between">
-                          <span class="isolate inline-flex rounded-md shadow-sm">
-                            <button type="button" data-product="{{ object.product.id }}" data-action="minus" {% if object.quantity == 1 %}disabled{% endif %} class="relative addToCart inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                              </svg>                    
-                            </button>
-                            <div class="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-2.5 py-0 text-sm font-medium text-gray-700">{{ object.quantity }}</div>
-                            <button type="button" data-product="{{ object.product.id }}" data-action="plus" class="relative addToCart -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                              </svg>                    
-                            </button>
-                          </span>
-                          <div class="flex space-x-3">
-                            <button type="button" data-product="{{ object.product.id }}" data-action="delete" class=" addToCart flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">
-                              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd"></path>
-                              </svg>
-                            </button>
-                            {% if object.product in request.user.wishlist.all %}
-                            <button type="button" data-product="{{ object.product.id }}" data-action="delete" class="addToWishlist flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-rose-500 hover:text-rose-600">
-                                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-                              </svg>                       
-                            </button>
-                            {% else %}
-                            <button type="button" data-product="{{ object.product.id }}" data-action="add" class="addToWishlist flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">               
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                              </svg>
-                            </button>
-                            {% endif %}
-                          </div>
-                        </div>
-                    </div>
-                </li>
-              {% endfor %}
-            </ul>
-              <dl class="space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6">
-                <div class="flex items-center justify-between">
-                  <dt class="text-sm">Стоимость товаров</dt>
-                  <dd class="text-sm font-medium text-gray-900">₽ {{ total_price }}</dd>
-                </div>
-                <div class="flex items-center justify-between">
-                  <dt class="text-sm">Стоимость доставки</dt>
-                  <dd class="text-sm font-medium text-gray-900">₽ 0</dd>
-                </div>
-                <div class="flex items-center justify-between border-t border-gray-200 pt-6">
-                  <dt class="text-base font-medium">Итого</dt>
-                  <dd class="text-base font-medium text-gray-900">₽ {{ total_price }}</dd>
-                </div>
-              </dl>
+	<div class="py-16 md:col-start-1 md:row-start-1 md:mx-auto md:w-full md:max-w-lg md:pt-0 md:pb-24">
+		<form action="" method="POST">
+		{% csrf_token %}
+		<div class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
+			<div>
+				<h3 class="text-lg font-medium text-gray-900">Персональные данные</h3>
 
-              <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
-                <button type="submit" class="text-center block w-full rounded-md border border-transparent bg-blue-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                  Оплатить
-                  <span class="ml-4 inline-flex items-center rounded-md bg-blue-700 px-2.5 py-0.5 text-sm font-medium">₽ {{ total_price }}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
+				<div class="mt-6 grid grid-cols-2 gap-6">
+					<div class="relative col-span-2 sm:col-span-1">
+						<input {{disabled}} type="text" id="first_name" autocomplete="first_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ first_name }}" />
+						<label for="first_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Имя</label>
+					</div>
+					<div class="relative col-span-2 sm:col-span-1">
+						<input {{disabled}} type="text" id="last_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ last_name }}" />
+						<label for="last_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Фамилия</label>
+					</div>
+					<div class="relative col-span-2 sm:col-span-1">
+						<input {{disabled}} type="text" id="phone" autocomplete="phone" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ phone }}" />
+						<label for="phone" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Телефон</label>
+					</div>
+					<div class="relative col-span-2 sm:col-span-1">
+						<input {{disabled}} type="text" id="email" autocomplete="email" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ email }}" />
+						<label for="email" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Почта</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-10">
+				<h3 class="text-lg font-medium text-gray-900">Тип доставки</h3>
+
+				<div class="mt-6 -space-y-px rounded-lg bg-white">
+					{% for delivery in delivery_types %}
+					<label for="delivery-{{ delivery.id }}" class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
+						<input type="radio" required id="delivery-{{ delivery.id }}" {% if delivery.id == current_delivery %}checked{% endif %} name="delivery" value="{{ delivery.id }}" class="duration-150 mt-0.5 h-4 w-4 shrink-0 cursor-pointer text-blue-600 border-gray-300 focus:ring-blue-600">
+						<span class="ml-3 w-full">
+							<div class="flex justify-between text-sm">
+								<div class="font-medium">{{ delivery.name }}</div>
+								<div class="text-gray-500">{{ delivery.price }}</div>
+							</div>
+							<span class="text-sm text-gray-500">{{ delivery.description }}</span>
+						</span>
+					</label>
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="mt-10" id="address-form-part">
+				<h3 class="text-lg font-medium text-gray-900">Адрес доставки</h3>
+
+				<div class="mt-6 grid grid-cols-2 gap-6">
+					<div class="relative col-span-2 sm:col-span-1">
+						<input type="text" id="city" name="city" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.city }}" />
+						<label for="city" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Город</label>
+					</div>
+					<div class="relative col-span-2 sm:col-span-1">
+						<input type="text" id="zip_code" name="zip_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.zip_code }}" />
+						<label for="zip_code" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Индекс</label>
+					</div>
+					<div class="relative col-span-2">
+						<input type="text" id="address" name="address" autocomplete="address" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.address }}" />
+						<label for="address" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Адрес</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-10">
+				<h3 class="text-lg font-medium text-gray-900">Дополнительно</h3>
+
+				<label class="mt-6 relative inline-flex items-center cursor-pointer">
+					<input type="checkbox" value="" name="advertising" class="sr-only peer" checked>
+					<div class="w-11 h-6 bg-gray-200 duration-200 peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:shadow after:rounded-full after:h-5 after:w-5 after:ring-0 after:transition after:ease-in-out peer-checked:bg-blue-600"></div>
+					<span class="ml-3 text-sm text-gray-900">Подписаться на рассылку новостей</span>
+				</label>
+			</div>
+
+			<div class="mt-10 flex justify-end border-t border-gray-200 pt-6">
+				<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
+			</div>
+		</div>
+		</form>
+	</div>
 </div>
 {% endblock %}
