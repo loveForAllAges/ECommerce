@@ -1,2 +1,2 @@
 # ECommerce
-Django, Tailwindcss
+описание
