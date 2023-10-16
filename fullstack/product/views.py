@@ -10,47 +10,28 @@ from utils.imageManager import isImage, squareTheImage
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import Http404
-from django.db.models import Q
-
-
-class ProductListView(View):
-    template_name = 'usage/productList.html'
-    # template_name = 'usage/test.html'
-
-    def get(self, request):
-        context = {}
-        search_data = request.GET.get('search', '')
-
-        context['object_list'] = Product.objects.filter(
-            Q(name__icontains=search_data) | Q(description__icontains=search_data) | Q(brand__name__icontains=search_data) | Q(category__name__icontains=search_data)
-        )
-        context['categories'] = Category.objects.all()
-        context['brands'] = Brand.objects.all()
-        context['search_data'] = search_data
-
-        return render(request, self.template_name, context)
-
-
-class ProductCategoryListView(View):
-    template_name = 'usage/productCategoryList.html'
-
-    def get(self, request):
-        context = {}
-        search_data = request.GET.get('search', '')
-
-        context['object_list'] = Product.objects.filter(
-            Q(name__icontains=search_data) | Q(description__icontains=search_data) | Q(brand__name__icontains=search_data) | Q(category__name__icontains=search_data)
-        )
-        context['categories'] = Category.objects.all()
-        context['brands'] = Brand.objects.all()
-        context['search_data'] = search_data
-
-        return render(request, self.template_name, context)
-
+ 
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = 'usage/productDetail.html'
+    template_name = 'usage/product.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rec_list'] = Product.objects.all()[:4]
+        return context
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class AdmProductListView(UserPassesTestMixin, ListView):
