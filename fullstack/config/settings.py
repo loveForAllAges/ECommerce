@@ -42,16 +42,20 @@ INSTALLED_APPS = [
     'product',
     'order',
     'cart',
-    'address',
+    'category',
+    # 'address',
+    'landing',
+    'api',
+    'search',
 ]
 
 
-TAILWIND_APP_NAME = 'theme'
+# TAILWIND_APP_NAME = 'theme'
 
 
-COMPRESS_ROOT = BASE_DIR / 'static'
-COMPRESS_ENABLED = True
-STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+# COMPRESS_ROOT = BASE_DIR / 'static'
+# COMPRESS_ENABLED = True
+# STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 
 MIDDLEWARE = [
@@ -80,6 +84,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processors.cart',
+                'category.context_processors.categories',
             ],
         },
     },
@@ -121,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

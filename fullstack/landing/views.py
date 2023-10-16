@@ -11,8 +11,8 @@ class MainView(View):
         context = {}
         search_data = request.GET.get('search', '')
 
-        context['object_list'] = Product.objects.all()
-        context['new_products_list'] = Product.objects.order_by('-id')[:4]
+        context['product_list'] = Product.objects.all()
+        context['new_product_list'] = Product.objects.order_by('-id')[:8]
         context['brands'] = Brand.objects.all()
         context['search_data'] = search_data
 
