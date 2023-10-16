@@ -1,5 +1,5 @@
 <div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full sm:w-80 dark:bg-gray-800" tabindex="-1">
-    <form method="GET" action="" class="relative h-full">
+    <form method="GET" action="" class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
         <div class="border-b">
             <div class="h-12 sm:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
                 <h2 class="text-lg font-medium text-gray-900">Фильтры</h2>
@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="overflow-y-auto" style="height: calc(100vh - 130px);">
+        <div class="overflow-y-auto">
             <div id="accordion-flush" class="divide-y divide-gray-200" data-accordion="open" data-accordion="collapse">
                 <div class="p-4 sm:px-4 sm:py-6 relative">
                     <h3 id="accordion-category" class="-mx-4 -my-4 sm:-my-6">
@@ -161,21 +161,12 @@
             </div>
         </div>
 
-        <div class="border-t border-gray-200 absolute bottom-0 w-full h-12 md:h-16 bg-white">
-            <button type="submit" class="w-full h-full flex justify-center items-center text-sm hover:text-blue-700 duration-150">
-                <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
-                </svg>
-                Фильтровать
-            </button>
-            <!-- <div class="flex items-center justify-between space-x-4 w-full">
-                <button type="submit" class="inline-flex w-full flex-1 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
-                    </svg>
-                    Фильтровать
+        <div class="border-t border-gray-200 absolute bottom-0 w-full h-12 md:h-16 bg-white flex align-middle justify-between px-4">
+            <div class="flex items-center justify-between space-x-4 w-full">
+                <button type="submit" class="inline-flex w-full flex-1 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                    Сохранить
                 </button>
-            </div> -->
+            </div>
         </div>
     </form>
 </div>
