@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from product.models import Product
+from category.models import Size
 from datetime import datetime
 
 
@@ -23,6 +24,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True)
     quantity = models.PositiveIntegerField()
 
     @property

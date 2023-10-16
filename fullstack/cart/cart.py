@@ -1,6 +1,7 @@
 from django.conf import settings
 from product.models import Product
 from .models import Cart as DBCart, CartItem
+from category.models import Size
 
 
 class Cart:
@@ -13,24 +14,24 @@ class Cart:
         self.cart = cart
         # self.cart = self.session.get(settings.CART_SESSION_ID, {})
 
-    def add(self, product):
+    def add(self, product, size):
         user = self.request.user
 
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
-                cart_item = CartItem.objects.get(cart=db_cart, product=product)
+                cart_item = CartItem.objects.get(cart=db_cart, product=product, size=size)
                 cart_item.quantity += 1
                 cart_item.save()
             except:
-                CartItem.objects.create(cart=db_cart, product=product, quantity=1)   
+                CartItem.objects.create(cart=db_cart, product=product, quantity=1, size=size)   
         else:
             product_id = str(product.id)
 
-            if product_id in self.cart:
+            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
                 self.cart[product_id]['quantity'] += 1
             else:
-                self.cart[product_id] = {'quantity': 1}
+                self.cart[product_id] = {'quantity': 1, 'size_id': size.id}
 
             self.save()
 
@@ -65,13 +66,13 @@ class Cart:
         else:
             return sum([item['quantity'] for item in self.cart.values()])
 
-    def update(self, product, action):
+    def update(self, product, action, size):
         user = self.request.user
 
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
-                cart_item = CartItem.objects.get(cart=db_cart, product=product)
+                cart_item = CartItem.objects.get(cart=db_cart, product=product, size=size)
                 if action == 'plus':
                     cart_item.quantity += 1
                 elif action == 'minus' and cart_item.quantity > 1:
@@ -82,7 +83,7 @@ class Cart:
         else:
             product_id = str(product.id)
 
-            if product_id in self.cart:
+            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
                 if action == 'plus':
                     self.cart[product_id]['quantity'] += 1
                 elif action == 'minus' and self.cart[product_id]['quantity'] > 1:
@@ -114,9 +115,11 @@ class Cart:
             for i in self.cart:
                 quantity = self.cart[i]['quantity']
                 product = Product.objects.get(id=i)
+                size = Size.objects.get(id=self.cart[i]['size_id'])
                 total_price = product.price * quantity
                 items.append({
                     'product': product,
+                    'size': size,
                     'get_total_price': total_price,
                     'quantity': quantity
                 })
@@ -134,18 +137,18 @@ class Cart:
             #     yield item
         return items
 
-    def delete(self, product):
+    def delete(self, product, size):
         user = self.request.user
 
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
-                CartItem.objects.get(cart=db_cart, product=product).delete()
+                CartItem.objects.get(cart=db_cart, product=product, size=size).delete()
             except:
                 pass
         else:
             product_id = str(product.id)
-            if product_id in self.cart:
+            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
                 del self.cart[product_id]
             self.save()
 
