@@ -3,7 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, UserManager, AbstractBa
 from product.models import Product
 
 
-class UserManager(UserManager):
+class CustomUserManager(UserManager):
     def _create_user(self, first_name, last_name, email, phone, password, **extra_fields):
         if not email:
             raise ValueError("Неверная почта")
@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     wishlist = models.ManyToManyField(Product)
 
-    objects = UserManager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = 'email'
@@ -49,3 +49,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class LastUserAddress(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    city = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    zip_code = models.CharField(max_length=32)

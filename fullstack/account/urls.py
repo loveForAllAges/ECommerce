@@ -4,14 +4,13 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
 
 urlpatterns = [
+    path('', views.AccountView.as_view(), name='account'),
+    
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('signup/', views.SignupView.as_view(), name='signup'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
     path('activate/<uidb64>/<token>/', views.ActivationView.as_view(), name='activate'),
-
-    path('menu/', views.menu, name='menu'),
-    path('account/', views.AccountView.as_view(), name='account'),
 
     path("password-change/", views.CustomPasswordChangeView.as_view(), name='password-change'),
 

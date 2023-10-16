@@ -45,28 +45,28 @@ class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Введите имя',
             "autofocus": True
         })
         self.fields['last_name'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Фамилия'
         })
         self.fields['phone'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Номер телефона'
         })
         self.fields['email'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Почта', 
         })
         self.fields['password1'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Пароль'
         })
         self.fields['password2'].widget.attrs.update({
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Повторите пароль'
         })
 
@@ -78,7 +78,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         widget=forms.EmailInput(
         attrs={
             "autofocus": True,
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm', 
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm', 
             'placeholder': 'Введите почту',
         }
         ),
@@ -87,7 +87,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         widget=forms.PasswordInput(
         attrs={
             "autocomplete": "current-password",
-            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+            'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
             'placeholder': 'Введите пароль',
         }
     ))
@@ -139,7 +139,7 @@ class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField(
         label='Почта', max_length=255, widget=forms.EmailInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
                 'placeholder': 'Введите почту',
             }
         )
@@ -147,7 +147,7 @@ class UserUpdateForm(forms.ModelForm):
     phone = forms.CharField(
         label='Номер телефона', max_length=10, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 'placeholder': 'Введите номер телефона',
             }
         )
@@ -155,7 +155,7 @@ class UserUpdateForm(forms.ModelForm):
     first_name = forms.CharField(
         label='Имя', max_length=128, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 'placeholder': 'Введите имя',
             }
         )
@@ -163,7 +163,7 @@ class UserUpdateForm(forms.ModelForm):
     last_name = forms.CharField(
         label='Фамилия', max_length=128, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 'placeholder': 'Введите фамилию',
             }
         )
@@ -193,7 +193,7 @@ class CustomPasswordResetForm(PasswordResetForm):
         error_messages={'invalid': 'Неверный формат!'},
         widget=forms.EmailInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 'placeholder': 'Введите почту',
                 "autocomplete": "email"
             }
@@ -210,7 +210,7 @@ class CustomSetPasswordForm(SetPasswordForm):
         label="Новый пароль",
         widget=forms.PasswordInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 "autocomplete": "new-password",
                 'placeholder': 'Придумайте пароль'
             }
@@ -221,7 +221,7 @@ class CustomSetPasswordForm(SetPasswordForm):
         label="Повторите пароль",
         widget=forms.PasswordInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm',
+                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
                 "autocomplete": "new-password",
                 'placeholder': 'Повторите новый пароль'
             }

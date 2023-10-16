@@ -10,7 +10,6 @@ from .forms import (
 )
 from django.contrib.auth.views import PasswordChangeView
 from order.models import Order
-from address.models import Address
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404, HttpResponse
 from django.views import View
@@ -82,7 +81,7 @@ class SignupView(UserPassesTestMixin, CreateView):
 
         messages.add_message(self.request, messages.SUCCESS, 'Аккаунт создан! Проверьте почту для активации аккаунта')
         return super().form_valid(form)
-    
+
     def test_func(self):
         user = self.request.user
         if user.is_authenticated:
@@ -104,7 +103,7 @@ class ActivationView(View):
         login(request, user)
         user.save()
 
-        return redirect('login')
+        return redirect('account')
 
 
 class CustomPasswordResetView(UserPassesTestMixin, PasswordResetView):
@@ -173,9 +172,7 @@ class AccountView(LoginRequiredMixin, View):
     success_url = reverse_lazy('account')
 
     def get(self, request):
-        addresses = Address.objects.filter(customer=self.request.user, is_deleted=False)
-
-        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user), 'addresses': addresses})
+        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
 
     def post(self, request):
         form = UserUpdateForm(instance=request.user, data=request.POST)
@@ -199,7 +196,3 @@ class AccountView(LoginRequiredMixin, View):
 #     def get_queryset(self):
 #         queryset = Order.objects.filter(customer=self.request.user)
 #         return queryset
-
-
-def menu(request):
-    return render(request, 'usage/menu.html')
