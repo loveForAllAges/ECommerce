@@ -101,36 +101,19 @@ class CustomAuthenticationForm(AuthenticationForm):
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
         label="Старый пароль",
-        widget=forms.PasswordInput(attrs={
-            "autocomplete": "current-password", 
-            "autofocus": True,
-            'placeholder': 'Придумайте пароль'
-            }
-        ),
     )
     new_password1 = forms.CharField(
         label= "Новый пароль",
-        widget=forms.PasswordInput(attrs={
-            "autocomplete": "new-password",
-            'placeholder': 'Придумайте пароль',
-            'class': 'form-control mb-3', 'id': 'form-newpass'
-            }
-        ),
     )
     new_password2 = forms.CharField(
         label= "Повторите пароль",
-        widget=forms.PasswordInput(attrs={
-            "autocomplete": "new-password",
-            'placeholder': 'Повторите новый пароль'
-            }
-        ),
     )
     error_messages = {
         "password_incorrect": (
-            "Неверный пароль!"
+            "Неверный пароль"
         ),
         "password_mismatch": (
-            "Пароли не совпадают!"
+            "Пароли не совпадают"
         ),
     }
 
@@ -139,39 +122,39 @@ class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField(
         label='Почта', max_length=255, widget=forms.EmailInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
-                'placeholder': 'Введите почту',
+                'class': 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500',
+                'placeholder': '',
             }
         )
     )
     phone = forms.CharField(
         label='Номер телефона', max_length=10, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
-                'placeholder': 'Введите номер телефона',
+                'class': 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500',
+                'placeholder': '',
             }
         )
     )
     first_name = forms.CharField(
         label='Имя', max_length=128, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
-                'placeholder': 'Введите имя',
+                'class': 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500',
+                'placeholder': '',
             }
         )
     )
     last_name = forms.CharField(
         label='Фамилия', max_length=128, widget=forms.TextInput(
             attrs={
-                'class': 'mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm',
-                'placeholder': 'Введите фамилию',
+                'class': 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500',
+                'placeholder': '',
             }
         )
     )
 
     class Meta:
         model = User
-        fields = ('phone', 'email', 'first_name', 'last_name')
+        fields = ('email', 'phone', 'first_name', 'last_name')
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']

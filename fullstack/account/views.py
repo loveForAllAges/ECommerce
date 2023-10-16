@@ -172,6 +172,14 @@ class AccountView(LoginRequiredMixin, View):
     success_url = reverse_lazy('account')
 
     def get(self, request):
+        return render(request, self.template_name)
+    
+
+class AccountEditView(LoginRequiredMixin, View):
+    template_name = 'auth/updateAccount.html'
+    success_url = reverse_lazy('account')
+
+    def get(self, request):
         return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
 
     def post(self, request):
@@ -183,16 +191,3 @@ class AccountView(LoginRequiredMixin, View):
             return redirect('account')
 
         return render(request, self.template_name, {'form': form})
-
-
-# class AccountView(LoginRequiredMixin, ListView):
-#     template_name = 'usage/account.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['addresses'] = Address.objects.filter(customer=self.request.user, is_deleted=False)
-#         return context
-
-#     def get_queryset(self):
-#         queryset = Order.objects.filter(customer=self.request.user)
-#         return queryset
