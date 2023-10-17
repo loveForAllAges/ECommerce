@@ -10,7 +10,7 @@ class Cart:
         self.request = request
         cart = self.session.get(settings.CART_SESSION_ID)
         if settings.CART_SESSION_ID not in request.session:
-            cart = self.session[settings.CART_SESSION_ID] = {}
+            cart = self.session[settings.CART_SESSION_ID] = []
         self.cart = cart
         # self.cart = self.session.get(settings.CART_SESSION_ID, {})
 
@@ -26,36 +26,14 @@ class Cart:
             except:
                 CartItem.objects.create(cart=db_cart, product=product, quantity=1, size=size)   
         else:
-            product_id = str(product.id)
+            current_product = next((i for i, d in enumerate(self.cart) if d['product_id'] == product.id and d['size_id'] == size.id), -1)
 
-            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
-                self.cart[product_id]['quantity'] += 1
+            if current_product >= 0:
+                self.cart[current_product]['quantity'] += 1
             else:
-                self.cart[product_id] = {'quantity': 1, 'size_id': size.id}
+                self.cart.append({'quantity': 1, 'size_id': size.id, 'product_id': product.id})
 
             self.save()
-
-    # def __iter__(self):
-    #     user = self.request.user
-
-    #     if user.is_authenticated:
-    #         db_crt, created = DBCart.objects.get_or_create(customer=user)
-    #         products = db_crt.cartitem_set.all()
-    #         for item in products:
-    #             yield item
-    #     else:
-    #         product_ids = self.cart.keys()
-    #         cart = self.cart.copy()
-
-    #         products = Product.objects.filter(id__in=product_ids)
-            
-    #         for product in products:
-    #             cart[str(product.id)]['product'] = product
-    #             cart[str(product.id)]['price'] = product.price
-
-    #         for item in cart.values():
-    #             item['get_total_price'] = item['price'] * item['quantity']
-    #             yield item
 
     def __len__(self):
         user = self.request.user
@@ -64,7 +42,7 @@ class Cart:
             db_crt, created = DBCart.objects.get_or_create(customer=user)
             return db_crt.get_number_of_items_in_cart
         else:
-            return sum([item['quantity'] for item in self.cart.values()])
+            return sum([item['quantity'] for item in self.cart])
 
     def update(self, product, action, size):
         user = self.request.user
@@ -72,22 +50,29 @@ class Cart:
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
+                is_deleted = False
                 cart_item = CartItem.objects.get(cart=db_cart, product=product, size=size)
                 if action == 'plus':
                     cart_item.quantity += 1
                 elif action == 'minus' and cart_item.quantity > 1:
                     cart_item.quantity -= 1
-                cart_item.save()
+                else:
+                    cart_item.delete()
+                    is_deleted = True
+                if not is_deleted:
+                    cart_item.save()
             except:
                 pass
         else:
-            product_id = str(product.id)
-
-            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
+            current_product = next((i for i, d in enumerate(self.cart) if d['product_id'] == product.id and d['size_id'] == size.id), -1)
+            print(current_product)
+            if current_product >= 0:
                 if action == 'plus':
-                    self.cart[product_id]['quantity'] += 1
-                elif action == 'minus' and self.cart[product_id]['quantity'] > 1:
-                    self.cart[product_id]['quantity'] -= 1
+                    self.cart[current_product]['quantity'] += 1
+                elif action == 'minus' and self.cart[current_product]['quantity'] > 1:
+                    self.cart[current_product]['quantity'] -= 1
+                else:
+                    del self.cart[current_product]
                 self.save()
 
     def get_total_price(self):
@@ -98,9 +83,9 @@ class Cart:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             price = db_cart.get_total_price
         else:
-            for product_id in self.cart:
-                item = Product.objects.get(id=product_id)
-                price += self.cart[product_id]['quantity'] * item.price
+            for i in self.cart:
+                item = Product.objects.get(id=i['product_id'])
+                price += i['quantity'] * item.price
 
         return price
 
@@ -109,13 +94,14 @@ class Cart:
 
         if user.is_authenticated:
             db_crt, created = DBCart.objects.get_or_create(customer=user)
-            items = db_crt.cartitem_set.all()
+            res = db_crt.cartitem_set.all()
+            items = [{'product': i.product, 'size': i.size, 'quantity': i.quantity, 'get_total_price': i.get_total_price} for i in res]
         else:
             items = []
             for i in self.cart:
-                quantity = self.cart[i]['quantity']
-                product = Product.objects.get(id=i)
-                size = Size.objects.get(id=self.cart[i]['size_id'])
+                quantity = i['quantity']
+                product = Product.objects.get(id=i['product_id'])
+                size = Size.objects.get(id=i['size_id'])
                 total_price = product.price * quantity
                 items.append({
                     'product': product,
@@ -123,18 +109,6 @@ class Cart:
                     'get_total_price': total_price,
                     'quantity': quantity
                 })
-            # product_ids = self.cart.keys()
-            # cart = self.cart.copy()
-
-            # products = Product.objects.filter(id__in=product_ids)
-            
-            # for product in products:
-            #     cart[str(product.id)]['product'] = product
-            #     cart[str(product.id)]['price'] = product.price
-
-            # for item in cart.values():
-            #     item['get_total_price'] = item['price'] * item['quantity']
-            #     yield item
         return items
 
     def delete(self, product, size):
