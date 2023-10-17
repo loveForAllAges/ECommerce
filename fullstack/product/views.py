@@ -1,4 +1,3 @@
-from typing import Any
 from django.shortcuts import render
 from .models import Product, Category, Brand, ProductImage
 from django.views import View
@@ -19,19 +18,8 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['rec_list'] = Product.objects.all()[:4]
+        context['images'] = ProductImage.objects.filter(product=kwargs['object']).order_by('-is_main')
         return context
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class AdmProductListView(UserPassesTestMixin, ListView):
