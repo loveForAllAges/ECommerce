@@ -8,7 +8,7 @@
         <div class="flex flex-col-reverse">
             <div class="mx-auto mt-6 w-full max-w-2xl block lg:max-w-none">
                 <div class="grid grid-cols-4 gap-4" id="productImages" data-tabs-toggle="#" role="tablist">
-                    {% for image in object.productimage_set.all %}
+                    {% for image in images %}
                     <button id="productImages-{{ forloop.counter }}-tab" data-tabs-target="#productImages-{{ forloop.counter }}" type="button" role="tab" aria-controls="productImages-{{ forloop.counter }}" aria-selected="false" class="duration-150 aria-selected:ring-2 aria-selected:ring-offset-2 aria-selected:ring-black relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
                         <span class="absolute inset-0 overflow-hidden rounded-md">
                             <img src="{{ image.image.url }}" alt="" class="h-full w-full object-cover object-center">
@@ -19,7 +19,7 @@
             </div>
 
             <div class="aspect-w-1 aspect-h-1 w-full" id="productImages">
-                {% for image in object.productimage_set.all %}
+                {% for image in images %}
                 <div role="tabpanel" id="productImages-{{ forloop.counter }}" role="tabpanel" aria-labelledby="productImages-{{ forloop.counter }}-tab">
                     <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center sm:rounded-lg">
                 </div>
