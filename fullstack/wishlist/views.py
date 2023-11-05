@@ -18,24 +18,18 @@ class WishlistView(View):
     def post(self, request):
         if not self.request.user.is_anonymous:
             data = json.loads(request.body)
-            product_id = data.get('productId')
-            print(product_id)
+            product_id = data.get('product_id')
             if not request.user.wishlist.filter(id=product_id).exists():
                 product = get_object_or_404(Product, id=product_id)
                 request.user.wishlist.add(product)
-                messages.add_message(self.request, messages.SUCCESS, 'Товар добавлен в избранное')
-        else:
-            messages.add_message(self.request, messages.ERROR, 'Авторизируйтесь, чтобы добавлять товары в избранное')
-
-        return HttpResponse()
+        return HttpResponse(200)
 
 
     def delete(self, request):
         data = json.loads(request.body)
-        product_id = data.get('productId')
+        product_id = data.get('product_id')
         if request.user.wishlist.filter(id=product_id).exists():
             product = get_object_or_404(Product, id=product_id)
             request.user.wishlist.remove(product)
-            messages.add_message(self.request, messages.SUCCESS, 'Товар убран из избранного')
 
         return HttpResponse(200)

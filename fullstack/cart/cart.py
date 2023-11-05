@@ -2,6 +2,7 @@ from django.conf import settings
 from product.models import Product
 from .models import Cart as DBCart, CartItem
 from category.models import Size
+from .serializers import CartItemSerializer, CartSerializer
 
 
 class Cart:
@@ -20,18 +21,18 @@ class Cart:
         if user.is_authenticated:
             db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
-                cart_item = CartItem.objects.get(cart=db_cart, product=product, size=size)
+                cart_item = CartItem.objects.get(cart=db_cart, product_id=product, size_id=size)
                 cart_item.quantity += 1
                 cart_item.save()
             except:
-                CartItem.objects.create(cart=db_cart, product=product, quantity=1, size=size)   
+                CartItem.objects.create(cart=db_cart, product_id=product, size_id=size)
         else:
-            current_product = next((i for i, d in enumerate(self.cart) if d['product_id'] == product.id and d['size_id'] == size.id), -1)
+            current_product = next((i for i, d in enumerate(self.cart) if d['product_id'] == product and d['size_id'] == size), -1)
 
             if current_product >= 0:
                 self.cart[current_product]['quantity'] += 1
             else:
-                self.cart.append({'quantity': 1, 'size_id': size.id, 'product_id': product.id})
+                self.cart.append({'quantity': 1, 'size_id': size, 'product_id': product})
 
             self.save()
 
@@ -40,7 +41,7 @@ class Cart:
         
         if user.is_authenticated:
             db_crt, created = DBCart.objects.get_or_create(customer=user)
-            return db_crt.get_number_of_items_in_cart
+            return db_crt.size
         else:
             return sum([item['quantity'] for item in self.cart])
 
@@ -48,10 +49,9 @@ class Cart:
         user = self.request.user
 
         if user.is_authenticated:
-            db_cart, created = DBCart.objects.get_or_create(customer=user)
             try:
                 is_deleted = False
-                cart_item = CartItem.objects.get(cart=db_cart, product=product, size=size)
+                cart_item = CartItem.objects.get(cart__customer=user, product_id=product, size_id=size)
                 if action == 'plus':
                     cart_item.quantity += 1
                 elif action == 'minus' and cart_item.quantity > 1:
@@ -89,51 +89,28 @@ class Cart:
 
         return price
 
-    def get_items(self):
+    def get_cart(self):
         user = self.request.user
 
         if user.is_authenticated:
-            db_crt, created = DBCart.objects.get_or_create(customer=user)
-            res = db_crt.cartitem_set.all()
-            items = [{'product': i.product, 'size': i.size, 'quantity': i.quantity, 'get_total_price': i.get_total_price} for i in res]
+            cart, created = DBCart.objects.get_or_create(customer=user)
+            res = CartSerializer(cart, context={'request': self.request}).data
         else:
-            items = []
-            for i in self.cart:
-                quantity = i['quantity']
-                product = Product.objects.get(id=i['product_id'])
-                size = Size.objects.get(id=i['size_id'])
-                total_price = product.price * quantity
-                items.append({
-                    'product': product,
-                    'size': size,
-                    'get_total_price': total_price,
-                    'quantity': quantity
-                })
-        return items
+            res = []
+            # for i in self.cart:
+            #     quantity = i['quantity']
+            #     product = Product.objects.get(id=i['product_id'])
+            #     size = Size.objects.get(id=i['size_id'])
+            #     total_price = product.price * quantity
+            #     res.append({
+            #         'product': product,
+            #         'size': size,
+            #         'get_total_price': total_price,
+            #         'quantity': quantity
+            #     })
 
-    def delete(self, product, size):
-        user = self.request.user
-
-        if user.is_authenticated:
-            db_cart, created = DBCart.objects.get_or_create(customer=user)
-            try:
-                CartItem.objects.get(cart=db_cart, product=product, size=size).delete()
-            except:
-                pass
-        else:
-            product_id = str(product.id)
-            if product_id in self.cart and self.cart[product_id]['size_id'] == size.id:
-                del self.cart[product_id]
-            self.save()
-
-    def clear(self):
-        user = self.request.user
-
-        if user.is_authenticated:
-            DBCart.objects.get(customer=user).delete()
-        else:
-            del self.session[settings.CART_SESSION_ID]
-            self.save()
+        # print(res)
+        return res
 
     def save(self):
         self.session.modified = True

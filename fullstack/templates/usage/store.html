@@ -5,10 +5,45 @@
 
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32">
+    <div class="">
+        <div class="py-8">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Каталог товаров</h1>
+            <div class="flex space-x-4 mt-4 items-center">
+                <p class="text-sm text-gray-700">Результат по запросу:</p>
+                <div class="flex space-x-2">
+                    <span class="inline-flex items-center rounded-full bg-blue-100 py-0.5 pl-2 pr-0.5 text-xs font-medium text-blue-700">
+                        Small
+                        <button type="button" class="ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:bg-blue-500 focus:text-white focus:outline-none">
+                          <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
+                          </svg>
+                        </button>
+                    </span>
+                    <span class="inline-flex items-center rounded-full bg-blue-100 py-0.5 pl-2 pr-0.5 text-xs font-medium text-blue-700">
+                        {{ request.GET.q }}
+                        <button type="button" class="ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:bg-blue-500 focus:text-white focus:outline-none">
+                          <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
+                          </svg>
+                        </button>
+                    </span>
+                    <!-- <span class="inline-flex items-center rounded-full bg-blue-100 py-0.5 pl-2.5 pr-1 text-sm font-medium text-blue-700">
+                        Large
+                        <button type="button" class="ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:bg-blue-500 focus:text-white focus:outline-none">
+                          <span class="sr-only">Remove large option</span>
+                          <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
+                          </svg>
+                        </button>
+                    </span> -->
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="flex items-center justify-between h-12 sm:h-16">
         <div class="relative inline-block text-left">
             <div class="">
-                <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="group inline-flex justify-center items-center text-sm duration-150 text-gray-900 hover:text-blue-700">
+                <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="group inline-flex justify-center items-center text-sm duration-150 font-medium text-gray-900 hover:text-blue-700">
                     Сортировать
                     <svg class="ml-2 h-4 w-4 duration-150 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -16,33 +51,33 @@
                 </button>
             </div>
 
-            <div id="sortDropdown" class="z-10 hidden w-56 bg-white divide-y divide-gray-100 rounded shadow-2xl ring-1 ring-black ring-opacity-5">
-                <ul class="p-3 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
+            <div id="sortDropdown" class="z-10 hidden w-56 bg-white divide-y divide-gray-100 rounded-md shadow-2xl ring-1 ring-black ring-opacity-5">
+                <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
                     <li>
-                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=popular{% else %}?{{ request.GET.urlencode }}&sort=popular{% endif %}" class="{% if not request.GET.sort or 'popular' == request.GET.sort %}text-gray-900 font-medium{% endif %} text-gray-500 flex items-center p-2 rounded-md hover:bg-gray-100">
-                            <label class="-m-2 ml-0 p-2 w-full text-sm rounded">Сначала популярные</label>
+                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=popular{% else %}?{{ request.GET.urlencode }}&sort=popular{% endif %}" class="{% if not request.GET.sort or 'popular' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
+                            Сначала популярные
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=new{% else %}?{{ request.GET.urlencode }}&sort=new{% endif %}" class="{% if 'new' == request.GET.sort %}text-gray-900 font-medium{% endif %} text-gray-500 flex items-center p-2 rounded-md hover:bg-gray-100">
-                            <label class="-m-2 ml-0 p-2 w-full text-sm rounded">Сначала новые</label>
+                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=new{% else %}?{{ request.GET.urlencode }}&sort=new{% endif %}" class="{% if 'new' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
+                            Сначала новые
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=expensive{% else %}?{{ request.GET.urlencode }}&sort=expensive{% endif %}" class="{% if 'expensive' == request.GET.sort %}text-gray-900 font-medium{% endif %} text-gray-500 flex items-center p-2 rounded-md hover:bg-gray-100">
-                            <label class="-m-2 ml-0 p-2 w-full text-sm rounded">Сначала дороже</label>
+                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=expensive{% else %}?{{ request.GET.urlencode }}&sort=expensive{% endif %}" class="{% if 'expensive' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md ">
+                            Сначала дороже
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=cheaper{% else %}?{{ request.GET.urlencode }}&sort=cheaper{% endif %}" class="{% if 'cheaper' == request.GET.sort %}text-gray-900 font-medium{% endif %} text-gray-500 flex items-center p-2 rounded-md hover:bg-gray-100">
-                            <label class="-m-2 ml-0 p-2 w-full text-sm rounded">Сначала дешевле</label>
+                        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=cheaper{% else %}?{{ request.GET.urlencode }}&sort=cheaper{% endif %}" class="{% if 'cheaper' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
+                            Сначала дешевле
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <button type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="inline-block text-sm text-gray-900 hover:text-blue-700">
+        <button type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="inline-block font-medium text-sm text-gray-900 hover:text-blue-700">
             Фильтры
             {% if total_active_tags_count %}
             <span class="ml-2 text-xs text-gray-500">{{ total_active_tags_count }}</span>
@@ -58,16 +93,13 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="mt-10 text-center text-sm">
-        <svg class="mx-auto h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"></path>
+
+    <div class="mt-10 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
         </svg>
-        {% if request.GET.q %}
-        <p class="mt-4 mb-2 text-sm text-gray-900">По запросу {{ request.GET.q }} ничего не найдено</p>
-        <a href="{% url 'category' %}" class="duration-150 text-gray-500 hover:text-gray-600">Очистить фильтры</a>
-        {% else %}
-        <p class="mt-4 text-sm text-gray-900">Ничего не найдено</p>
-        {% endif %}
+        <p class="mt-2 text-sm text-gray-900">Ничего не найдено</p>
+        <a href="{% url 'category' %}" class="duration-150 text-gray-500 hover:text-gray-600 text-sm">Очистить фильтры</a>
     </div>
     {% endif %}
 </div>

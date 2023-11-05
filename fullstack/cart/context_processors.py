@@ -1,10 +1,7 @@
-from .cart import Cart
-
+# from .views import CartAPIView
 
 def cart(request):
-    cart = Cart(request)
-    return {
-        'cart': cart.get_items,
-        'total_quantity': len(cart), 
-        'total_price': cart.get_total_price
-    }
+    return {}
+    # return {
+    #     'cart': CartAPIView.get()
+    # }

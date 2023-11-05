@@ -62,7 +62,7 @@
                 </div>
             </div>
   
-            <form action="{% url 'add-to-cart' object.id %}" id="addToCartForm" method="POST" class="mt-6">
+            <form action="" id="addToCartForm" method="POST" class="mt-6">
                 {% csrf_token %}
                 {% if object.size.all %}
                 <div class="flex items-center justify-between">
@@ -78,16 +78,17 @@
                     {% for size in object.size.all %}
                     <div>
                         <input type="radio" id="size-{{ size.slug }}" name="size" value="{{ size.id }}" class="hidden peer" required {% if forloop.counter == 1 %}checked{% endif %}>
-                        <label for="size-{{ size.slug }}" class="duration-150 border rounded-md px-4 py-2 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 cursor-pointer focus:outline-none bg-white border-gray-200 text-gray-900 hover:bg-gray-50 peer-checked:ring-black peer-checked:ring-2">
+                        <label for="size-{{ size.slug }}" class="duration-150 border rounded-md px-4 py-2 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 cursor-pointer focus:outline-none bg-white border-gray-200 text-gray-900 hover:bg-gray-50 peer-checked:ring-blue-600 peer-checked:ring-2">
                             {{ size.name }}
                         </label>
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
+                <input type="hidden" name="product" value="{{ object.pk }}">
     
                 <div class="mt-10 sm:flex sm:space-x-4 space-y-2 sm:space-y-0">
-                    <button type="submit" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm duration-150 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button type="submit" id="addToCartBtn" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white duration-150 hover:bg-blue-700">
                         Добавить в корзину
                     </button>
                     <!-- <a href="#" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-900 duration-150 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
@@ -117,3 +118,7 @@
 </div>
 
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/product.js' %}"></script>
+{% endblock scripts %}

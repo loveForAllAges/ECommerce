@@ -134,15 +134,15 @@
 
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					<div class="relative col-span-2 sm:col-span-1">
-						<input type="text" id="city" name="city" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ city }}" />
+						<input type="text" id="city" name="city" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.city }}" />
 						<label for="city" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Город</label>
 					</div>
 					<div class="relative col-span-2 sm:col-span-1">
-						<input type="text" id="zip_code" name="zip_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ zip_code }}" />
+						<input type="text" id="zip_code" name="zip_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.zip_code }}" />
 						<label for="zip_code" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Индекс</label>
 					</div>
 					<div class="relative col-span-2">
-						<input type="text" id="address" name="address" autocomplete="address" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address }}" />
+						<input type="text" id="address" name="address" autocomplete="address" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.address }}" />
 						<label for="address" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Адрес</label>
 					</div>
 				</div>
@@ -166,3 +166,7 @@
 	</div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/checkout.js' %}"></script>
+{% endblock scripts %}

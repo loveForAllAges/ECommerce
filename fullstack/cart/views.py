@@ -1,66 +1,49 @@
-from django.shortcuts import render, redirect
 from .cart import Cart
-from django.http import HttpResponse, JsonResponse
 from product.models import Product
 from django.shortcuts import get_object_or_404
-import json
-from django.http import Http404
-from django.contrib import messages
-from django.views import View
-from django.contrib import messages
 from category.models import Size
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
 
 
-class AddToCartView(View):
-    def post(self, request, id):
-        size = request.POST.get('size')
-
-        size = get_object_or_404(Size, id=int(size))
-        product = get_object_or_404(Product, id=id)
-
+class CartAPIView(APIView):
+    def get(self, request):
         cart = Cart(request)
-        cart.add(product, size)
+        res = cart.get_cart()
+        print(res)
+        return Response(res)
 
-        messages.add_message(request, messages.SUCCESS, 'Товар добавлен в корзину')
-        return redirect('product', id)
+    def post(self, request):
+        size = request.data.get('size_id', '')
+        product_id = request.data.get('product_id', '')
 
+        try:
+            size = get_object_or_404(Size, id=int(size))
+            product = get_object_or_404(Product, id=product_id)
+            cart = Cart(request)
+            cart.add(product.pk, size.pk)
+            res = cart.get_cart()
+            st = status.HTTP_200_OK
+        except:
+            st = status.HTTP_404_NOT_FOUND
+            res = {'message': 'error'}
 
-# class CartListView(ListView):
-#     template_name = 'usage/cart.html'
+        return Response(res, status=st)
 
-#     def get_queryset(self):
-#         queryset = ''
-#         return queryset
-
-
-def cart_update(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product_id = data.get('productId')
-        action = data.get('action')
-        size_id = data.get('sizeId')
-        
-        cart = Cart(request)
-        product = get_object_or_404(Product, id=product_id)
-        size = get_object_or_404(Size, id=size_id)
-
-        if action in ['plus', 'minus']:
-            cart.update(product, action, size)
-            messages.add_message(request, messages.SUCCESS, 'Товар добавлен в корзину')
-        elif action == 'add':
-            cart.add(product, size)
-            messages.add_message(request, messages.SUCCESS, 'Товар добавлен в корзину')
-        elif action == 'delete':
-            cart.delete(product, size)
-            messages.add_message(request, messages.SUCCESS, 'Товар удален из корзины')
-
-        return HttpResponse('Updated')
-    
-    raise Http404
-    
-
-def cart_clear(request):
-    cart = Cart(request)
-    cart.clear()
-    messages.add_message(request, messages.SUCCESS, 'Корзина очищена')
-    return render(request, 'usage/cartList.html')
+    def put(self, request):
+        size = request.data.get('size_id', '')
+        product_id = request.data.get('product_id', '')
+        action = request.data.get('action', '')
+        try:
+            size = get_object_or_404(Size, id=int(size))
+            product = get_object_or_404(Product, id=product_id)
+            cart = Cart(request)
+            cart.update(product.pk, action, size.pk)
+            res = cart.get_cart()
+            st = status.HTTP_200_OK
+        except Exception as err:
+            print(err)
+            st = status.HTTP_404_NOT_FOUND
+            res = {'message': 'error'}
+        return Response(res, status=st)

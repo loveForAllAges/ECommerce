@@ -1,6 +1,6 @@
 from django.db import models
 from category.models import Category, Brand, Color, Size
-
+from django.shortcuts import reverse
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
@@ -14,6 +14,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def in_wishlist(self):
+        return 
+    
+    def url(self):
+        return reverse("product", kwargs={
+            'pk': self.pk
+        })
 
 
 class ProductImage(models.Model):
