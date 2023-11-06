@@ -1,11 +1,10 @@
 from django.db import models
-from category.models import Category, Brand, Color, Size
+from category.models import Category, Brand, Size
 from django.shortcuts import reverse
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
     brand = models.ManyToManyField(Brand)
-    color = models.ManyToManyField(Color)
     size = models.ManyToManyField(Size, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()

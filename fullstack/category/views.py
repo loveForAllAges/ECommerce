@@ -1,6 +1,6 @@
 from django.views import View
 from product.models import Product
-from category.models import Category, Color, Size, Brand
+from category.models import Category, Size, Brand
 from django.shortcuts import render
 from django.db.models import Q, When, Case, Value, BooleanField
 
@@ -14,7 +14,6 @@ class AllCategoriesView(View):
         context['brand_list'] = Brand.objects.all()
         context['category_type_list'] = Category.objects.filter(parent__isnull=False)
         context['size_list'] = Size.objects.all()
-        context['color_list'] = Color.objects.all()
         return render(request, self.template_name, context)
 
 
@@ -71,6 +70,5 @@ class CategoryView(View):
         context['brand_list'] = Brand.objects.all()
         context['category_type_list'] = Category.objects.filter(parent__isnull=False)
         context['size_list'] = Size.objects.all()
-        context['color_list'] = Color.objects.all()
         
         return render(request, self.template_name, context)

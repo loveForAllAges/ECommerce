@@ -10,7 +10,6 @@ from .forms import OrderForm, PersonForm
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render, redirect
-from cart.context_processors import cart
 from cart.cart import Cart
 from account.models import LastUserAddress
 from django.shortcuts import get_object_or_404
@@ -145,6 +144,7 @@ class CheckoutView(UserPassesTestMixin, View):
         return redirect('orders')
 
     def test_func(self):
-        if cart(self.request)['total_quantity'] == 0:
+        cart = Cart(self.request)
+        if not len(cart):
             raise Http404
         return True

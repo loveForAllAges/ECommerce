@@ -1,6 +1,6 @@
 $(document).ready(function(){
     var addToCartForm = document.querySelector('#addToCartForm');
-    
+
     addToCartForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(addToCartForm);
@@ -18,11 +18,10 @@ $(document).ready(function(){
         })
         .then(response => response.json())
         .then(data => {
-            cartSize.textContent = data.cart_size
-            cartSize_m.textContent = data.cart_size
+            updateCart(data);
         })
         .catch(error => {
-            console.log('addToCartForm err')
+            console.log('addToCartForm err', error)
         })
     })
 })

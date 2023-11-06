@@ -11,7 +11,6 @@ class CartAPIView(APIView):
     def get(self, request):
         cart = Cart(request)
         res = cart.get_cart()
-        print(res)
         return Response(res)
 
     def post(self, request):
@@ -42,8 +41,7 @@ class CartAPIView(APIView):
             cart.update(product.pk, action, size.pk)
             res = cart.get_cart()
             st = status.HTTP_200_OK
-        except Exception as err:
-            print(err)
+        except:
             st = status.HTTP_404_NOT_FOUND
             res = {'message': 'error'}
         return Response(res, status=st)

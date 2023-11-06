@@ -36,20 +36,6 @@ class Brand(models.Model):
         super(Brand, self).save(*args, **kwargs)
 
 
-class Color(models.Model):
-    name = models.CharField(max_length=128)
-    slug = models.SlugField(max_length=64, unique=True)
-    css = models.CharField(max_length=64)
-
-    def __str__(self):
-        return self.name
-    
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super(Color, self).save(*args, **kwargs)
-
-
 class Size(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(max_length=64, unique=True)
