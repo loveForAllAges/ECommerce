@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 from django.views import View
-from .models import Order, OrderItem, DeliveryType, ORDER_CHOICES
+from .models import Order, OrderItem, Delivery, ORDER_CHOICES
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from .forms import OrderForm, PersonForm
@@ -52,7 +52,7 @@ class CheckoutView(UserPassesTestMixin, View):
         context = {
             'form': OrderForm,
             'current_delivery': 2,
-            'delivery_types': DeliveryType.objects.all(),
+            'delivery_types': Delivery.objects.all(),
         }
         if request.user.is_authenticated:
             adr = LastUserAddress.objects.filter(customer=request.user)
@@ -102,7 +102,7 @@ class CheckoutView(UserPassesTestMixin, View):
                 'last_name': last_name,
                 'email': email,
                 'phone': phone,
-                'delivery_types': DeliveryType.objects.all(),
+                'delivery_types': Delivery.objects.all(),
                 'current_delivery': int(current_delivery)
             }
 
@@ -111,7 +111,7 @@ class CheckoutView(UserPassesTestMixin, View):
 
             return render(request, self.template_name, context=context)
 
-        delivery_type = get_object_or_404(DeliveryType, id=int(current_delivery))
+        delivery_type = get_object_or_404(Delivery, id=int(current_delivery))
 
         def get_num():
             try:

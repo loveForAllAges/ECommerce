@@ -6,7 +6,7 @@ from category.models import Size
 import uuid
 from django.core.validators import MinValueValidator
 
-class DeliveryType(models.Model):
+class Delivery(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     is_pickup = models.BooleanField(default=False)
@@ -30,7 +30,7 @@ class Order(models.Model):
     zip_code = models.CharField(max_length=32)
     city = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    delivery_type = models.ForeignKey(DeliveryType, on_delete=models.CASCADE)
+    delivery_type = models.ForeignKey(Delivery, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_CHOICES, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
