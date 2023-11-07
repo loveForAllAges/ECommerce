@@ -1,10 +1,10 @@
 from django.db import models
-from django.conf import settings
 from product.models import Product
 from datetime import datetime
 from category.models import Size
 import uuid
-from django.core.validators import MinValueValidator
+from account.models import User
+
 
 class Delivery(models.Model):
     name = models.CharField(max_length=128)
@@ -21,16 +21,16 @@ ORDER_CHOICES = (
 
 class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    number = models.IntegerField(unique=True, validators=[MinValueValidator(1001)])
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    number = models.IntegerField(unique=True, blank=True, editable=False)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     email = models.EmailField(blank=True)
     phone = models.PositiveIntegerField(blank=True, null=True)
-    zip_code = models.CharField(max_length=32)
-    city = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    delivery_type = models.ForeignKey(Delivery, on_delete=models.CASCADE)
+    zip_code = models.CharField(max_length=32, blank=True)
+    city = models.CharField(max_length=255, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, default=1)
     status = models.IntegerField(choices=ORDER_CHOICES, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -50,14 +50,28 @@ class Order(models.Model):
         time_format = '%d.%m.%Y %H:%M'
         return self.created_at.strftime(time_format)
 
+    def save(self, *args, **kwargs):
+        try:
+            if not self.number:
+                latest = Order.objects.latest('number')
+                self.number = latest.number + 1
+        except:
+            self.number = 1001
+        super().save(*args, **kwargs)
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='goods')
     quantity = models.PositiveIntegerField(default=0)
     price = models.IntegerField()
 
     @property
-    def get_total_price(self):
+    def total_price(self):
         return self.product.price * self.quantity
+
+    def save(self, *args, **kwargs):
+        if not self.price:
+            self.price = self.product.price
+        super().save(*args, **kwargs)

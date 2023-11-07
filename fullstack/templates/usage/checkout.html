@@ -35,27 +35,25 @@
 	</div>
 
 	<div class="py-16 md:col-start-1 md:row-start-1 md:mx-auto md:w-full md:max-w-lg md:pt-0 md:pb-24">
-		<form action="" method="POST">
-		{% csrf_token %}
-		<div class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
+		<form action="" method="POST" id="checkoutForm" class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
 			<div>
 				<h3 class="text-lg font-medium text-gray-900">Персональные данные</h3>
 
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					<div class="relative col-span-2 sm:col-span-1">
-						<input {{disabled}} required type="text" id="first_name" name="first_name" autocomplete="first_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ first_name }}" />
+						<input required type="text" id="first_name" name="first_name" autocomplete="first_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ first_name }}" />
 						<label for="first_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Имя</label>
 					</div>
 					<div class="relative col-span-2 sm:col-span-1">
-						<input {{disabled}} required type="text" id="last_name" name="last_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ last_name }}" />
+						<input required type="text" id="last_name" name="last_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ last_name }}" />
 						<label for="last_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Фамилия</label>
 					</div>
 					<div class="relative col-span-2 sm:col-span-1">
-						<input {{disabled}} required type="text" id="phone" name="phone" autocomplete="phone" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ phone }}" />
+						<input required type="text" id="phone" name="phone" autocomplete="phone" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ phone }}" />
 						<label for="phone" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Телефон</label>
 					</div>
 					<div class="relative col-span-2 sm:col-span-1">
-						<input {{disabled}} required type="text" id="email" name="email" autocomplete="email" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ email }}" />
+						<input required type="text" id="email" name="email" autocomplete="email" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ email }}" />
 						<label for="email" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Почта</label>
 					</div>
 				</div>
@@ -63,24 +61,11 @@
 
 			<div class="mt-10">
 				<h3 class="text-lg font-medium text-gray-900">Тип доставки</h3>
-
 				<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
-					{% for delivery in delivery_types %}
-					<label for="delivery-{{ delivery.id }}" class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
-						<input type="radio" required id="delivery-{{ delivery.id }}" {% if delivery.id == current_delivery %}checked{% endif %} name="delivery" value="{{ delivery.id }}" class="duration-150 mt-0.5 h-4 w-4 shrink-0 cursor-pointer text-blue-600 border-gray-300 focus:ring-blue-600">
-						<span class="ml-3 w-full">
-							<div class="flex justify-between text-sm">
-								<div class="font-medium">{{ delivery.name }}</div>
-								<div class="text-gray-500">{{ delivery.price }}</div>
-							</div>
-							<span class="text-sm text-gray-500">{{ delivery.description }}</span>
-						</span>
-					</label>
-					{% endfor %}
 				</div>
 			</div>
 
-			<div class="mt-10" id="checkoutAddressForm">
+			<div class="mt-10 hidden" id="checkoutAddressForm">
 				<h3 class="text-lg font-medium text-gray-900">Адрес доставки</h3>
 
 				<div class="mt-6 grid grid-cols-2 gap-6">
@@ -103,7 +88,7 @@
 				<h3 class="text-lg font-medium text-gray-900">Дополнительно</h3>
 
 				<label class="mt-6 relative inline-flex items-center cursor-pointer">
-					<input type="checkbox" value="" name="advertising" class="sr-only peer" checked>
+					<input type="checkbox" name="advertising" class="sr-only peer" checked>
 					<div class="w-11 h-6 bg-gray-200 duration-200 peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:shadow after:rounded-full after:h-5 after:w-5 after:ring-0 after:transition after:ease-in-out peer-checked:bg-blue-600"></div>
 					<span class="ml-3 text-sm text-gray-900">Подписаться на рассылку новостей</span>
 				</label>
@@ -112,7 +97,6 @@
 			<div class="mt-10 flex justify-end border-t border-gray-200 pt-6">
 				<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
 			</div>
-		</div>
 		</form>
 	</div>
 </div>

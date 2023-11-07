@@ -1,6 +1,5 @@
 $(document).ready(function(){
     const checkoutItems = document.querySelector("#checkoutItems");
-    let cartData = null; 
     var wishlistBtns = document.querySelectorAll('.wishlistBtn');
 
     window.addEventListener("load", function () {

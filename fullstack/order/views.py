@@ -14,12 +14,16 @@ from cart.cart import Cart
 from account.models import LastUserAddress
 from django.shortcuts import get_object_or_404
 
+from rest_framework import views, generics, response, status
+from .serializers import DeliverySerializer, OrderSerializer, OrderItemSerializer
+import json
+
 
 class OrderListView(LoginRequiredMixin, ListView):
     template_name = 'usage/orders.html'
 
     def get_queryset(self):
-        queryset = Order.objects.filter(customer=self.request.user).order_by('-id')
+        queryset = Order.objects.filter(customer=self.request.user).order_by('-number')
         return queryset
 
 
@@ -45,14 +49,81 @@ class AdmOrderListView(UserPassesTestMixin, ListView):
         return True
 
 
+class DeliveryListAPIView(generics.ListAPIView):
+    queryset = Delivery.objects.all()
+    serializer_class = DeliverySerializer
+
+
+# class OrderAPIView(generics.CreateAPIView):
+#     serializer_class = OrderSerializer
+
+#     def perform_create(self, serializer):
+#         print(self)
+#         if self.request.is_authenticated:
+#             serializer.save(customer=self.request.user, first_name=self.request.user.first_name, last_name=self.request.user.last_name)
+#         else:
+#             serializer.save()
+        # return super().perform_create(serializer)
+
+
+class OrderAPIView(views.APIView):
+    # queryset = Order.objects.all()
+    # serializer_class = OrderSerializer
+
+    def get(self, request):
+        data = Order.objects.all()
+        serializer = OrderSerializer(data, many=True, context={'request': self.request})
+        return response.Response(serializer.data)
+        # return response.Response(self.serializer_class(self.queryset).data)
+
+    def post(self, request):
+        data = request.data
+        try:
+            clear_data = {
+                'address': data.get('address', None),
+                'zip_code': data.get('zip_code', None),
+                'city': data.get('address', None),
+                'first_name': data.get('first_name', ''),
+                'last_name': data.get('last_name', ''),
+                'email': data.get('email', ''),
+                'phone': data.get('phone', ''),
+                'delivery': int(data.get('delivery', '')),
+                # 'goods': cart.get_cart()['goods']
+            }
+            order_serializer = OrderSerializer(data=clear_data)
+            order_serializer.is_valid(raise_exception=True)
+            order = order_serializer.save()
+
+            if self.request.user.is_authenticated:
+                order.first_name = self.request.user.first_name
+                order.last_name = self.request.user.last_name
+                order.email = self.request.user.email
+                order.phone = self.request.user.phone
+                order.customer = self.request.user
+                order.save()
+
+            cart = Cart(request)
+
+            for i in cart.get_cart()['goods']:
+                OrderItem.objects.create(
+                    order=order, product_id=i['product']['id'], quantity=i['quantity'], 
+                    price=i['total_price'], size_id=i['size']['id']
+                )
+        except Exception as ex:
+            print('err', ex)
+            # return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # print(clear_data)
+        # print(sr.is_valid(), sr.data)
+        return response.Response({'error': 'error'}, status=status.HTTP_404_NOT_FOUND)
+
+
 class CheckoutView(UserPassesTestMixin, View):
     template_name = 'usage/checkout.html'
 
     def get(self, request):
         context = {
             'form': OrderForm,
-            'current_delivery': 2,
-            'delivery_types': Delivery.objects.all(),
         }
         if request.user.is_authenticated:
             adr = LastUserAddress.objects.filter(customer=request.user)
@@ -129,19 +200,20 @@ class CheckoutView(UserPassesTestMixin, View):
             LastUserAddress.objects.update_or_create(customer=request.user, address=address['address'], zip_code=address['zip_code'], city=address['city'])
 
         cart = Cart(request)
-        cart_items = cart.get_items()
+        cart_items = cart.get_cart()
 
         print(cart_items)
 
-        for i in cart_items:
+        for i in cart_items['goods']:
+            print('\n\n', i)
             OrderItem.objects.create(
-                order=order, product=i['product'], quantity=i['quantity'], 
-                price=i['get_total_price'], size=i['size']
+                order=order, product_id=i['product']['id'], quantity=i['quantity'], 
+                price=i['total_price'], size_id=i['size']['id']
             )
 
-        cart.clear()
+        # cart.clear()
 
-        return redirect('orders')
+        return redirect('order', order.pk)
 
     def test_func(self):
         cart = Cart(self.request)

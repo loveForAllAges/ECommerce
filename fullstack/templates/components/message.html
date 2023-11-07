@@ -2,7 +2,7 @@
 {% for message in messages %}
 <div id="toast-{{ forloop.counter }}" aria-live="assertive" class="z-50 pointer-events-none fixed inset-0 flex p-4 items-start sm:p-6">
     <div class="flex w-full flex-col items-center space-y-4 sm:items-center">
-        <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg {% if message.tags == 'success' %}bg-green-50{% elif message.tags == 'warning' %}bg-yellow-50{% elif message.tags == 'error' %}bg-red-50{% elif message.tags == 'info' %}bg-blue-50{% endif %} shadow-lg ring-1 ring-black ring-opacity-5 flex p-4">
+        <div class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg {% if message.tags == 'success' %}bg-green-50{% elif message.tags == 'warning' %}bg-yellow-50{% elif message.tags == 'error' %}bg-red-50{% elif message.tags == 'info' %}bg-blue-50{% endif %} ring-1 ring-red-700 ring-opacity-5 flex p-4">
             <div class="flex-shrink-0">
                 {% if message.tags == 'success' %}
                 <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
