@@ -20,13 +20,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    # delivery = DeliverySerializer()
-    # delivery = serializers.PrimaryKeyRelatedField(read_only=True)
-    # customer = serializers.PrimaryKeyRelatedField(read_only=True)
+    # delivery = DeliverySerializer(read_only=True)
     goods = OrderItemSerializer(many=True, read_only=True)
+    url = serializers.CharField(read_only=True)
     class Meta:
         model = Order
         fields = ('__all__')
-        # fields = ('id', 'number', 'customer_id', 'first_name', 'address',
-        #           'last_name', 'email', 'phone', 'zip_code', 'city', 
-        #           'delivery_id', 'status', 'created_at')

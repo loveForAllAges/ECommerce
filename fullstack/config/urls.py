@@ -152,7 +152,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('landing.urls')),
     path('add_delivery_types', add_delivery_types),
-    # path('address/', include('address.urls')),
     path('cart/', include('cart.urls')),
     path('wishlist/', include('wishlist.urls')),
     path('category/', include('category.urls')),

@@ -4,13 +4,21 @@ from datetime import datetime
 from category.models import Size
 import uuid
 from account.models import User
+from django.shortcuts import reverse
+from django.utils.text import slugify
 
 
 class Delivery(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
-    is_pickup = models.BooleanField(default=False)
-    price = models.CharField(max_length=64)
+    slug = models.SlugField(unique=True)
+    price = models.IntegerField()
+    info = models.CharField(max_length=32, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 ORDER_CHOICES = (
@@ -30,7 +38,7 @@ class Order(models.Model):
     zip_code = models.CharField(max_length=32, blank=True)
     city = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255, blank=True)
-    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, default=1)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
     status = models.IntegerField(choices=ORDER_CHOICES, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -40,6 +48,9 @@ class Order(models.Model):
         total = sum([item.quantity for item in orderitems])
         return total
     
+    def url(self):
+        return reverse('order', kwargs={'pk': self.pk})
+
     @property
     def total_price(self):
         orderitems = self.orderitem_set.all()

@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class LastUserAddress(models.Model):
+class Address(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=255)
     address = models.CharField(max_length=255)

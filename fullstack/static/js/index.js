@@ -169,6 +169,10 @@ $(document).ready(function(){
         .then(response => response.json())
         .then(data => {
             updateCart(data);
+
+            if (checkoutItems) {
+                checkoutPage(data);
+            }
         })
         .catch(error => {
             console.log('err', error)
@@ -185,7 +189,6 @@ $(document).ready(function(){
         })
         .then(response => response.json())
         .then(data => {
-            cartData = data;
             updateCart(data);
 
             if (checkoutItems) {
@@ -200,7 +203,9 @@ $(document).ready(function(){
     getCart();
 
     function checkoutPage(data) {
-        $(".checkoutTotalPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
+        $(".checkoutTotalPriceValues").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
+        $("#checkoutTotalPrice").attr("data-price", data.total_price);
+        
         $("#checkoutAllItemsPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
         $("#checkoutDeliveryPrice").text(`0 ₽`);
         $("#checkoutSalePrice").text(`0 ₽`);
