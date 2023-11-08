@@ -14,8 +14,12 @@
     <script type="text/script" src="{% static 'js/getCookie.js' %}"></script>
 </head>
 <body>
+    {% block components %}
+    {% endblock components %}
+
     {% include 'components/message.html' %}
     {% include 'adm/components/sidebar.html' %}
+    
     <div class="flex flex-1 flex-col md:pl-64">
         {% include 'adm/components/header.html' %}
         {% block content %}

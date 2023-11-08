@@ -10,10 +10,10 @@ class Product(models.Model):
     description = models.TextField()
     price = models.PositiveIntegerField()
     in_stock = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.name
-    
+
     def in_wishlist(self):
         return 
     
