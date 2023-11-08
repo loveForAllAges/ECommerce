@@ -12,6 +12,11 @@ from category.models import Category, Brand
 from category.forms import CategoryForm, BrandForm
 
 
+class AdmView(View):
+    def get(self, request):
+        return render(request, 'adm/home.html')
+
+
 class AdmProductListView(UserPassesTestMixin, generic.ListView):
     model = Product
     template_name = 'adm/productList.html'

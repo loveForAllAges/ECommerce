@@ -32,13 +32,11 @@
     </script>
 </head>
 <body class="flex flex-col justify-between min-h-screen">
-    {% include 'components/preloader.html' %}
+    <!-- {% include 'components/preloader.html' %} -->
     {% include 'components/message.html' %}
 
-    <div class="md:mb-auto md:mt-16 mb-12"> 
-        {% block content %}
-        {% endblock %}
-    </div>
+    {% block content %}
+    {% endblock %}
 
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
