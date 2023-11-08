@@ -4,13 +4,14 @@ from . import views
 
 urlpatterns = [
     path('', views.AdmView.as_view(), name='adm'),
-    # path('users/', views.UserListView.as_view(), name='user-list'),
+    path('accounts/', views.AccountListView.as_view(), name='account-list'),
+    path('accounts/<int:pk>/', views.AccountDetailView.as_view(), name='account-detail'),
     # path('adm/orders/', views.OrderListView.as_view(), name='order-list'),
     # path('adm/orders/create/', views.OrderListView.as_view(), name='order-create'),
     # path('adm/orders/<int:pk>/', views.OrderListView.as_view(), name='order-detail'),
     # path('adm/orders/update/<int:pk>/', views.OrderListView.as_view(), name='order-update'),
     # path('adm/orders/delete/<int:pk>/', views.OrderListView.as_view(), name='order-delete'),
-    path('adm/products/', views.AdmProductListView.as_view(), name='product-list'),
+    path('products/', views.ProductListView.as_view(), name='product-list'),
     path('adm/products/create/', views.ProductCreateView.as_view(), name='product-create'),
     path('adm/products/update/<int:pk>/', views.ProductUpdateView.as_view(), name='product-update'),
     path('adm/products/delele/<int:pk>/', views.ProductDeleteView.as_view(), name='product-delete'),

@@ -4,8 +4,8 @@ from django.shortcuts import reverse
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
-    brand = models.ManyToManyField(Brand)
-    size = models.ManyToManyField(Size, blank=True)
+    brand = models.ManyToManyField(Brand, related_name='brands')
+    size = models.ManyToManyField(Size, blank=True, related_name='sizes')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
     price = models.PositiveIntegerField()
@@ -24,7 +24,7 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='productImages/')
     is_main = models.BooleanField(default=False)
 

@@ -1,0 +1,66 @@
+{% extends 'base_adm.html' %}
+
+{% block title %}
+ADM Пользователи
+{% endblock title %}
+
+
+{% block content %}
+
+
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-xl font-semibold text-gray-900">
+                Пользователи <span class="ml-2 text-sm font-normal text-gray-500">{{ object_list|length }}</span>
+            </h1>
+        </div>
+    </div>
+    <div class="mt-8 flex flex-col">
+        <div class="-my-2 overflow-x-auto">
+            <div class="inline-block min-w-full py-2 align-middle">
+                <div class="overflow-hidden border rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Имя</th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Почта</th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Телефон</th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (шт)</th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (₽)</th>
+                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Net amount</th>
+                                <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            {% for element in object_list %}
+                            <tr>
+                                <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">{{ element.first_name }} {{ element.last_name }}</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.email }}</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.phone}}</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                                    {% if element.is_superuser %}
+                                    Адм
+                                    {% elif element.is_staff %}
+                                    Стр
+                                    {% else %}
+                                    Плз
+                                    {% endif %}
+                                </td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.order_set.all|length }}</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">0</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">$4,397.00</td>
+                                <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    <a href="{% url 'account-detail' element.pk %}" class="text-blue-600 hover:text-blue-900">Подр.</a>
+                                </td>
+                            </tr>
+                            {% endfor %}  
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

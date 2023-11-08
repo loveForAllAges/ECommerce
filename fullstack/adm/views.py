@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from product.models import Product, ProductImage
 from django.http import Http404
@@ -10,21 +12,54 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from category.models import Category, Brand
 from category.forms import CategoryForm, BrandForm
+from account.models import User
+from order.models import Order
 
 
-class AdmView(View):
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self) -> bool | None:
+        return self.request.user.is_authenticated and self.request.user.is_superuser
+    
+
+class StaffRequiredMixin(UserPassesTestMixin):
+    def test_func(self) -> bool | None:
+        return self.request.user.is_authenticated and (self.request.user.is_staff or self.request.user.is_superuser)
+
+
+class AdmView(AdminRequiredMixin, View):
     def get(self, request):
         return render(request, 'adm/home.html')
 
 
-class AdmProductListView(UserPassesTestMixin, generic.ListView):
-    model = Product
-    template_name = 'adm/productList.html'
+class AccountListView(AdminRequiredMixin, generic.ListView):
+    model = User
+    template_name = 'adm/account_list.html'
 
-    def test_func(self):
-        if not self.request.user.is_authenticated or not self.request.user.is_staff:
-            raise Http404
-        return True
+    def get_queryset(self) -> QuerySet[Any]:
+        return User.objects.filter(is_active=True)
+
+
+class AccountDetailView(AdminRequiredMixin, generic.DetailView):
+    model = User
+    template_name = 'usage/account.html'
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = Order.objects.filter(customer_id=self.kwargs.get('pk')).order_by('-number')
+        return context
+
+
+class ProductListView(AdminRequiredMixin, generic.ListView):
+    model = Product
+    template_name = 'adm/product_list.html'
+
+
+
+
+
+
+
+
 
 class ProductCreateView(UserPassesTestMixin, View):
     template_name = 'adm/productCreate.html'
