@@ -1,4 +1,5 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.views.generic import ListView, CreateView, UpdateView, FormView
 from .models import User
@@ -167,13 +168,13 @@ class CustomPasswordChangeView(PasswordChangeView):
         return super().form_valid(form)
 
 
-class AccountView(LoginRequiredMixin, View):
+class AccountView(LoginRequiredMixin, ListView):
     template_name = 'usage/account.html'
-    success_url = reverse_lazy('account')
-
-    def get(self, request):
-        return render(request, self.template_name)
     
+    def get_queryset(self) -> QuerySet[Any]:
+        queryset = Order.objects.filter(customer=self.request.user).order_by('-number')
+        return queryset
+
 
 class AccountEditView(LoginRequiredMixin, View):
     template_name = 'auth/updateAccount.html'

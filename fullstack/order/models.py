@@ -44,7 +44,7 @@ class Order(models.Model):
 
     @property
     def number_of_items_in_cart(self):
-        orderitems = self.orderitem_set.all()
+        orderitems = self.goods.all()
         total = sum([item.quantity for item in orderitems])
         return total
     
@@ -53,8 +53,8 @@ class Order(models.Model):
 
     @property
     def total_price(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.get_total_price for item in orderitems])
+        orderitems = self.goods.all()
+        total = sum([item.total_price for item in orderitems])
         return total
 
     def get_created_date(self):

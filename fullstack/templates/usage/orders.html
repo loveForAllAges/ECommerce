@@ -28,7 +28,7 @@
                 </div>
 
                 <ul class=" divide-y divide-gray-200">
-                    {% for product in order.orderitem_set.all %}
+                    {% for product in order.goods.all %}
                     <li class="flex group p-4 relative">
                         <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
                         {% for image in product.product.productimage_set.all %}
@@ -50,7 +50,7 @@
                         
                         <div class="flex flex-col justify-between items-end">
                             <div class="ml-4 flex flex-col justify-between items-end">
-                                <p class="font-medium">{{ product.get_total_price|add_space_separator }} ₽</p>
+                                <p class="font-medium">{{ product.total_price|add_space_separator }} ₽</p>
                                 {% if product.quantity > 1 %}
                                 <p class="text-sm text-gray-500">1 шт. / {{ product.product.price|add_space_separator }} ₽</p>
                                 {% endif %}

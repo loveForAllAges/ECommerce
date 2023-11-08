@@ -149,15 +149,16 @@ def add_delivery_types(request):
 
 urlpatterns = [
     # path('a/', fill_db),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('', include('landing.urls')),
-    path('add_delivery_types', add_delivery_types),
+    # path('add_delivery_types', add_delivery_types),
     path('cart/', include('cart.urls')),
     path('wishlist/', include('wishlist.urls')),
     path('category/', include('category.urls')),
     path('orders/', include('order.urls')),
     path('account/', include('account.urls')),
     path('products/', include('product.urls')),
+    path('adm/', include('adm.urls')),
     path('api/', include('api.urls')),
 ]
 

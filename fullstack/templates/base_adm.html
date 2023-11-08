@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load compress %}
+{% load static %}
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% endcompress %}
+    <title>{% block title %}ADM{% endblock %}</title> 
+    <script type="text/script" src="{% static '../node_modules/flowbite/plugin.js' %}"></script>
+    <script>
+        var user = '{{ request.user }}';
+
+        function getToken() {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken' + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getToken();
+    </script>
+</head>
+<body class="flex flex-col justify-between min-h-screen">
+    {% include 'components/preloader.html' %}
+    {% include 'components/message.html' %}
+
+    <div class="md:mb-auto md:mt-16 mb-12"> 
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
+    {% block scripts %}
+    {% endblock scripts %}
+</body>
+</html>
