@@ -54,14 +54,7 @@ class ProductListView(AdminRequiredMixin, generic.ListView):
     template_name = 'adm/product_list.html'
 
 
-
-
-
-
-
-
-
-class ProductCreateView(UserPassesTestMixin, View):
+class ProductCreateView(AdminRequiredMixin, View):
     template_name = 'adm/productCreate.html'
     form_class = ProductForm
 
@@ -93,10 +86,7 @@ class ProductCreateView(UserPassesTestMixin, View):
             return redirect('product-list')
         return render(request, self.template_name, {'form': form})
 
-    def test_func(self):
-        if not self.request.user.is_authenticated or not self.request.user.is_staff:
-            raise Http404
-        return True
+
 
 
 class ProductUpdateView(UserPassesTestMixin, generic.UpdateView):

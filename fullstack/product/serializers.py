@@ -10,15 +10,15 @@ class ProductImageSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True, source='productimage_set')
+    images = ProductImageSerializer(many=True, read_only=True)
     in_wishlist = SerializerMethodField()
-    brand = BrandSerializer(many=True, read_only=True, )
-    size = SizeSerializer(many=True, read_only=True, )
+    brand = BrandSerializer(many=True, read_only=True)
+    size = SizeSerializer(many=True, read_only=True)
     category = CategorySerializer()
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'in_wishlist', 'images', 'url', 'price', 'brand', 'size', 'category')
+        fields = ('__all__')
 
     def get_in_wishlist(self, obj):
         request = self.context.get('request')

@@ -1,4 +1,6 @@
 {% extends 'base_adm.html' %}
+{% load static %}
+
 
 {% block title %}
 ADM Товары
@@ -6,8 +8,6 @@ ADM Товары
 
 
 {% block content %}
-
-
 <div class="p-4 sm:p-6 lg:p-8">
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
@@ -59,7 +59,7 @@ ADM Товары
                                     {% endif %}
                                 </td>
                                 <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                    <div class=" flex items-center justify-end">
+                                    <div class="flex items-center justify-end">
                                         <button type="button" id="productDropwownBtn-{{ forloop.counter }}" data-dropdown-placement="bottom-end" data-dropdown-toggle="productDropwown-{{ forloop.counter }}" data-dropdown-delay={500} class="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
@@ -75,9 +75,9 @@ ADM Товары
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                            <button type="button" data-id="{{ element.pk }}" class="editProduct hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
                                                 Редактировать
-                                            </a>
+                                            </button>
                                         </li>
                                         <li>
                                             <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
@@ -100,3 +100,7 @@ ADM Товары
 {% block components %}
 {% include 'adm/components/productModal.html' %}
 {% endblock components %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/product_list.js' %}"></script>
+{% endblock scripts %}
