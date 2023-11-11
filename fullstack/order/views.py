@@ -19,12 +19,13 @@ from order.forms import OrderForm
 
 
 class OrderDetailView(DetailView):
-    template_name = 'usage/orderDetail.html'
     model = Order
+    template_name = 'usage/orderDetail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['statuses'] = [i[1] for i in ORDER_CHOICES if i[0] != 5]
+        exc = 3 if context['object'].delivery.slug == 'pickup' else None
+        context['statuses'] = tuple(filter(lambda choice: choice[0] != exc, ORDER_CHOICES))
         return context
 
 

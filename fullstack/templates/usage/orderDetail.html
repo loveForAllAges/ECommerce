@@ -3,78 +3,112 @@
 {% load my_filters %}
 
 {% block content %}
-<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
-    <div class="">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32">
+    <div class="py-8">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Заказ #{{ object.number }}</h1>
         <p class="mt-2 text-sm text-gray-500">Детали заказа</p>
     </div>
-
-    <div class="mt-16">
-        <div class="space-y-10">
-            <div class="mt-6 text-sm">
-                <div class="overflow-hidden rounded-full bg-gray-200">
-                    <div class="h-2 rounded-full bg-blue-600 w- {% if order.status != 0 %}w-{% widthratio order.status 1 3 %}/12{% else %}w-1/12{% endif %}"></div>
-                </div>
-                <div class="mt-6 grid-cols-5 text-gray-600 grid">
-                    <div class="">{{ statuses.0 }}</div>
-                    <div class="">{{ statuses.1 }}</div>
-                    <div class="text-center">{{ statuses.2 }}</div>
-                    <div class="text-right">{{ statuses.3 }}</div>
-                    <div class="text-right">{{ statuses.4 }}</div>
-                </div>
-            </div>
-
-            <div class="">
-                <ul class=" divide-y divide-gray-200">
-                    {% for product in object.orderitem_set.all %}
-                    <li class="flex group relative py-4">
-                        <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
-                        {% for image in product.product.productimage_set.all %}
-                        {% if image.is_main %}
-                            <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center">
-                        {% endif %}
-                        {% endfor %}
-                        </div>
-                        <div class="flex flex-col flex-1 space-y-1 justify-between">
-                            <a href="{% url 'product' product.product.id %}" class="flex space-x-4">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                <div class="flex flex-col">
-                                    <p class="duration-150 text-sm group-hover:text-blue-600">{{ product.product.name }}</p>
-                                    <p class="mt-1 text-sm text-gray-500">{{ product.size }} размер</p>
-                                    <p class="mt-1 text-sm text-gray-500">{{ product.quantity }} шт.</p>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="flex flex-col justify-between items-end">
-                            <div class="ml-4 flex flex-col justify-between items-end">
-                                <p class="font-medium">{{ product.get_total_price|add_space_separator }} ₽</p>
-                                {% if product.quantity > 1 %}
-                                <p class="text-sm text-gray-500">1 шт. / {{ product.product.price|add_space_separator }} ₽</p>
-                                {% endif %}
-                            </div>
-                            <div class="flex justify-between">
-                                {% if product.product in request.user.wishlist.all %}
-                                <button type="button" data-product="{{ product.product.id }}" data-action="delete" class="isolate addToWishlist flex items-center justify-center bg-white p-1 text-rose-500 hover:text-rose-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
-                                    </svg>
-                                </button>
-                                {% else %}
-                                <button type="button" {% if request.user.is_anonymous %}data-modal-target="permissionModal" data-modal-toggle="permissionModal"{% else %}data-product="{{ product.product.id }}" data-action="add"{% endif %} class="{% if request.user.is_authenticated %}addToWishlist{% endif %} isolate flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">               
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                                    </svg>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </li>
+    <div class="mt-10 lg:grid lg:grid-cols-12 lg:gap-x-16">
+        <div class="lg:col-span-4">
+            <ol class="overflow-hidden">
+                {% for status in statuses %}
+                <li class="relative pb-10">
+                    {% if not forloop.last %}
+                    <div class="absolute top-4 left-4 -ml-px mt-0.5 h-full w-0.5 {% if status.0 > object.status %}bg-gray-300{% else %}bg-blue-600{% endif %}" aria-hidden="true"></div>
+                    {% endif %}
+                    {% if status.0 < object.status %}
+                    <a href="#" class="group relative flex items-start">
+                        <span class="flex h-9 items-center">
+                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 group-hover:bg-blue-800">
+                                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </span>
+                        <span class="ml-4 flex min-w-0 flex-col">
+                            <span class="text-sm font-medium">{{ status.1 }}</span>
+                            <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
+                        </span>
+                    </a>
+                    {% elif status.0 == object.status %}
+                    <a href="#" class="group relative flex items-start">
+                        <span class="flex h-9 items-center">
+                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-blue-600 bg-white">
+                                <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+                            </span>
+                        </span>
+                        <span class="ml-4 flex min-w-0 flex-col">
+                            <span class="text-sm text-blue-600 font-medium">{{ status.1 }}</span>
+                            <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
+                        </span>
+                    </a>
+                    {% else %}
+                    <a href="#" class="group relative flex items-start">
+                        <span class="flex h-9 items-center">
+                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white group-hover:border-gray-400">
+                                <span class="h-2.5 w-2.5 rounded-full bg-transparent group-hover:bg-gray-300"></span>
+                            </span>
+                        </span>
+                        <span class="ml-4 flex min-w-0 flex-col">
+                            <span class="text-sm text-gray-500 font-medium">{{ status.1 }}</span>
+                            <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
+                        </span>
+                    </a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="lg:col-span-8">
+            <ul class=" divide-y divide-gray-200">
+                {% for product in object.goods.all %}
+                <li class="flex group relative py-4">
+                    <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
+                    {% for image in product.product.images.all %}
+                    {% if image.is_main %}
+                        <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center">
+                    {% endif %}
                     {% endfor %}
-                </ul>
-            </div>
+                    </div>
+                    <div class="flex flex-col flex-1 space-y-1 justify-between">
+                        <a href="{% url 'product' product.product.id %}" class="flex space-x-4">
+                            <span aria-hidden="true" class="absolute inset-0"></span>
+                            <div class="flex flex-col">
+                                <p class="duration-150 text-sm group-hover:text-blue-600">{{ product.product.name }}</p>
+                                <p class="mt-1 text-sm text-gray-500">{{ product.size }} размер</p>
+                                <p class="mt-1 text-sm text-gray-500">{{ product.quantity }} шт.</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="flex flex-col justify-between items-end">
+                        <div class="ml-4 flex flex-col justify-between items-end">
+                            <p class="font-medium">{{ product.total_price|add_space_separator }} ₽</p>
+                            {% if product.quantity > 1 %}
+                            <p class="text-sm text-gray-500">1 шт. / {{ product.product.price|add_space_separator }} ₽</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex justify-between">
+                            {% if product.product in request.user.wishlist.all %}
+                            <button type="button" data-product="{{ product.product.id }}" data-action="delete" class="isolate addToWishlist flex items-center justify-center bg-white p-1 text-rose-500 hover:text-rose-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
+                                </svg>
+                            </button>
+                            {% else %}
+                            <button type="button" {% if request.user.is_anonymous %}data-modal-target="permissionModal" data-modal-toggle="permissionModal"{% else %}data-product="{{ product.product.id }}" data-action="add"{% endif %} class="{% if request.user.is_authenticated %}addToWishlist{% endif %} isolate flex items-center justify-center bg-white p-1 text-gray-400 hover:text-gray-500">               
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
             <div class="">
-                <div class="grid grid-cols-2 border-t border-gray-200 gap-x-6 py-10 text-sm">
+                <!-- <div class="grid grid-cols-2 border-t border-gray-200 gap-x-6 py-10 text-sm">
                     <div>
                         <p class="font-medium text-gray-900">Адрес доставки</p>
                         <div class="mt-2 text-gray-700">
@@ -90,24 +124,11 @@
                             <span class="block">•••• 1234</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
-                    <div class="flex items-center justify-between">
-                        <p class="font-medium text-gray-500">Подытог</p>
-                        <p>177 000 ₽</p>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <p class="font-medium text-gray-500">Доставка</p>
-                        <p>177 000 ₽</p>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <p class="font-medium text-gray-500">Скидка<span class="ml-2 rounded-full bg-gray-200 py-0.5 px-2 text-xs text-gray-600">STUDENT50</span></p>
-                        <p>177 000 ₽</p>
-                    </div>
-    
-                    <div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
+                    <div class="flex items-center justify-between font-medium text-black">
                         <div class="text-base">Итого</div>
-                        <div class="text-base">177 000 ₽</div>
+                        <div class="text-base">{{ object.total_price|add_space_separator }} ₽</div>
                     </div>
                 </div>
             </div>
