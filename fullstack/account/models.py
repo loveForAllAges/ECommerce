@@ -4,7 +4,7 @@ from product.models import Product
 
 
 class CustomUserManager(UserManager):
-    def _create_user(self, first_name, last_name, email, phone, password, **extra_fields):
+    def _create_user(self, first_name, last_name, phone, email, password, **extra_fields):
         if not email:
             raise ValueError("Неверная почта")
         
@@ -24,7 +24,6 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(first_name, last_name, phone, email, password, **extra_fields)
-
 
 
 class User(AbstractBaseUser, PermissionsMixin):

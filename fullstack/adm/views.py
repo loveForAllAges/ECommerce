@@ -14,6 +14,47 @@ from category.models import Category, Brand
 from category.forms import CategoryForm, BrandForm
 from account.models import User
 from order.models import Order
+from chat.models import Chat
+from django.db.models import Count
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+
+
+class StaffOnly(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self) -> bool | None:
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return True
+        raise Http404
+
+
+class ChatList(StaffOnly, generic.ListView):
+    template_name = 'adm/chat_list.html'
+    queryset = Chat.objects.annotate(num_messages=Count('messages')).filter(num_messages__gt=0).order_by('-created_at')
+
+
+class ChatDetail(StaffOnly, View):
+    template_name = 'adm/chat_list.html'
+
+    def __get_data(self, request, pk):
+        context = dict()
+        context['object'] = Chat.objects.get(pk=pk)
+        context['object_list'] = Chat.objects.annotate(num_messages=Count('messages')).filter(
+        Q(num_messages__gt=0) & (Q(agent__isnull=True) | Q(agent=request.user))).order_by('-created_at')
+        return context
+    
+    def get(self, request, pk):
+        return render(request, self.template_name, context=self.__get_data(request, pk))
+    
+    def post(self, request, pk):
+        pk = request.POST.get('chat_id', None)
+        print(pk)
+        chat = get_object_or_404(Chat, pk=pk, agent__isnull=True)
+        chat.agent = request.user
+        chat.status = 1
+        chat.save()
+
+        return render(request, self.template_name, context=self.__get_data(request, pk))
 
 
 class AdminRequiredMixin(UserPassesTestMixin):

@@ -28,6 +28,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
+    'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'api',
     'search',
     'adm',
+    'chat'
 ]
 
 
@@ -88,12 +90,20 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
 
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
     }
 }
 

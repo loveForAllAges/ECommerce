@@ -1,0 +1,173 @@
+{% extends 'base_adm.html' %}
+
+{% block title %}
+Тех. Поддержка
+{% endblock title %}
+
+
+{% block content %}
+<div class="flex flex-1 items-stretch overflow-hidden">
+    <div class="block flex-shrink-0">
+        <div class="relative h-full flex w-96 flex-col border-r border-gray-200">
+            <div class="flex-shrink-0 border-b">
+                <div class="flex h-16 flex-col justify-center px-4">
+                    <div class="flex items-baseline space-x-3">
+                        <h2 class="text-lg font-medium text-gray-900">Диалоги</h2>
+                        <p class="text-sm font-medium text-gray-500">{{ object_list|length }}</p>
+                    </div>
+                </div>
+                <!-- <div class="border-t border-b border-gray-200 bg-gray-50 px-6 py-2 text-sm font-medium text-gray-500">8 новых</div> -->
+            </div>
+            <div class="min-h-0 flex-1 overflow-y-auto">
+                {% if object_list %}
+                <ul role="list" class="divide-y divide-gray-200 border-b">
+                {% for chat in object_list %}
+                    <li class="relative p-4 {% if object.pk != chat.pk %}hover:bg-gray-50 bg-white{% else %}bg-gray-100{% endif %}">
+                        <div class="flex justify-between items-end">
+                            <div class="flex items-center space-x-2 w-full">
+                                <div class="rounded-full h-9 w-9 p-[1px] {% if chat.client %}bg-gradient-to-r from-blue-600 to-indigo-600{% else %}bg-gray-400{% endif %}">
+                                    <div class="rounded-full flex flex-col justify-between h-full bg-gray-100">
+                                        <svg class="rounded-full h-full w-full text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex justify-between">
+                                        <a href="{% url 'chat-detail' chat.pk %}" class="block focus:outline-none">
+                                            <span class="absolute inset-0" aria-hidden="true"></span>
+                                            <p class="truncate text-sm font-medium text-gray-900">
+                                                {% if chat.client %}
+                                                {{ chat.client.first_name }} {{ chat.client.last_name }}
+                                                {% else %}
+                                                Анонимный
+                                                {% endif %}
+                                            </p>
+                                        </a>
+                                        {% if chat.status == 1 %}
+                                        <span class="h-4 w-4 bg-green-100 rounded-full flex items-center justify-center" aria-hidden="true">
+                                            <span class="h-2 w-2 bg-green-400 rounded-full"></span>
+                                        </span>
+                                        {% else %}
+                                        <span class="h-4 w-4 bg-gray-100 rounded-full flex items-center justify-center" aria-hidden="true">
+                                            <span class="h-2 w-2 bg-gray-400 rounded-full"></span>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <p class="text-sm text-gray-500 line-clamp-1">
+                                            {{ chat.last_message.content }}
+                                        </p>
+                                        <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ chat.last_message.created_at_formatted }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ chat.last_message.created_at_formatted }}</span> -->
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% else %}
+                <div class="flex items-center justify-center h-full">
+                    <p class="text-gray-500 text-sm">Нет актуальных диалогов</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-gray-100">
+        {% if not object %}
+        <div class="m-auto">
+            <p class="text-gray-500 text-sm">Выберите диалог</p>
+        </div>
+        {% else %}
+        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <div class="flex-shrink-0 border-b border-gray-200 bg-white">
+                <div class="flex h-16 flex-col justify-center">
+                    <div class="px-4">
+                        <div class="flex justify-between items-center py-3">
+                            <div class="isolate inline-flex rounded-md shadow-sm sm:space-x-3 sm:shadow-none">
+                                {% if object.agent %}
+                                {% if object.client %}
+                                <a href="{% url 'account-detail' object.pk %}" class="relative -ml-px hidden items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:inline-flex">
+                                    <svg class="mr-2.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>                                  
+                                    <span>Профиль</span>
+                                </a>
+                                {% endif %}
+                                <form action="{% url 'chat-close' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="chat_id" value="{{ object.pk }}">
+                                    <button type="submit" class="relative -ml-px hidden items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:inline-flex">
+                                        <svg class="mr-2.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+        
+                                        <span>Завершить</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <button type="button" class="flex items-center rounded-full bg-white p-1 text-gray-400 hover:text-gray-600">
+                                    <svg class="h-5 w-5" x-description="Heroicon name: mini/ellipsis-vertical" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="min-h-0 flex-1 h-full overflow-y-auto p-4" id="agent-chat-window">
+                {% for data in object.messages.all %}
+                {% if data.is_agent %}
+                <div class="ml-[20%] flex justify-end">
+                    <div class="mb-2 text-gray-900 shadow-sm bg-gray-200 rounded-xl p-2 inline-block text-sm">
+                        <span class="">{{data.content}}</span>
+                        <span class="-mb-1 block w-full text-xs text-gray-500 text-end">{{data.created_at_formatted}}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="max-w-[80%]">
+                    <div class="mb-2 bg-white shadow-sm text-gray-900 rounded-xl p-2 inline-block text-sm">
+                        <span class="">{{data.content}}</span>
+                        <span class="-mb-1 block w-full text-xs text-gray-400 text-end">{{data.created_at_formatted}}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="flex-shrink-0 border-t border-gray-200 bg-white">
+                <div class="flex h-16 flex-1 px-4">
+                    <div class="w-full flex items-center">
+                        {% if object.agent %}
+                        <div class="flex flex-1 w-full">
+                            <input id="agent-chat-input" class="block w-full bg-transparent border-none rounded-lg text-sm h-full border-transparent p-4 text-gray-900 focus:border-transparent focus:outline-none focus:ring-0" placeholder="Сообщение" type="text">
+                        </div>
+                        <div class="flex items-center">
+                            <button id="agent-chat-send-message" type="button" disabled class="rounded-full p-1 text-blue-500 hover:text-blue-600 duration-150 disabled:cursor-not-allowed disabled:text-gray-400">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </div>
+                        {% else %}
+                        <form action="" method="post" class="w-full h-full">
+                            {% csrf_token %}
+                            <input type="hidden" name="chat_id" value="{{ object.pk }}">
+                            <button type="submit" class="w-full h-full inline-flex items-center justify-center text-sm font-medium text-blue-500 duration-150 hover:text-blue-600">
+                                Начать чат
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

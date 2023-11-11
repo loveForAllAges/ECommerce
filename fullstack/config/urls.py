@@ -159,6 +159,7 @@ urlpatterns = [
     path('products/', include('product.urls')),
     path('adm/', include('adm.urls')),
     path('api/', include('api.urls')),
+    path('chat/', include('chat.urls'))
 ]
 
 

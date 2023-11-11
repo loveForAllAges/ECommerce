@@ -6,6 +6,10 @@ urlpatterns = [
     path('', views.AdmView.as_view(), name='adm'),
     path('accounts/', views.AccountListView.as_view(), name='account-list'),
     path('accounts/<int:pk>/', views.AccountDetailView.as_view(), name='account-detail'),
+
+    path('chat/', views.ChatList.as_view(), name='chat-list'),
+    path('chat/<uuid:pk>/', views.ChatDetail.as_view(), name='chat-detail'),
+
     # path('adm/orders/', views.OrderListView.as_view(), name='order-list'),
     # path('adm/orders/create/', views.OrderListView.as_view(), name='order-create'),
     # path('adm/orders/<int:pk>/', views.OrderListView.as_view(), name='order-detail'),
