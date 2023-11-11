@@ -4,7 +4,6 @@ $(document).ready(function(){
     addToCartForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(addToCartForm);
-
         fetch('/cart/', {
             method: 'POST',
             headers: {

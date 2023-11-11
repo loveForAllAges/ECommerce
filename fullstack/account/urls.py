@@ -6,6 +6,8 @@ from django.shortcuts import render
 urlpatterns = [
     path('', views.AccountView.as_view(), name='account'),
     path('edit/', views.AccountEditView.as_view(), name='account-edit'),
+
+    path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
     
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('signup/', views.SignupView.as_view(), name='signup'),

@@ -11,8 +11,7 @@
     {% endcompress %}
     <title>{% block title %}Title{% endblock %}</title> 
     <script type="text/script" src="{% static '../node_modules/flowbite/plugin.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/getCookie.js' %}">
-
+    <script type="text/javascript" src="{% static 'js/getCookie.js' %}"></script>
     </script>
 </head>
 <body class="flex flex-col justify-between min-h-screen">
@@ -34,7 +33,9 @@
     {% include 'components/chat.html' %}
     {% include 'components/footer.html' %}
     
+
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/wishlist.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
     <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>

@@ -47,7 +47,7 @@
 
         <div class="mt-10 divide-y divide-gray-200">
             <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-gray-900">Заказы ({{ object_list|length }})</h3>
+              <h3 class="text-lg font-medium leading-6 text-gray-900">Заказы<span class="text-sm text-gray-500 font-normal ml-2">{{ object_list|length }}</span></h3>
               <p class="max-w-2xl text-sm text-gray-500">История ваших заказов</p>
             </div>
             <ul role="list" class="mt-6 py-8 grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8">
@@ -98,7 +98,7 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{% url 'order' order.pk %}" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+                    <a href="{% url 'order-detail' order.pk %}" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
                         <span aria-hidden="true" class="absolute inset-0"></span>
                         Заказ #{{ order.number }}
                     </a>
@@ -118,7 +118,7 @@
                             <h2 class="text-lg font-medium text-gray-900">Заказ #{{ order.number }}</h2>
                         </div>
                         <div class="-m-2 flex flex-1 items-center justify-end">
-                            <a href="{% url 'order' order.pk %}" class="p-2 text-sm duration-150 text-gray-400 hover:text-gray-500">
+                            <a href="{% url 'order-detail' order.pk %}" class="p-2 text-sm duration-150 text-gray-400 hover:text-gray-500">
                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                 </svg>
@@ -253,7 +253,7 @@
         <div class="overflow-hidden border rounded-xl">
             <ul role="list" class="divide-y divide-gray-200">
                 <li>
-                    <a href="{% url 'orders' %}" class="block hover:bg-gray-50">
+                    <a href="order-list" class="block hover:bg-gray-50">
                         <div class="flex items-center p-2">
                             <div class="min-w-0 flex-1">
                                 <div class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group rounded-md flex items-center text-sm font-medium">
@@ -393,7 +393,7 @@
             <div class="overflow-hidden rounded-xl border">
                 <ul role="list" class="divide-y divide-gray-200">
                     <li>
-                        <a href="{% url 'orders' %}" class="block hover:bg-gray-50">
+                        <a href="#" class="block hover:bg-gray-50">
                             <div class="flex items-center p-3 sm:p-4">
                                 <div class="flex space-x-4 flex-1 items-center">
                                     <span class="flex-shrink-0 rounded-xl flex p-2 bg-teal-50 text-teal-700">
@@ -459,7 +459,7 @@
             <div class="overflow-hidden rounded-xl border">
                 <ul role="list" class="divide-y divide-gray-200">
                     <li>
-                        <a href="{% url 'orders' %}" class="block hover:bg-gray-50">
+                        <a href="#" class="block hover:bg-gray-50">
                             <div class="flex items-center p-3 sm:p-4">
                                 <div class="flex space-x-4 flex-1 items-center">
                                     <span class="flex-shrink-0 rounded-xl flex p-2 bg-purple-50 text-purple-700">
@@ -521,7 +521,7 @@
             <div class="overflow-hidden rounded-xl border">
                 <ul role="list" class="divide-y divide-gray-200">
                     <li>
-                        <a href="{% url 'orders' %}" class="block hover:bg-gray-50">
+                        <a href="#" class="block hover:bg-gray-50">
                             <div class="flex items-center p-3 sm:p-4">
                                 <div class="flex space-x-4 flex-1 items-center">
                                     <span class="flex-shrink-0 rounded-xl flex p-2 bg-yellow-50 text-yellow-700">

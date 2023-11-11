@@ -7,20 +7,19 @@ from django.core import serializers
 from search.models import SearchHistory
 import json
 from account.models import Address
-from account.serializers import AddressSerializer, UserSerializer
-from rest_framework import generics, views, response, status
+
+from rest_framework import response, views, status, permissions, generics
+from rest_framework.permissions import IsAuthenticated
+
+from order.models import OrderItem, Delivery
+from cart.cart import Cart
+
+from order.serializers import DeliverySerializer, OrderSerializer
 
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-
-from rest_framework import response, views, status
-from rest_framework.permissions import IsAuthenticated
-from product.serializers import ProductSerializer
-from account.serializers import UserSerializer
-from account.models import User
 
 
 class WishlistAPIView(views.APIView):
@@ -55,3 +54,61 @@ def search(request):
 
     data = [{'request': i.request} for i in result]
     return JsonResponse({'result': data})
+
+
+class DeliveryListAPIView(generics.ListAPIView):
+    queryset = Delivery.objects.all()
+    serializer_class = DeliverySerializer
+
+
+class CartExists(permissions.BasePermission):
+    def has_permission(self, request, view):
+        cart = Cart(request)
+        if len(cart):
+            return True
+        return False
+
+
+class OrderAPIView(views.APIView):
+    permission_classes = [CartExists]
+
+    def post(self, request):
+        data = request.data.copy()
+        if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):
+            return response.Response({'message': 'Неверные данные'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if data['delivery'] == 'pickup':
+            data['city'] = ''
+            data['address'] = ''
+            data['zip_code'] = ''
+
+        if self.request.user.is_authenticated:
+            data['first_name'] = self.request.user.first_name
+            data['last_name'] = self.request.user.last_name
+            data['email'] = self.request.user.email
+            data['phone'] = self.request.user.phone
+            data['customer'] = self.request.user.pk
+
+            if data['delivery'] != 'pickup':
+                address, created = Address.objects.get_or_create(customer=request.user)
+                address.city = data['city']
+                address.address = data['address']
+                address.zip_code = data['zip_code']
+                address.save()
+        data['delivery'] = str(Delivery.objects.get(slug=data['delivery']).pk)
+        
+        order_serializer = OrderSerializer(data=data, context={'request': self.request})
+        order_serializer.is_valid(raise_exception=True)
+        order = order_serializer.save()
+
+        cart = Cart(request)
+
+        for i in cart.get_cart()['goods']:
+            OrderItem.objects.create(
+                order=order, product_id=i['product']['id'], quantity=i['quantity'], 
+                price=i['total_price'], size_id=i['size']['id']
+            )
+
+        cart.clear()
+
+        return response.Response({'data': order_serializer.data, 'success': True}, status=status.HTTP_200_OK)

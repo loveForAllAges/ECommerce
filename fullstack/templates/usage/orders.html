@@ -19,7 +19,7 @@
                         <h2 class="text-lg font-medium text-gray-900">Заказ #{{ order.number }}</h2>
                     </div>
                     <div class="-m-2 flex flex-1 items-center justify-end">
-                        <a href="{% url 'order' order.pk %}" class="p-2 text-sm duration-150 text-gray-400 hover:text-gray-500">
+                        <a href="{% url 'order-detail' order.pk %}" class="p-2 text-sm duration-150 text-gray-400 hover:text-gray-500">
                             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                             </svg>

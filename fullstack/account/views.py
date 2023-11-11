@@ -192,3 +192,10 @@ class AccountEditView(LoginRequiredMixin, View):
             return redirect('account')
 
         return render(request, self.template_name, {'form': form})
+
+
+class WishlistView(View):
+    template_name = 'usage/wishlist.html'
+
+    def get(self, request):
+        return render(request, self.template_name)

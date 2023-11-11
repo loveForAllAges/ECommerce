@@ -49,7 +49,7 @@ class Order(models.Model):
         return total
     
     def url(self):
-        return reverse('order', kwargs={'pk': self.pk})
+        return reverse('order-detail', kwargs={'pk': self.pk})
 
     @property
     def total_price(self):
