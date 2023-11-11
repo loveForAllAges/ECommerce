@@ -4,6 +4,11 @@ $(document).ready(function(){
         loader.style.display = "none";
     });
 
+    $('.searchModal').on('click', function() {
+        const searchInput = document.getElementById('searchInput');
+        searchInput.focus();
+    })
+
     $("#searchInput").on('input', function () {
         var query = $(this).val();
 

@@ -97,34 +97,6 @@
                 </div>
 
                 <div class="p-4 sm:px-4 sm:py-6 relative">
-                    <h3 id="accordion-color" class="-mx-4 -my-4 sm:-my-6">
-                        <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-color-body" aria-expanded="false" aria-controls="accordion-color-body">
-                            <span class="font-medium text-gray-900">
-                                Цвет
-                                {% if active_color_tags %}
-                                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ active_color_tags|length }}</span>
-                                {% endif %}
-                            </span>
-                            <span class="ml-6 flex items-center">
-                                <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                    </h3>
-                    <div id="accordion-color-body" class="hidden mt-6" aria-labelledby="accordion-color">
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-6">
-                            {% for object in color_list %}
-                            <div class="flex items-center">
-                                <input {% if object.slug in active_color_tags %}checked{% endif %} id="color-{{ object.id }}" name="color" value="{{ object.id }}" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="color-{{ object.id }}" class="ml-3 text-sm text-gray-500">{{ object.name }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-4 sm:px-4 sm:py-6 relative">
                     <h3 id="accordion-size" class="-mx-4 -my-4 sm:-my-6">
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-size-body" aria-expanded="false" aria-controls="accordion-size-body">
                             <span class="font-medium text-gray-900">

@@ -5,16 +5,16 @@ from django.shortcuts import render
 from django.db.models import Q, When, Case, Value, BooleanField
 
 
-class AllCategoriesView(View):
-    template_name = 'usage/store.html'
+# class AllCategoriesView(View):
+#     template_name = 'usage/store.html'
 
-    def get(self, request):
-        context = {}
-        context['object_list'] = Product.objects.all()
-        context['brand_list'] = Brand.objects.all()
-        context['category_type_list'] = Category.objects.filter(parent__isnull=False)
-        context['size_list'] = Size.objects.all()
-        return render(request, self.template_name, context)
+#     def get(self, request):
+#         context = {}
+#         context['object_list'] = Product.objects.all()
+#         context['brand_list'] = Brand.objects.all()
+#         context['category_type_list'] = Category.objects.filter(parent__isnull=False)
+#         context['size_list'] = Size.objects.all()
+#         return render(request, self.template_name, context)
 
 
 class CategoryView(View):

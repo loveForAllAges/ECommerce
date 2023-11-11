@@ -61,6 +61,7 @@ class DeliveryListAPIView(generics.ListAPIView):
     serializer_class = DeliverySerializer
 
 
+
 class CartExists(permissions.BasePermission):
     def has_permission(self, request, view):
         cart = Cart(request)
