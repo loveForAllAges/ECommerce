@@ -16,5 +16,5 @@ class CartSerializer(ModelSerializer):
     goods = CartItemSerializer(many=True, read_only=True, source='cartitem_set')
     class Meta:
         model = Cart
-        fields = ('total_price', 'size', 'goods',)
+        fields = ('total_price', 'size', 'goods')
 

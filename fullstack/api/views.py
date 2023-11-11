@@ -111,4 +111,5 @@ class OrderAPIView(views.APIView):
 
         cart.clear()
 
-        return response.Response({'data': order_serializer.data, 'success': True}, status=status.HTTP_200_OK)
+        message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
+        return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)

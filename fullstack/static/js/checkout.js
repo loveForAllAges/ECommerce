@@ -19,6 +19,13 @@ function checkoutPage(data) {
         } else {
             var wishlistBtnColor = 'text-gray-500 hover:text-gray-600'
         }
+
+        if (item.size) {
+            sizeHTML = `<p class="mt-1 text-sm text-gray-500">${ item.size.name } размер</p>`
+        } else {
+            sizeHTML = ''
+        }
+
         $('#checkoutItems').empty();
         $("#checkoutItems").append(
             `
@@ -31,7 +38,7 @@ function checkoutPage(data) {
                         <span aria-hidden="true" class="absolute inset-0"></span>
                         <div class="flex flex-col">
                             <p class="duration-150 text-sm group-hover:text-blue-600">${ item.product.name }</p>
-                            <p class="mt-1 text-sm text-gray-500">${ item.size.name } размер</p>
+                            ${ sizeHTML }
                             <p class="text-sm text-gray-500">${ item.quantity } шт</p>
                         </div>
                     </a>

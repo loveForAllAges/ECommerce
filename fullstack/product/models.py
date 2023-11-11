@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 class Product(models.Model):
     name = models.CharField(max_length=128)
     brand = models.ManyToManyField(Brand, related_name='brands')
-    size = models.ManyToManyField(Size, blank=True, related_name='sizes')
+    size = models.ManyToManyField(Size, blank=True, related_name='product_sizes')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
     price = models.PositiveIntegerField()

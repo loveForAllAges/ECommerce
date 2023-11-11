@@ -20,7 +20,7 @@ from order.forms import OrderForm
 
 class OrderDetailView(DetailView):
     model = Order
-    template_name = 'usage/orderDetail.html'
+    template_name = 'usage/order.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

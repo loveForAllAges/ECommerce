@@ -78,6 +78,14 @@ function updateCart(data) {
             var itemsArray = Object.values(item.product.images);
             var img = itemsArray.find(item => item.is_main);
 
+            if (item.size) {
+                sizeHTML = `<div class="mt-1 text-sm text-gray-500">${ item.size.name } размер</div>`
+                itemSize = item.size.id
+            } else {
+                sizeHTML = ''
+                itemSize = ''
+            }
+
             $("#cartItems").append(
                 `
                 <li class="flex group p-4 relative">
@@ -89,18 +97,18 @@ function updateCart(data) {
                             <span aria-hidden="true" class="absolute inset-0"></span>
                             <div class="flex flex-col">
                                 <div class="duration-150 text-sm group-hover:text-blue-600">${ item.product.name }</div>
-                                <div class="mt-1 text-sm text-gray-500">${ item.size.name } размер</div>
+                                ${sizeHTML}
                             </div>
                         </a>
                         <div class="ml-4">
                             <span class="isolate inline-flex rounded-md border border-gray-200">
-                                <button type="button" data-product="${ item.product.id }" data-action="minus" data-size="${ item.size.id }" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                <button type="button" data-product="${ item.product.id }" data-action="minus" data-size="${ itemSize}" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                     </svg>
                                 </button>
                                 <div class="relative justify-center cursor-default inline-flex items-center w-7 h-7 text-sm text-gray-900">${ item.quantity }</div>
-                                <button type="button" data-product="${ item.product.id }" data-action="plus" data-size="${ item.size.id }" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                <button type="button" data-product="${ item.product.id }" data-action="plus" data-size="${ itemSize }" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>

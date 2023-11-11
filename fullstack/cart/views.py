@@ -14,34 +14,38 @@ class CartAPIView(APIView):
         return Response(res)
 
     def post(self, request):
-        size = request.data.get('size_id', '')
+        size_id = request.data.get('size_id', '')
         product_id = request.data.get('product_id', '')
-
         try:
-            size = get_object_or_404(Size, id=int(size))
-            product = get_object_or_404(Product, id=product_id)
+            product = Product.objects.get(id=product_id)
+            size = None
+            if product.size.exists():
+                size = Size.objects.get(id=size_id)
             cart = Cart(request)
-            cart.add(product.pk, size.pk)
+            cart.add(product, size)
             res = cart.get_cart()
             st = status.HTTP_200_OK
-        except:
-            st = status.HTTP_404_NOT_FOUND
+        except Exception as ex:
+            print(ex)
+            st = status.HTTP_400_BAD_REQUEST
             res = {'message': 'error'}
 
         return Response(res, status=st)
 
     def put(self, request):
-        size = request.data.get('size_id', '')
+        size_id = request.data.get('size_id', '')
         product_id = request.data.get('product_id', '')
         action = request.data.get('action', '')
         try:
-            size = get_object_or_404(Size, id=int(size))
-            product = get_object_or_404(Product, id=product_id)
+            product = Product.objects.get(id=product_id)
+            size = None
+            if product.size.exists():
+                size = Size.objects.get(id=size_id)
             cart = Cart(request)
-            cart.update(product.pk, action, size.pk)
+            cart.update(product, action, size)
             res = cart.get_cart()
             st = status.HTTP_200_OK
         except:
-            st = status.HTTP_404_NOT_FOUND
+            st = status.HTTP_400_BAD_REQUEST
             res = {'message': 'error'}
         return Response(res, status=st)
