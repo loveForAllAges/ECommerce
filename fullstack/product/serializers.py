@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, ListField, ImageField
 from .models import Product, ProductImage
 from category.serializers import SizeSerializer, BrandSerializer, CategorySerializer
 
@@ -6,11 +6,14 @@ from category.serializers import SizeSerializer, BrandSerializer, CategorySerial
 class ProductImageSerializer(ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ('image', 'is_main')
+        fields = ('image',)
 
 
 class ProductSerializer(ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)
+    images = ListField(
+        child=ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True
+    )
+    # images = ProductImageSerializer(many=True, read_only=True)
     in_wishlist = SerializerMethodField()
     brand = BrandSerializer(many=True, read_only=True)
     size = SizeSerializer(many=True, read_only=True)
@@ -27,3 +30,10 @@ class ProductSerializer(ModelSerializer):
         else:
             res = False
         return res
+    
+    def create(self, validated_data):
+        images = validated_data.pop('images')
+        product = Product.objects.create(**validated_data)
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
+        return product

@@ -75,8 +75,7 @@ function updateCart(data) {
             } else {
                 var wishlistBtnColor = 'text-gray-500 hover:text-gray-600'
             }
-            var itemsArray = Object.values(item.product.images);
-            var img = itemsArray.find(item => item.is_main);
+            var img = item.product.images[0];
 
             if (item.size) {
                 sizeHTML = `<div class="mt-1 text-sm text-gray-500">${ item.size.name } размер</div>`

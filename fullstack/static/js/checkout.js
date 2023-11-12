@@ -12,8 +12,7 @@ function checkoutPage(data) {
         } else {
             var price_per_once = ''
         }
-        var itemsArray = Object.values(item.product.images);
-        var img = itemsArray.find(item => item.is_main);
+        var img = item.product.images[0];
         if (item.product.in_wishlist) {
             var wishlistBtnColor = 'text-rose-500 hover:text-rose-600'
         } else {
@@ -132,14 +131,18 @@ $(document).ready(function(){
             },
             body: checkoutFormData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.data.url;
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                showToast('Введены неверные данные')
+                throw new Error()
             }
         })
+        .then(data => {
+            window.location.href = data.data.url;
+        })
         .catch(error => {
-            console.log('err')
         })
     })
 })

@@ -40,11 +40,7 @@ ADM Товары
                             <tr>
                                 <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
                                     <div class="h-8 w-8 flex-shrink-0">
-                                        {% for image in element.images.all %}
-                                        {% if image.is_main %}
-                                            <img class="h-8 w-8 rounded-lg" src="{{ image.image.url }}" alt="">
-                                        {% endif %}
-                                        {% endfor %}
+                                        <img class="h-8 w-8 rounded-lg" src="{{ element.images.all.0.image.url }}" alt="">
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.name }}</td>

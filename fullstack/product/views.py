@@ -1,6 +1,5 @@
-from django.shortcuts import render
-from .models import Product, Category, Brand, ProductImage
-from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
+from .models import Product, ProductImage
+from django.views.generic import DetailView
  
 
 class ProductDetailView(DetailView):
@@ -10,5 +9,5 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['rec_list'] = Product.objects.all()[:4]
-        context['images'] = ProductImage.objects.filter(product=kwargs['object']).order_by('-is_main')
+        context['images'] = ProductImage.objects.filter(product=kwargs['object'])
         return context

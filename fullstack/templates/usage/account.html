@@ -62,35 +62,19 @@
                         {% for product in order.goods.all %}
                         {% if forloop.counter == 1 %}
                         <div class="absolute w-1/2 h-1/2 rounded-lg border-gray-100 p-1">
-                            {% for image in product.product.images.all %}
-                            {% if image.is_main %}
-                            <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                            {% endif %}
-                            {% endfor %}
+                            <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
                         </div>
                         {% elif forloop.counter == 2 %}
                         <div class="absolute left-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                            {% for image in product.product.images.all %}
-                            {% if image.is_main %}
-                            <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                            {% endif %}
-                            {% endfor %}
+                            <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
                         </div>
                         {% elif forloop.counter == 3 %}
                         <div class="absolute top-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                            {% for image in product.product.images.all %}
-                            {% if image.is_main %}
-                            <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                            {% endif %}
-                            {% endfor %}
+                            <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
                         </div>
                         {% elif forloop.counter == 4 %}
                         <div class="absolute top-auto left-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                            {% for image in product.product.images.all %}
-                            {% if image.is_main %}
-                            <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                            {% endif %}
-                            {% endfor %}
+                            <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
                         </div>
                         {% endif %}
                         {% endfor %}

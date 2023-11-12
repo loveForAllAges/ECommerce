@@ -4,11 +4,7 @@
 <div class="relative group" data-product-card="{{ product.id }}">
     <div>
         <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
-            {% for image in product.images.all %}
-            {% if image.is_main %}
-                <img src="{{ image.image.url }}" class="h-full w-full object-cover object-center">
-            {% endif %}
-            {% endfor %}
+            <img src="{{ product.images.all.0.image.url }}" class="h-full w-full object-cover object-center">
         </div>
         <a href="{% url 'product' product.id %}" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
             <span aria-hidden="true" class="absolute inset-0"></span>
