@@ -11,16 +11,12 @@
     <div class="">
         <div class="py-8">
             <div class="md:flex md:items-center md:justify-between">
-                <div class="md:flex md:space-x-5">
-                    <div class="flex-shrink-0">
-                        <div class="mx-auto rounded-full h-20 w-20 bg-gradient-to-r p-[2px] from-blue-600 to-indigo-600">
-                            <div class="rounded-full flex flex-col justify-between h-full bg-white p-[1px]">
-                                <svg class="rounded-full h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                <div class="md:flex md:space-x-5 md:items-center">
+                    <span class="inline-block h-20 w-20 overflow-hidden rounded-full bg-gray-100">
+                        <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </span>
                     <div class="mt-4 text-center md:mt-0 md:pt-1 md:text-left">
                     <p class="text-sm text-gray-500">Добро пожаловать,</p>
                     <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{ request.user.first_name }} {{ request.user.last_name }}</p>

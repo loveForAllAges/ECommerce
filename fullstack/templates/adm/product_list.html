@@ -28,7 +28,7 @@ ADM Товары
                             <tr>
                                 <th class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
                                 <th class="whitespace-nowrap py-3.5 px-2 text-left text-sm font-semibold text-gray-900">Название</th>
-                                <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Описание</th>
+                                <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell">Описание</th>
                                 <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Категория</th>
                                 <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Цена</th>
                                 <th class="whitespace-nowrap px-2 py-3.5 text-center text-sm font-semibold text-gray-900">В наличии</th>
@@ -44,7 +44,7 @@ ADM Товары
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.name }}</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.description|slice:"24" }}...</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">{{ element.description|slice:"24" }}...</td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.category.name }}</td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.price }} ₽</td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">

@@ -1,5 +1,5 @@
 <div id="productModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-screen md:max-w-xl dark:bg-gray-800" tabindex="-1">
-    <form action="" id="productModalForm" class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
+    <form action="" enctype="multipart/form-data" id="productModalForm"  class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
         <div class="border-b h-12 sm:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
             <h2 class="text-lg font-medium text-gray-900">Управление товаром</h2>
         
@@ -38,17 +38,21 @@
                         <div class="sm:col-span-6">
                             <span class="block text-sm font-medium text-gray-700">Картинки</span>
                             <div class="mt-1 flex items-center justify-center w-full">
-                                <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <label for="fileUpload" class="flex flex-col items-center justify-center w-full border border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <div class="flex items-center justify-center p-2 space-x-4">
+                                        <svg class="h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
-                                        <p class="mt-2 mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Загрузите</span> или перетащите изображения</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">PNG или JPG</p>
+                                        <div class="">
+                                            <p class="mb-1 text-sm text-gray-500">Загрузите изображения</p>
+                                            <p class="text-xs text-gray-500">PNG или JPG</p>
+                                        </div>
                                     </div>
-                                    <input id="dropzone-file" type="file" class="hidden" />
+                                    <input id="fileUpload" multiple type="file" name="images" accept=".jpg,.png,.jpeg" class="hidden">
                                 </label>
-                            </div> 
+                            </div>
+                            <ul class="pt-2 space-y-2" id="fileList">
+                            </ul>
                         </div>
 
                         <div class="sm:col-span-6">
