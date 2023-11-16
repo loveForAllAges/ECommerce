@@ -26,9 +26,10 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.'],
-# }
+REST_FRAMEWORK = {
+    'ORDERING_PARAM': 'sort',
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.'],
+}
 
 
 INSTALLED_APPS = [

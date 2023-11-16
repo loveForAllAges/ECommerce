@@ -1,6 +1,6 @@
 <div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-96 dark:bg-gray-800" tabindex="-1">
     <form method="GET" action="" class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
-        <div class="border-b h-12 sm:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
+        <div class="border-b h-12 md:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
             <h2 class="text-lg font-medium text-gray-900">Фильтры</h2>
         
             <button type="button" data-drawer-hide="filtersModal" aria-controls="filtersModal" class="-mr-1 p-1 text-gray-400 hover:text-gray-500">
@@ -12,8 +12,8 @@
 
         <div class="flex-1 overflow-y-auto">
             <div id="accordion-flush" class="divide-y divide-gray-200" data-accordion="open" data-accordion="collapse">
-                <div class="p-4 sm:px-4 sm:py-6 relative">
-                    <h3 id="accordion-category" class="-mx-4 -my-4 sm:-my-6">
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-category" class="-mx-4 -my-4 md:-my-6">
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-category-body" aria-expanded="false" aria-controls="accordion-category-body">
                             <span class="font-medium text-gray-900">
                                 Категория
@@ -40,8 +40,8 @@
                     </div>
                 </div>
 
-                <div class="p-4 sm:px-4 sm:py-6 relative">
-                    <h3 id="accordion-type" class="-mx-4 -my-4 sm:-my-6">
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-type" class="-mx-4 -my-4 md:-my-6">
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-type-body" aria-expanded="false" aria-controls="accordion-type-body">
                             <span class="font-medium text-gray-900">
                                 Тип
@@ -68,8 +68,8 @@
                     </div>
                 </div>
 
-                <div class="p-4 sm:px-4 sm:py-6 relative">
-                    <h3 id="accordion-brand" class="-mx-4 -my-4 sm:-my-6">
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-brand" class="-mx-4 -my-4 md:-my-6">
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-brand-body" aria-expanded="false" aria-controls="accordion-brand-body">
                             <span class="font-medium text-gray-900">
                                 Бренд
@@ -96,8 +96,8 @@
                     </div>
                 </div>
 
-                <div class="p-4 sm:px-4 sm:py-6 relative">
-                    <h3 id="accordion-size" class="-mx-4 -my-4 sm:-my-6">
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-size" class="-mx-4 -my-4 md:-my-6">
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-size-body" aria-expanded="false" aria-controls="accordion-size-body">
                             <span class="font-medium text-gray-900">
                                 Размер
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-4 sm:px-4 sm:py-6 text-center">
+                <div class="p-4 md:px-4 md:py-6 text-center">
                     <a href="{% url 'category' %}" class="text-sm inline-flex text-gray-500 hover:text-gray-600">
                         Очистить фильтры
                     </a>
