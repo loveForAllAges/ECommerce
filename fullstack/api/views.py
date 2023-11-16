@@ -8,8 +8,9 @@ from search.models import SearchHistory
 import json
 from account.models import Address
 
-from rest_framework import response, views, status, permissions, generics
+from rest_framework import response, views, status, permissions, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from order.models import OrderItem, Delivery
 from cart.cart import Cart
@@ -114,3 +115,33 @@ class OrderAPIView(views.APIView):
 
         message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
         return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
+
+
+# class ProductViewset(viewsets.ModelViewSet):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+
+
+class ProductAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    # filterset_fields = ['name']
+    orderding_fields = ['id', 'price']
+    search_fields = ['id', 'name', 'description']
+
+
+# class ProductAPIView(views.APIView):
+#     queryset = Product.objects.all()
+
+#     def get(self, request):
+#         return response.Response('')
+
+    # def post(self, request):
+    #     print('OK'*10)
+    #     print(request.data)
+    #     serializer = ProductSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     # serializer.save()
+    #     return response.Response(serializer.data)
+    #     return response.Response('OK')

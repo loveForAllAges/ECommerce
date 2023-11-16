@@ -17,9 +17,7 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("category", kwargs={
-            'slug': self.slug
-        })
+        return reverse("category", kwargs={'slug': self.slug})
 
 
 class Brand(models.Model):

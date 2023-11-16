@@ -26,6 +26,11 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.'],
+# }
+
+
 INSTALLED_APPS = [
     # 'django.contrib.admin',
     'daphne',
@@ -35,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'compressor',
     'account',
     'product',

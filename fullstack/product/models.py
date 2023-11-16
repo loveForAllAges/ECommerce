@@ -18,9 +18,7 @@ class Product(models.Model):
         return 
     
     def url(self):
-        return reverse("product", kwargs={
-            'pk': self.pk
-        })
+        return reverse("product", kwargs={'pk': self.pk})
 
 
 class ProductImage(models.Model):

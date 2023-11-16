@@ -1443,6 +1443,10 @@ select {
   display: none;
 }
 
+.aspect-1 {
+  aspect-ratio: 1;
+}
+
 .h-1\/2 {
   height: 50%;
 }

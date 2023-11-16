@@ -23,6 +23,8 @@ $(document).ready(function(){
                         data.result.forEach(function (result) {
                             $('#searchResult').append('<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="/category/?q='+ encodeURIComponent(result.request) +'" class="truncate flex-auto">' + result.request + '</a></li>');
                         });
+                    } else {
+                        $('#searchResult').append('<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="/category/?search='+ encodeURIComponent(query) +'" class="truncate flex-auto">' + query + '</a></li>');
                     }
                 }
             });
