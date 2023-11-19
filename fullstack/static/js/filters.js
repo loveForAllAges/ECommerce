@@ -147,33 +147,24 @@ function getActiveFilters() {
         } else {
             queryDict[key].push(value);
         }
-        // Список уникальных элементов
-        // queryDict[key] = Array.from(new Set(queryDict[key]))
         filterLength++;
     })
 
-    // updateURL(queryDict);
-    return queryDict;
-}
-
-
-
-function getCurrentQueryDict() {
     var urlParams = new URLSearchParams(window.location.search);
-    var queryParams = {};
 
     var searchQuery = urlParams.get('search')
     if (searchQuery) {
-        queryParams['search'] = [searchQuery];
+        queryDict['search'] = [searchQuery];
     }
 
     var sortQuery = urlParams.get('sort')
     if (sortQuery) {
-        queryParams['sort'] = [sortQuery];
+        queryDict['sort'] = [sortQuery];
     }
 
-    return queryParams;
+    return queryDict;
 }
+
 
 // Получение списка GET URL запросов.
 function getQueryDict() {

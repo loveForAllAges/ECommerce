@@ -120,13 +120,8 @@ class OrderAPIView(views.APIView):
         return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
 
 
-# class ProductViewset(viewsets.ModelViewSet):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-
-
 class ProductAPIView(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     filterset_class = ProductFitler
