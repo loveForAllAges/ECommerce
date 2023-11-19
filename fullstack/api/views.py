@@ -45,25 +45,17 @@ class WishlistAPIView(views.APIView):
             return response.Response({'message': 'Ошибка'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-def products(request):
-    obj = Product.objects.all()
+# def search(request):
+#     query = request.GET.get('q', '')
+#     result = SearchHistory.objects.filter(request__icontains=query)
 
-    serialized_data = json.loads(serializers.serialize('json', obj))
-    return JsonResponse(serialized_data, safe=False)
-
-
-def search(request):
-    query = request.GET.get('q', '')
-    result = SearchHistory.objects.filter(request__icontains=query)
-
-    data = [{'request': i.request} for i in result]
-    return JsonResponse({'result': data})
+#     data = [{'request': i.request} for i in result]
+#     return JsonResponse({'result': data})
 
 
 class DeliveryListAPIView(generics.ListAPIView):
     queryset = Delivery.objects.all()
     serializer_class = DeliverySerializer
-
 
 
 class CartExists(permissions.BasePermission):
@@ -120,12 +112,16 @@ class OrderAPIView(views.APIView):
         return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
 
 
-class ProductAPIView(generics.ListAPIView):
+class MainCategoriesAPIView(generics.ListAPIView):
+    queryset = Category.objects.filter(parent__isnull=True)
+    serializer_class = CategorySerializer
+
+
+class ProductAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     filterset_class = ProductFitler
-    # filterset_fields = ['category', 'size', 'brand']
     orderding_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
 
@@ -135,6 +131,9 @@ class ProductAPIView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return response.Response({'items': serializer.data, 'queries': query_list, 'form': filter_data})
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
     def _get_filter_data(self):
         brands = Brand.objects.all()

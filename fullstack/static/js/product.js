@@ -19,6 +19,7 @@ $(document).ready(function(){
         .then(data => {
             console.log(data)
             updateCart(data);
+            showMessage('Добавлено в корзину');
         })
         .catch(error => {
             console.log('addToCartForm err', error)

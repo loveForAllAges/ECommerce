@@ -22,7 +22,6 @@ function updatePageData(queryDict={}) {
         method: 'GET',
         success: function(data) {
             if (data.items && data.items.length > 0) {
-                $('#itemListEmpty').addClass('hidden');
                 $('#itemList').removeClass('hidden');
                 $('#itemList').empty();
                 data.items.forEach(function(product) {
@@ -53,11 +52,27 @@ function updatePageData(queryDict={}) {
 // Отображение искусственного списка товаров, пока данные реальных товаров не будут получены
 function productListPreloader() {
     $('#itemList').empty();
-    $('#itemList').append(
-        `
-        Ожидайте
-        `
-    );
+    for (var i = 0; i < 8; i++) {
+        $('#itemList').append(
+            `
+            <div class="relative group animate-pulse">
+                <div>
+                    <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
+                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded">
+                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+                        <div class="h-2 md:h-3 bg-gray-200 rounded-full"></div>
+                    </div>
+                    <p class="mt-1"><div class="h-3 md:h-4 bg-gray-200 rounded-full w-24"></div></p>
+                </div>
+            </div>
+            `
+        );
+    }
 }
 
 
@@ -85,6 +100,24 @@ function updateFilterData(data, queries) {
 
     var count = 0;
     var subCount = 0;
+
+    $('#mainCategoryList').empty();
+    mainCategories.forEach(e => {
+        var isChecked = (isValueInQueries('category', e.id)) ? 'checked' : '';
+        subCount = (isChecked) ? subCount + 1 : subCount;
+        $('#mainCategoryList').append(
+            `
+            <div class="flex items-center">
+                <input ${ isChecked } id="category-${ e.id }" name="category" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <label for="category-${ e.id }" class="ml-3 text-sm text-gray-500">${ e.name }</label>
+            </div>
+            `
+        )
+    })
+    manageCounter($('#categoryParamLength'), subCount)
+    count += subCount;
+    subCount = 0;
+
     $('#categoryList').empty();
     data.categories.forEach(e => {
         var isChecked = (isValueInQueries('category', e.id)) ? 'checked' : '';

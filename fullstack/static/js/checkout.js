@@ -6,6 +6,7 @@ function checkoutPage(data) {
     $("#checkoutDeliveryPrice").text(`0 ₽`);
     $("#checkoutSalePrice").text(`0 ₽`);
     // $("#checkoutSaleName").append(`<span class="ml-2 rounded-full bg-gray-200 py-0.5 px-2 text-xs text-gray-600"></span>`);
+    $('#checkoutItems').empty();
     data.goods.forEach(item => {
         if (item.quantity > 1) {
             var price_per_once = `<p class="text-sm text-gray-500">1 шт / ${ item.product.price.toLocaleString('ru-RU') } ₽</p>`
@@ -25,7 +26,6 @@ function checkoutPage(data) {
             sizeHTML = ''
         }
 
-        $('#checkoutItems').empty();
         $("#checkoutItems").append(
             `
             <li class="flex group py-4 relative">

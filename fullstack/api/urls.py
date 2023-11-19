@@ -9,14 +9,14 @@ from rest_framework.routers import DefaultRouter
 
 
 urlpatterns = [
-    # path('products/', views.products, name='products'),
     path('products', views.ProductAPIView.as_view()),
     # path('', include(router.urls)),
     # path('products/<int:pk>/', views.ProductDetailAPIView.as_view()),
 
-    # path('get-query-data', views.getQueryData)
 
-    path('search/', views.search, name='search'),
+    path('main-categories', views.MainCategoriesAPIView.as_view()),
+
+    # path('search/', views.search, name='search'),
     
     path('wishlist/', views.WishlistAPIView.as_view()),
 

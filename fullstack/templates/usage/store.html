@@ -62,7 +62,7 @@
     <div id="itemList" class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
     </div>
 
-    <div id="itemListEmpty" class="mt-10 text-center">
+    <div id="itemListEmpty" class="hidden mt-10 text-center">
         <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
         </svg>
@@ -76,87 +76,5 @@
 {% endblock content %}
 
 {% block scripts %}
-<script>
-    // function getQueryParams() {
-    //     var queryParams = {};
-    //     var queryString = window.location.search.substring(1);
-    //     var params = new URLSearchParams(queryString);
-    //     params.delete('sort');
-    //     var vars = params.toString().split('&');
-
-    //     if (params.size) {
-    //         vars.forEach(e => {
-    //             var pair = e.split('=');
-    //             queryParams[pair[0]] = pair[1];
-    //         })
-    //     }
-    //     return queryParams;
-    // }
-
-
-    // function displayQueries() {
-    //     var queryParams = getQueryParams();
-    //     var queryList = $('#queryList');
-    //     queryList.empty();
-
-    //     for (var key in queryParams) {
-    //         if (queryParams.hasOwnProperty(key)) {
-    //             queryList.append(
-    //                 `
-    //                 <span class="inline-flex items-center rounded-full bg-blue-100 py-0.5 pl-2 pr-0.5 text-xs font-medium text-blue-700">
-    //                     ${queryParams[key]}
-    //                     <button data-key="${key}" onclick="removeQuery('${key}')" type="button" class="ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:bg-blue-500 focus:text-white focus:outline-none">
-    //                       <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-    //                         <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
-    //                       </svg>
-    //                     </button>
-    //                 </span>
-    //                 `
-    //             );
-    //         }
-    //     }
-    // }
-
-    // displayQueries();
-</script>
 <script type="text/javascript" src="{% static 'js/filters.js' %}"></script>
 {% endblock scripts %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Старая версия сортировки -->
-<ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
-    <li>
-        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=popular{% else %}?{{ request.GET.urlencode }}&sort=popular{% endif %}" class="{% if not request.GET.sort or 'popular' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
-            Сначала популярные
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=new{% else %}?{{ request.GET.urlencode }}&sort=new{% endif %}" class="{% if 'new' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
-            Сначала новые
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=expensive{% else %}?{{ request.GET.urlencode }}&sort=expensive{% endif %}" class="{% if 'expensive' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md ">
-            Сначала дороже
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'category' %}{% if 'sort' in request.GET %}?{% remove_tag 'sort' %}&sort=cheaper{% else %}?{{ request.GET.urlencode }}&sort=cheaper{% endif %}" class="{% if 'cheaper' == request.GET.sort %}text-gray-900 font-medium bg-gray-100{% else %}hover:bg-gray-100{% endif %} text-gray-500 flex items-center py-2 px-4 rounded-md">
-            Сначала дешевле
-        </a>
-    </li>
-</ul>
