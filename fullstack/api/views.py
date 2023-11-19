@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 
-from product.models import Product
+from product.models import Product, Brand, Size
 from product.serializers import ProductSerializer
-
+from category.models import Category
+from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
+from django.shortcuts import get_object_or_404
 from django.core import serializers
 from search.models import SearchHistory
 import json
@@ -11,11 +13,12 @@ from account.models import Address
 from rest_framework import response, views, status, permissions, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from order.models import OrderItem, Delivery
 from cart.cart import Cart
-
 from order.serializers import DeliverySerializer, OrderSerializer
+from .filters import ProductFitler
 
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
@@ -125,10 +128,54 @@ class OrderAPIView(views.APIView):
 class ProductAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [SearchFilter, OrderingFilter]
-    # filterset_fields = ['name']
+    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
+    filterset_class = ProductFitler
+    # filterset_fields = ['category', 'size', 'brand']
     orderding_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
+
+    def list(self, request, *args, **kwargs):
+        query_list = self._get_query_list(request)
+        filter_data = self._get_filter_data()
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response({'items': serializer.data, 'queries': query_list, 'form': filter_data})
+
+    def _get_filter_data(self):
+        brands = Brand.objects.all()
+        brand_serializer = BrandSerializer(brands, many=True)
+        sizes = Size.objects.all()
+        size_serializer = SizeSerializer(sizes, many=True)
+        caterogies = Category.objects.filter(parent__isnull=False)
+        category_serializer = CategorySerializer(caterogies, many=True)
+        return {
+            'brands': brand_serializer.data, 
+            'sizes': size_serializer.data,
+            'categories': category_serializer.data
+        }
+
+    def _get_query_list(self, request):
+        query_list = list()
+        search_param = request.query_params.get('search', '')
+        category_param = request.query_params.get('category', '')
+        brand_param = request.query_params.get('brand', '')
+        size_param = request.query_params.get('size', '')
+
+        query_list += [['search', search_param, search_param]]
+
+        if category_param:
+            lst = category_param.split(',')
+            query_list += [['category', i, get_object_or_404(Category, pk=i).name] for i in lst]
+        
+        if brand_param:
+            lst = brand_param.split(',')
+            query_list += [['brand', i, get_object_or_404(Brand, pk=i).name] for i in lst]
+
+        if size_param:
+            lst = size_param.split(',')
+            query_list += [['size', i, get_object_or_404(Size, pk=i).name] for i in lst]
+
+        return query_list
 
 
 # class ProductAPIView(views.APIView):

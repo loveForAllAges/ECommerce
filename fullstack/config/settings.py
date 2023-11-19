@@ -28,7 +28,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 REST_FRAMEWORK = {
     'ORDERING_PARAM': 'sort',
-    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.'],
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 

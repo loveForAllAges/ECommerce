@@ -50,7 +50,7 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex items-center">
         <div class="sm:flex flex-1 items-center justify-start space-x-8">
             {% for category in categories %}
-            <a href="{% url 'category' %}?category={{ category.slug }}" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">{{ category.name }}</a>
+            <a href="{% url 'category' %}?category={{ category.id }}" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">{{ category.name }}</a>
             {% endfor %}
         </div>
 

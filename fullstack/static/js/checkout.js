@@ -135,7 +135,7 @@ $(document).ready(function(){
             if (response.ok) {
                 return response.json()
             } else {
-                showToast('Введены неверные данные')
+                showMessage('Введены неверные данные')
                 throw new Error()
             }
         })

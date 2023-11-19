@@ -1,7 +1,9 @@
 <div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-96 dark:bg-gray-800" tabindex="-1">
-    <form method="GET" action="" class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
+    <form class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
         <div class="border-b h-12 md:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
-            <h2 class="text-lg font-medium text-gray-900">Фильтры</h2>
+            <h2 class="text-lg font-medium text-gray-900">
+                Фильтры <span class="filterLength ml-2 font-normal text-xs text-gray-500"></span>
+            </h2>
         
             <button type="button" data-drawer-hide="filtersModal" aria-controls="filtersModal" class="-mr-1 p-1 text-gray-400 hover:text-gray-500">
                 <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -17,9 +19,7 @@
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-category-body" aria-expanded="false" aria-controls="accordion-category-body">
                             <span class="font-medium text-gray-900">
                                 Категория
-                                {% if active_category_tags %}
-                                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ active_category_tags|length }}</span>
-                                {% endif %}
+                                <span id="categoryParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
                             </span>
                             <span class="ml-6 flex items-center">
                                 <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -29,13 +29,7 @@
                         </button>
                     </h3>
                     <div id="accordion-category-body" class="hidden mt-6" aria-labelledby="accordion-category">
-                        <div class="space-y-6">
-                            {% for object in categories %}
-                            <div class="flex items-center">
-                                <input {% if object.slug in active_category_tags %}checked{% endif %} id="category-{{ object.slug }}" name="category" value="{{ object.slug }}" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="category-{{ object.slug }}" class="ml-3 text-sm text-gray-500">{{ object.name }}</label>
-                            </div>
-                            {% endfor %}
+                        <div id="mainCategoryList" class="space-y-6">
                         </div>
                     </div>
                 </div>
@@ -45,9 +39,7 @@
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-type-body" aria-expanded="false" aria-controls="accordion-type-body">
                             <span class="font-medium text-gray-900">
                                 Тип
-                                {% if active_type_tags %}
-                                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ active_type_tags|length }}</span>
-                                {% endif %}
+                                <span id="typeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
                             </span>
                             <span class="ml-6 flex items-center">
                                 <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -57,13 +49,7 @@
                         </button>
                     </h3>
                     <div id="accordion-type-body" class="hidden mt-6" aria-labelledby="accordion-type">
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-6">
-                            {% for object in category_type_list %}
-                            <div class="flex items-center">
-                                <input {% if object.slug in active_type_tags %}checked{% endif %} id="type-{{ object.slug }}" name="type" value="{{ object.slug }}" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="type-{{ object.slug }}" class="ml-3 text-sm text-gray-500">{{ object.name }}</label>
-                            </div>
-                            {% endfor %}
+                        <div id="categoryList" class="grid grid-cols-2 gap-x-2 gap-y-6">
                         </div>
                     </div>
                 </div>
@@ -73,9 +59,7 @@
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-brand-body" aria-expanded="false" aria-controls="accordion-brand-body">
                             <span class="font-medium text-gray-900">
                                 Бренд
-                                {% if active_brand_tags %}
-                                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ active_brand_tags|length }}</span>
-                                {% endif %}
+                                <span id="brandParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
                             </span>
                             <span class="ml-6 flex items-center">
                                 <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -85,13 +69,7 @@
                         </button>
                     </h3>
                     <div id="accordion-brand-body" class="hidden mt-6" aria-labelledby="accordion-brand">
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-6">
-                            {% for object in brand_list %}
-                            <div class="flex items-center">
-                                <input {% if object.slug in active_brand_tags %}checked{% endif %} id="brand-{{ object.slug }}" name="brand" value="{{ object.slug }}" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="brand-{{ object.slug }}" class="ml-3 text-sm text-gray-500">{{ object.name }}</label>
-                            </div>
-                            {% endfor %}
+                        <div id="brandList" class="grid grid-cols-2 gap-x-2 gap-y-6">
                         </div>
                     </div>
                 </div>
@@ -101,9 +79,7 @@
                         <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-size-body" aria-expanded="false" aria-controls="accordion-size-body">
                             <span class="font-medium text-gray-900">
                                 Размер
-                                {% if active_size_tags %}
-                                <span class="ml-1.5 rounded bg-gray-200 py-0.5 px-1.5 text-xs font-semibold tabular-nums text-gray-700">{{ active_size_tags|length }}</span>
-                                {% endif %}
+                                <span id="sizeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
                             </span>
                             <span class="ml-6 flex items-center">
                                 <svg data-accordion-icon class="h-5 w-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -113,13 +89,7 @@
                         </button>
                     </h3>
                     <div id="accordion-size-body" class="hidden mt-6" aria-labelledby="accordion-size">
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-6">
-                            {% for object in size_list %}
-                            <div class="flex items-center">
-                                <input {% if object.slug in active_size_tags %}checked{% endif %} id="size-{{ object.id }}" name="size" value="{{ object.id }}" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="size-{{ object.id }}" class="ml-3 text-sm text-gray-500">{{ object.name }}</label>
-                            </div>
-                            {% endfor %}
+                        <div id="sizeList" class="grid grid-cols-2 gap-x-2 gap-y-6">
                         </div>
                     </div>
                 </div>
@@ -131,9 +101,9 @@
             </div>
         </div>
 
-        <div class="border-t border-gray-200 w-full h-12 md:h-16 bg-white flex align-middle justify-between px-4">
+        <div class="w-full h-12 md:h-16 bg-white flex align-middle justify-between px-4">
             <div class="flex items-center justify-between space-x-4 w-full">
-                <button type="submit" class="inline-flex w-full flex-1 items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                <button id="filtersBtn" data-drawer-hide="filtersModal" aria-controls="filtersModal" type="button" class="inline-flex w-full flex-1 items-center justify-center rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
                     Сохранить
                 </button>
             </div>

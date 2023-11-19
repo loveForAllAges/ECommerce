@@ -1,7 +1,7 @@
-function showToast(message) {
+function showMessage(message) {
     const toastMessage = document.getElementById('toastMessage');
     if (toastMessage.childElementCount) {
-        toastMessage.removeChild();
+        toastMessage.innerHTML = '';
     }
     let toast = document.createElement('div');
     toast.innerHTML = `

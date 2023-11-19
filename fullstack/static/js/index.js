@@ -1,8 +1,8 @@
 $(document).ready(function(){
-    window.addEventListener("load", function () {
-        var loader = document.getElementById("preloader");
-        loader.style.display = "none";
-    });
+    // window.addEventListener("load", function () {
+    //     var loader = document.getElementById("preloader");
+    //     loader.style.display = "none";
+    // });
 
     $('.searchModal').on('click', function() {
         const searchInput = document.getElementById('searchInput');

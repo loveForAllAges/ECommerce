@@ -6,7 +6,7 @@ def categories(request):
     category_list = Category.objects.filter(parent=None)
     
     for category in category_list:
-        cat_data = {'name': category.name, 'slug': category.slug, 'logo': ''}
+        cat_data = {'id': category.id, 'name': category.name, 'slug': category.slug, 'logo': ''}
         child_category_list = category.children.all()
 
         for child_category in child_category_list:

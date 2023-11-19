@@ -14,6 +14,8 @@ urlpatterns = [
     # path('', include(router.urls)),
     # path('products/<int:pk>/', views.ProductDetailAPIView.as_view()),
 
+    # path('get-query-data', views.getQueryData)
+
     path('search/', views.search, name='search'),
     
     path('wishlist/', views.WishlistAPIView.as_view()),
