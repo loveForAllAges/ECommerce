@@ -1,6 +1,10 @@
 from django.db import models
-from category.models import Category, Brand, Size
 from django.shortcuts import reverse
+
+from category.models import Category, Brand, Size
+
+from PIL import Image
+
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
@@ -24,6 +28,18 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='productImages/')
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.product.name
+        img = Image.open(self.image.path)
+
+        size = min(img.width, img.height)
+        left = (img.width - size) / 2
+        top = (img.height - size) / 2
+        right = (img.width + size) / 2
+        bottom = (img.height + size) / 2
+
+        img = img.crop((left, top, right, bottom))
+        img.thumbnail((4096, 4096))
+        img.save(self.image.path)

@@ -10,7 +10,7 @@ function addProductCard(data, list) {
         <div class="relative group" data-product-card="${ data.id }">
             <div>
                 <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
-                    <img src="${ data.images[0].image }" class="h-full w-full object-cover object-center">
+                    <img src="${ data.images[0] }" class="h-full w-full object-cover object-center">
                 </div>
                 <a href="${ data.url }" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
                     <span aria-hidden="true" class="absolute inset-0"></span>
