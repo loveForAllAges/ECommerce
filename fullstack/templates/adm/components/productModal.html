@@ -17,21 +17,21 @@
                         <div class="sm:col-span-6">
                             <label for="productName" class="block text-sm font-medium text-gray-700">Название</label>
                             <div class="mt-1">
-                                <input type="text" name="name" id="productName" autocomplete="name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <input type="text" name="name" required id="productName" autocomplete="name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                             </div>
                         </div>
 
                         <div class="sm:col-span-6">
                             <label for="productAbout" class="block text-sm font-medium text-gray-700">Описание</label>
                             <div class="mt-1">
-                                <textarea id="productAbout" name="about" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                                <textarea id="productAbout" name="about" required rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
                             <label for="productPrice" class="block text-sm font-medium text-gray-700">Цена</label>
                             <div class="mt-1">
-                                <input type="text" name="price" id="productPrice" autocomplete="price" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <input type="text" name="price" id="productPrice" required autocomplete="price" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                             </div>
                         </div>
                 
@@ -58,9 +58,7 @@
                         <div class="sm:col-span-6">
                             <label for="productCategory" class="block text-sm font-medium text-gray-700">Категория</label>
                             <div class="mt-1">
-                              <select id="productCategory" name="category" autocomplete="category" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                                <option>Обувь</option>
-                                <option>Одежда</option>
+                              <select id="productCategory" name="category" required autocomplete="category" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">                                
                               </select>
                             </div>
                         </div>

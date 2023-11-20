@@ -117,6 +117,11 @@ class MainCategoriesAPIView(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
+class SubCategoriesAPIView(generics.ListAPIView):
+    queryset = Category.objects.filter(parent__isnull=False)
+    serializer_class = CategorySerializer
+
+
 class ProductAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer

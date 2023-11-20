@@ -1,5 +1,26 @@
+function getSubCategories() {
+    $.ajax({
+        url: '/api/sub-categories',
+        success: function(data) {
+            console.log('data', data)
+            data.forEach(i => {
+                $('#productCategory').append(
+                    `<option>${ i.name }</option>`
+                )
+            })
+        },
+        error: function(error) {
+
+        }
+    })
+    return
+}
+
+
 $(document).ready(function(){
     var editProductBtns = document.querySelectorAll(".editProductBtn");
+
+    getSubCategories();
 
     function openProductModal() {
         var productId = this.dataset.id;
@@ -27,21 +48,27 @@ $(document).ready(function(){
         element.addEventListener('click', openProductModal)
     })
 
+    function validateForm() {
+        return false;
+    }
+
     $('#productModalForm').submit(function(e) {
         e.preventDefault()
+
+        if (!validateForm()) return;
+
         const productModalForm = document.querySelector('#productModalForm');
         const formData = new FormData(productModalForm)
 
         $.ajax({
-            url: '/api/products/',
+            url: '/api/products',
             type: 'POST',
             data: formData,
             headers: {
                 'X-CSRFToken': csrftoken,
             },
-            dataType: 'json',
+            // dataType: 'json',
             processData: false,
-            // contentType: false,
             success: function(data) {
                 console.log('data success', data)
             },
