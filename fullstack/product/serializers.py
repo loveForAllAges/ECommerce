@@ -1,6 +1,16 @@
 from rest_framework import serializers
 from .models import Product, ProductImage
 from category.serializers import SizeSerializer, BrandSerializer, CategorySerializer
+from category.models import Category, Brand, Size
+
+
+ERROR_MESSAGES = {
+    'required': 'Это обязательное поле',
+    'invalid': 'Неверный формат',
+    'etc': 'Неверные данные',
+    'max_value': 'Максимальная цена - 10 000 000 ₽',
+    'min_value': 'Минимальная цена - 1 ₽',
+}
 
 
 class ProductImageListingField(serializers.RelatedField):
@@ -12,11 +22,44 @@ class ProductImageListingField(serializers.RelatedField):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageListingField(many=True, read_only=True)
     in_wishlist = serializers.SerializerMethodField()
-    # brands = BrandSerializer(many=True)
     # size = SizeSerializer(many=True, read_only=True)
     # category = CategorySerializer()
     url = serializers.HyperlinkedIdentityField(view_name='product')
     # brand = serializers.PrimaryKeyRelatedField(many=True, queryset)
+    name = serializers.CharField(max_length=128, error_messages={
+        'required': ERROR_MESSAGES['required'],
+        'blank': ERROR_MESSAGES['required'],
+        'invalid': ERROR_MESSAGES['invalid'],
+        'max_length': 'Максимальная длина названия - 128 символов'
+    })
+    description = serializers.CharField(error_messages={
+        'required': ERROR_MESSAGES['required'],
+        'blank': ERROR_MESSAGES['required'],
+    })
+    price = serializers.IntegerField(min_value=1, max_value=10000000, error_messages={
+        'required': ERROR_MESSAGES['required'],
+        'invalid': ERROR_MESSAGES['invalid'],
+        'max_value': ERROR_MESSAGES['max_value'],
+        'min_value': ERROR_MESSAGES['min_value'],
+    })
+    category = serializers.PrimaryKeyRelatedField(error_messages={
+        'null': ERROR_MESSAGES['required'],
+        'does_not_exist': ERROR_MESSAGES['etc'],
+        'required': ERROR_MESSAGES['required'],
+        'incorrect_type': ERROR_MESSAGES['invalid'],
+    }, queryset=Category.objects.all())
+    brand = serializers.PrimaryKeyRelatedField(error_messages={
+        'null': ERROR_MESSAGES['required'],
+        'does_not_exist': ERROR_MESSAGES['etc'],
+        'required': ERROR_MESSAGES['required'],
+        'incorrect_type': ERROR_MESSAGES['invalid'],
+    }, queryset=Brand.objects.all(), many=True)
+    size = serializers.PrimaryKeyRelatedField(error_messages={
+        'null': ERROR_MESSAGES['required'],
+        'does_not_exist': ERROR_MESSAGES['etc'],
+        'required': ERROR_MESSAGES['required'],
+        'incorrect_type': ERROR_MESSAGES['invalid'],
+    }, queryset=Size.objects.all(), required=False, many=True)
 
     class Meta:
         model = Product
@@ -25,7 +68,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate(self, data):
         images_data = self.context.get('request').FILES.getlist('images')
         if not images_data or not 0 < len(images_data) <= 6:
-            raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6.']})
+            raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
         return data
 
     def create(self, validated_data):
