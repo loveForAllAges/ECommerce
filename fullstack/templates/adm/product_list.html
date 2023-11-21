@@ -9,14 +9,14 @@ ADM Товары
 
 {% block content %}
 <div class="p-4 sm:p-6 lg:p-8">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
+    <div class="flex items-center">
+        <div class="flex-auto">
             <h1 class="text-xl font-semibold text-gray-900">
                 Товары <span class="ml-2 text-sm font-normal text-gray-500">{{ object_list|length }}</span>
             </h1>
         </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-            <button type="button" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto">Создать</button>
+        <div class="flex-none">
+            <button type="button" onclick="resetProductForm()" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto">Создать</button>
         </div>
     </div>
     <div class="mt-8 flex flex-col">
@@ -29,9 +29,9 @@ ADM Товары
                                 <th class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
                                 <th class="whitespace-nowrap py-3.5 px-2 text-left text-sm font-semibold text-gray-900">Название</th>
                                 <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell">Описание</th>
-                                <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Категория</th>
+                                <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell">Категория</th>
                                 <th class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Цена</th>
-                                <th class="whitespace-nowrap px-2 py-3.5 text-center text-sm font-semibold text-gray-900">В наличии</th>
+                                <th class="whitespace-nowrap px-2 py-3.5 text-center text-sm font-semibold text-gray-900 hidden lg:table-cell">В наличии</th>
                                 <th class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"></th>
                             </tr>
                         </thead>
@@ -45,9 +45,9 @@ ADM Товары
                                 </td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.name }}</td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">{{ element.description|slice:"24" }}...</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.category.name }}</td>
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">{{ element.category.name }}</td>
                                 <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.price }} ₽</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">
                                     {% if element.in_stock %}
                                     <svg class="mx-auto h-5 w-5 flex-shrink-0 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"></path>
@@ -71,7 +71,7 @@ ADM Товары
                                             </a>
                                         </li>
                                         <li>
-                                            <button type="button" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" data-id="{{ element.pk }}" class="editProductBtn hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                            <button type="button" onclick="openProductModal({{ element.pk }})" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" data-id="{{ element.pk }}" class="editProductBtn hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
                                                 Редактировать
                                             </button>
                                         </li>
