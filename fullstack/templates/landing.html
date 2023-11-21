@@ -42,59 +42,11 @@
 </div>
 
 
-<div class="mx-auto max-w-7xl px-4 py-24 lg:py-32 sm:px-6 lb:px-8">
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Новинки</h2>
-        <a href="{% url 'category' %}" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
-            Смотреть все
-        </a>
-    </div>
-    <div class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
-        {% for product in new_product_list %}
-        {% include 'components/productCard.html' %}
-        {% endfor %}
-    </div>
-</div>
+<div id="page">
 
-<div class="mx-auto max-w-7xl px-4 pb-24 lg:pb-32 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Обувь</h2>
-        <a href="{% url 'category' %}" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
-            Смотреть все
-        </a>
-    </div>
-    <div class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
-        {% for product in shoes_list %}
-        {% include 'components/productCard.html' %}
-        {% endfor %}
-    </div>
-</div>
-
-<div class="mx-auto max-w-7xl px-4 pb-24 lg:pb-32 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Одежда</h2>
-        <a href="{% url 'category' %}" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
-            Смотреть все
-        </a>
-    </div>
-    <div class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
-        {% for product in clothes_list %}
-        {% include 'components/productCard.html' %}
-        {% endfor %}
-    </div>
-</div>
-
-<div class="mx-auto max-w-7xl px-4 pb-24 lg:pb-32 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Аксессуары</h2>
-        <a href="{% url 'category' %}" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
-            Смотреть все
-        </a>
-    </div>
-    <div class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
-        {% for product in accessories_list %}
-        {% include 'components/productCard.html' %}
-        {% endfor %}
-    </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock scripts %}

@@ -18,4 +18,3 @@ class MainView(View):
         context['search_data'] = search_data
 
         return render(request, self.template_name, context)
-    

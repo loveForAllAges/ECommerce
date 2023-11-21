@@ -8,6 +8,10 @@ urlpatterns = [
 
     path('main-categories', views.MainCategoriesAPIView.as_view()),
     path('product-filters', views.ProductFiltersAPIView.as_view()),
+
+    path('search', views.SearchAPIListView.as_view()),
+
+    path('home', views.HomeAPIView.as_view()),
     
     path('wishlist/', views.WishlistAPIView.as_view()),
 

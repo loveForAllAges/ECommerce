@@ -27,6 +27,16 @@ function getProductList() {
         url: '/api/products',
         success: function(data) {
             productList = data;
+            if (data.items && data.items.length > 0) {
+                $('#productList').removeClass('hidden');
+                $('#productList').empty();
+                data.items.forEach(function(product) {
+                    updateProductList(product)
+                })
+            } else {
+                $('#productList').addClass('hidden');
+                $('#productListEmpty').removeClass('hidden');
+            }
         },
         error: function(error) {
             console.log('Error')
@@ -139,7 +149,7 @@ function updateProductList(data) {
             <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.name }</td>
             <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">${ data.description.substring(0, 24) }...</td>
             <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">${ data.category }</td>
-            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.price } ₽</td>
+            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.price.toLocaleString('ru-RU') } ₽</td>
             <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">${ inStock }</td>
             <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <div class="flex items-center justify-end">
@@ -220,7 +230,7 @@ function updateErrorFields(error) {
 
 
 $(document).ready(function() {
-    getProductList();
+    // getProductList();
 
     getProductFilters()
         .then(function(data) {

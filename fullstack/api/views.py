@@ -19,6 +19,7 @@ from order.models import OrderItem, Delivery
 from cart.cart import Cart
 from order.serializers import DeliverySerializer, OrderSerializer
 from .filters import ProductFitler
+from .serializer import SearchHistorySerializer
 from config.permissions import IsStaffOrReadOnly
 
 
@@ -129,6 +130,13 @@ class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
     # permission_classes = [IsStaffOrReadOnly]
 
 
+class SearchAPIListView(generics.ListAPIView):
+    queryset = SearchHistory.objects.all()
+    serializer_class = SearchHistorySerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['request']
+
+
 class ProductAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
@@ -166,3 +174,19 @@ class ProductAPIView(generics.ListCreateAPIView):
             query_list += [['size', i, get_object_or_404(Size, pk=i).name] for i in lst]
 
         return query_list
+
+
+class HomeAPIView(views.APIView):
+    def get(self, request):
+        res = list()
+        cats = Category.objects.filter(parent__isnull=False)
+
+        data = Product.objects.all().order_by('-id')[:4]
+        res.append({'title': 'Новинки', 'url': '?sort=-id', 'content': ProductSerializer(data, many=True, context={'request': request}).data})
+
+        for cat in cats:
+            data = Product.objects.filter(category=cat)[:4]
+            res.append({'title': cat.name, 'url': f'?category={cat.id}', 'content': ProductSerializer(data, many=True, context={'request': request}).data})
+
+        return response.Response(res, status=status.HTTP_200_OK)
+    
