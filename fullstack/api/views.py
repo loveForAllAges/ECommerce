@@ -10,7 +10,7 @@ from search.models import SearchHistory
 import json
 from account.models import Address
 
-from rest_framework import response, views, status, permissions, generics, viewsets
+from rest_framework import response, views, status, permissions, generics, viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,11 +19,7 @@ from order.models import OrderItem, Delivery
 from cart.cart import Cart
 from order.serializers import DeliverySerializer, OrderSerializer
 from .filters import ProductFitler
-
-
-class ProductDetailAPIView(generics.RetrieveAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+from config.permissions import IsStaffOrReadOnly
 
 
 class WishlistAPIView(views.APIView):
@@ -127,6 +123,12 @@ class SubCategoriesAPIView(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
+class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    # permission_classes = [IsStaffOrReadOnly]
+
+
 class ProductAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
@@ -141,10 +143,6 @@ class ProductAPIView(generics.ListCreateAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return response.Response({'items': serializer.data, 'queries': query_list})
-
-    def create(self, request, *args, **kwargs):
-        print(self.serializer_class())
-        return super().create(request, *args, **kwargs)
 
     def _get_query_list(self, request):
         query_list = list()
@@ -168,19 +166,3 @@ class ProductAPIView(generics.ListCreateAPIView):
             query_list += [['size', i, get_object_or_404(Size, pk=i).name] for i in lst]
 
         return query_list
-
-
-# class ProductAPIView(views.APIView):
-#     queryset = Product.objects.all()
-
-#     def get(self, request):
-#         return response.Response('')
-
-    # def post(self, request):
-    #     print('OK'*10)
-    #     print(request.data)
-    #     serializer = ProductSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     # serializer.save()
-    #     return response.Response(serializer.data)
-    #     return response.Response('OK')

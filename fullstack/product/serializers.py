@@ -66,16 +66,27 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('__all__')
 
-    def validate(self, data):
-        images_data = self.context.get('request').FILES.getlist('images')
-        if not images_data or not 0 < len(images_data) <= 6:
-            raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
-        return data
+    # def validate(self, data):
+        # images_data = self.context.get('request').FILES.getlist('images')
+        # if not images_data or not 0 < len(images_data) <= 6:
+        #     raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
+    #     return data
+
+    def get_in_wishlist(self, obj):
+        request = self.context.get('request')
+        if request.user.is_authenticated:
+            res = request.user.wishlist.filter(id=obj.id).exists()
+        else:
+            res = False
+        return res
 
     def create(self, validated_data):
         images_data = self.context.get('request').FILES.getlist('images')
         brand_data = validated_data.pop('brand', [])
         size_data = validated_data.pop('size', [])
+
+        if not images_data or not 0 < len(images_data) <= 6:
+            raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
         
         product = Product.objects.create(**validated_data)
 
@@ -89,11 +100,17 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductImage.objects.create(product=product, image=image_data)
         return product
 
-    def get_in_wishlist(self, obj):
-        request = self.context.get('request')
-        if request.user.is_authenticated:
-            res = request.user.wishlist.filter(id=obj.id).exists()
-        else:
-            res = False
-        return res
+    def update(self, instance, validated_data):
+        current_images = instance.images.all()
+        images_data = self.context.get('request').FILES.getlist('images', current_images)
 
+        if not images_data or not 0 < len(images_data) <= 6:
+            raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
+        
+        if images_data != current_images:
+            current_images.delete()
+
+            for image in images_data:
+                ProductImage.objects.create(product=instance, image=image)
+
+        return super().update(instance, validated_data)
