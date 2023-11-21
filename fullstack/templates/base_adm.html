@@ -11,7 +11,7 @@
     {% endcompress %}
     <title>{% block title %}ADM{% endblock %}</title> 
     <script type="text/script" src="{% static '../node_modules/flowbite/plugin.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/getCookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
 </head>
 <body class="h-full">
     {% block components %}
@@ -25,6 +25,8 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <div id="toastMessage"></div>
 
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/adm.js' %}"></script>

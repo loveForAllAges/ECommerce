@@ -53,7 +53,8 @@ class ProductSerializer(serializers.ModelSerializer):
         'does_not_exist': ERROR_MESSAGES['etc'],
         'required': ERROR_MESSAGES['required'],
         'incorrect_type': ERROR_MESSAGES['invalid'],
-    }, queryset=Brand.objects.all(), many=True)
+        'empty': ERROR_MESSAGES['required']
+    }, queryset=Brand.objects.all(), many=True, allow_empty=False)
     size = serializers.PrimaryKeyRelatedField(error_messages={
         'null': ERROR_MESSAGES['required'],
         'does_not_exist': ERROR_MESSAGES['etc'],

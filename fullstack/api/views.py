@@ -45,14 +45,6 @@ class WishlistAPIView(views.APIView):
             return response.Response({'message': 'Ошибка'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# def search(request):
-#     query = request.GET.get('q', '')
-#     result = SearchHistory.objects.filter(request__icontains=query)
-
-#     data = [{'request': i.request} for i in result]
-#     return JsonResponse({'result': data})
-
-
 class DeliveryListAPIView(generics.ListAPIView):
     queryset = Delivery.objects.all()
     serializer_class = DeliverySerializer
@@ -112,6 +104,19 @@ class OrderAPIView(views.APIView):
         return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
 
 
+class ProductFiltersAPIView(views.APIView):
+    def get(self, request):
+        brands = Brand.objects.all()
+        brand_serializer = BrandSerializer(brands, many=True)
+        sizes = Size.objects.all()
+        size_serializer = SizeSerializer(sizes, many=True)
+        caterogies = Category.objects.filter(parent__isnull=False)
+        category_serializer = CategorySerializer(caterogies, many=True)
+        return response.Response({
+            'brands': brand_serializer.data, 'sizes': size_serializer.data, 'categories': category_serializer.data
+        })
+
+
 class MainCategoriesAPIView(generics.ListAPIView):
     queryset = Category.objects.filter(parent__isnull=True)
     serializer_class = CategorySerializer
@@ -132,26 +137,14 @@ class ProductAPIView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         query_list = self._get_query_list(request)
-        filter_data = self._get_filter_data()
+        # filter_data = self._get_filter_data()
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
-        return response.Response({'items': serializer.data, 'queries': query_list, 'form': filter_data})
+        return response.Response({'items': serializer.data, 'queries': query_list})
 
     def create(self, request, *args, **kwargs):
+        print(self.serializer_class())
         return super().create(request, *args, **kwargs)
-
-    def _get_filter_data(self):
-        brands = Brand.objects.all()
-        brand_serializer = BrandSerializer(brands, many=True)
-        sizes = Size.objects.all()
-        size_serializer = SizeSerializer(sizes, many=True)
-        caterogies = Category.objects.filter(parent__isnull=False)
-        category_serializer = CategorySerializer(caterogies, many=True)
-        return {
-            'brands': brand_serializer.data, 
-            'sizes': size_serializer.data,
-            'categories': category_serializer.data
-        }
 
     def _get_query_list(self, request):
         query_list = list()

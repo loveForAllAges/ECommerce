@@ -32,7 +32,14 @@ function updatePageData(queryDict={}) {
                 $('#itemListEmpty').removeClass('hidden');
             }
 
-            updateFilterData(data.form, data.queries);
+            getProductFilters()
+                .then(function(productFilters) {
+                    updateFilterData(productFilters, data.queries);
+                })
+                .catch(function(error) {
+                    console.log('Error')
+                })
+
             updateQueryData(data.queries);
             updateURL(queryDict);
 
@@ -67,7 +74,7 @@ function productListPreloader() {
                     <div class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
                         <div class="h-2 md:h-3 bg-gray-200 rounded-full"></div>
                     </div>
-                    <p class="mt-1"><div class="h-3 md:h-4 bg-gray-200 rounded-full w-24"></div></p>
+                    <p class="mt-2"><div class="h-3 md:h-4 bg-gray-200 rounded-full w-24"></div></p>
                 </div>
             </div>
             `

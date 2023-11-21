@@ -1,26 +1,42 @@
-function getSubCategories() {
-    $.ajax({
-        url: '/api/sub-categories',
-        success: function(data) {
-            console.log('data', data)
-            data.forEach(i => {
-                $('#productCategory').append(
-                    `<option>${ i.name }</option>`
-                )
-            })
-        },
-        error: function(error) {
-
-        }
-    })
-    return
-}
-
-
 $(document).ready(function(){
     var editProductBtns = document.querySelectorAll(".editProductBtn");
 
-    getSubCategories();
+    getProductFilters()
+        .then(function(data) {
+            const productFilters = data;
+            data.categories.forEach(i => {
+                $('#productCategory').append(
+                    `<option value="${ i.id }">${ i.name }</option>`
+                )
+            })
+            data.sizes.forEach(i => {
+                $('#productSize').append(
+                    `
+                    <li>
+                        <div class="flex items-center rounded hover:bg-gray-100">
+                            <input id="size-${ i.id }" name="size" type="checkbox" value="${ i.id }" class="ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                            <label for="size-${ i.id }" class="w-full p-2 text-sm font-medium text-gray-900 rounded">${ i.name }</label>
+                        </div>
+                    </li>
+                    `
+                )
+            })
+            data.brands.forEach(i => {
+                $('#productBrand').append(
+                    `
+                    <li>
+                        <div class="flex items-center rounded hover:bg-gray-100">
+                            <input id="brand-${ i.id }" name="brand" type="checkbox" value="${ i.id }" class="ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                            <label for="brand-${ i.id }" class="w-full p-2 text-sm font-medium text-gray-900 rounded">${ i.name }</label>
+                        </div>
+                    </li>
+                    `
+                )
+            })
+        })
+        .catch(function(error) {
+            console.log('Error')
+        })
 
     function openProductModal() {
         var productId = this.dataset.id;
@@ -48,17 +64,10 @@ $(document).ready(function(){
         element.addEventListener('click', openProductModal)
     })
 
-    function validateForm() {
-        return false;
-    }
-
     $('#productModalForm').submit(function(e) {
         e.preventDefault()
 
-        if (!validateForm()) return;
-
-        const productModalForm = document.querySelector('#productModalForm');
-        const formData = new FormData(productModalForm)
+        const formData = new FormData(this);
 
         $.ajax({
             url: '/api/products',
@@ -69,11 +78,103 @@ $(document).ready(function(){
             },
             // dataType: 'json',
             processData: false,
+            contentType: false,
             success: function(data) {
-                console.log('data success', data)
+                console.log(data);
+                var inStock = (data.in_stock) ? 
+                `
+                <svg class="mx-auto h-5 w-5 flex-shrink-0 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"></path>
+                </svg>
+                ` : ''
+                $('#productList').append(
+                    `
+                    <tr>
+                        <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
+                            <div class="h-8 w-8 flex-shrink-0">
+                                <img class="h-8 w-8 rounded-lg" src="${ data.images[0] }" alt="">
+                            </div>
+                        </td>
+                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.name }</td>
+                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 hidden lg:table-cell">${ data.description.substring(0, 24) }...</td>
+                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.category }</td>
+                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ data.price } ₽</td>
+                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">${ inStock }</td>
+                        <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                            <div class="flex items-center justify-end">
+                                <button type="button" id="productDropwownBtn-${ data.id }" data-dropdown-placement="bottom-end" data-dropdown-toggle="productDropwown-${ data.id }" data-dropdown-delay={500} class="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                        <div id="productDropwown-${ data.id }" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                            <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="productDropwownBtn-${ data.id }">
+                                <li>
+                                    <a href="${ data.url }" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                        Подробнее
+                                    </a>
+                                </li>
+                                <li>
+                                    <button type="button" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" data-id="${ data.id }" class="editProductBtn hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                        Редактировать
+                                    </button>
+                                </li>
+                                <li>
+                                    <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                        Удалить
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </tr>
+                    `
+                )
+                showMessage('Товар создан');
+                $('#productModalClose').click();
             },
-            error: function(xhr, status, error) {
-                console.log('Error', xhr, status, error)
+            error: function(error) {
+                var errors = error.responseJSON;
+
+                $('.error-container').each(function() {
+                    $(this).addClass('hidden');
+                })
+
+                if (errors.name) {
+                    $('#productNameError').removeClass('hidden');
+                    $('#productNameError').text(errors.name);
+                }
+
+                if (errors.description) {
+                    $('#productDescriptionError').removeClass('hidden');
+                    $('#productDescriptionError').text(errors.description);
+                }
+
+                if (errors.price) {
+                    $('#productPriceError').removeClass('hidden');
+                    $('#productPriceError').text(errors.price);
+                }
+
+                if (errors.images) {
+                    $('#productImagesError').removeClass('hidden');
+                    $('#productImagesError').text(errors.images);
+                }
+
+                if (errors.category) {
+                    $('#productCategoryError').removeClass('hidden');
+                    $('#productCategoryError').text(errors.category);
+                }
+
+                if (errors.brand) {
+                    $('#productBrandError').removeClass('hidden');
+                    $('#productBrandError').text(errors.brand);
+                }
+
+                if (errors.size) {
+                    $('#productSizeError').removeClass('hidden');
+                    $('#productSizeError').text(errors.size);
+                }
             }
         })
     })

@@ -15,7 +15,7 @@ urlpatterns = [
 
 
     path('main-categories', views.MainCategoriesAPIView.as_view()),
-    path('sub-categories', views.SubCategoriesAPIView.as_view()),
+    path('product-filters', views.ProductFiltersAPIView.as_view()),
 
     # path('search/', views.search, name='search'),
     
