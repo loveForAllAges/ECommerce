@@ -16,13 +16,16 @@ function sortProductList(key, button) {
 // Получение списка товаров, категорий, размеров, брендов. Обновление Списка товаров, фильтров, запросов.
 function updatePageData(queryDict={}) {
     var queryString = formatQueryDictToStr(queryDict);
-    productListPreloader();
+
+    for (var j = 0; j < 12; j++) $('#itemList').append(generateProductCardPreloader());
+    
     $.ajax({
         url: '/api/products?' + queryString,
         method: 'GET',
         success: function(data) {
             if (data.items && data.items.length > 0) {
                 $('#itemList').removeClass('hidden');
+                $('#itemListEmpty').addClass('hidden');
                 $('#itemList').empty();
                 data.items.forEach(function(product) {
                     addProductCard(product, $('#itemList'))
@@ -85,9 +88,9 @@ function updateFilterData(data, queries) {
         subCount = (isChecked) ? subCount + 1 : subCount;
         $('#mainCategoryList').append(
             `
-            <div class="flex items-center">
-                <input ${ isChecked } id="category-${ e.id }" name="category" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label for="category-${ e.id }" class="ml-3 text-sm text-gray-500">${ e.name }</label>
+            <div class="-my-1 flex items-center"> 
+                <input ${ isChecked } id="category-${ e.id }" name="category" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-offset-0 focus:ring-0">
+                <label for="category-${ e.id }" class="pl-3 py-1 text-sm text-gray-500">${ e.name }</label>
             </div>
             `
         )
@@ -102,9 +105,9 @@ function updateFilterData(data, queries) {
         subCount = (isChecked) ? subCount + 1 : subCount;
         $('#categoryList').append(
             `
-            <div class="flex items-center">
-                <input ${ isChecked } id="category-${ e.id }" name="category" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label for="category-${ e.id }" class="ml-3 text-sm text-gray-500">${ e.name }</label>
+            <div class="-my-1 flex items-center">
+                <input ${ isChecked } id="category-${ e.id }" name="category" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-offset-0 focus:ring-0">
+                <label for="category-${ e.id }" class="pl-3 py-1 text-sm text-gray-500">${ e.name }</label>
             </div>
             `
         )
@@ -118,9 +121,9 @@ function updateFilterData(data, queries) {
         subCount = (isChecked) ? subCount + 1 : subCount;
         $('#brandList').append(
             `
-            <div class="flex items-center">
-                <input ${ isChecked } id="brand-${ e.id }" name="brand" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label for="brand-${ e.id }" class="ml-3 text-sm text-gray-500">${ e.name }</label>
+            <div class="-my-1 flex items-center">
+                <input ${ isChecked } id="brand-${ e.id }" name="brand" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-offset-0 focus:ring-0">
+                <label for="brand-${ e.id }" class="pl-3 py-1 text-sm text-gray-500">${ e.name }</label>
             </div>
             `
         )
@@ -134,9 +137,9 @@ function updateFilterData(data, queries) {
         subCount = (isChecked) ? subCount + 1 : subCount;
         $('#sizeList').append(
             `
-            <div class="flex items-center">
-                <input ${ isChecked } id="size-${ e.id }" name="size" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label for="size-${ e.id }" class="ml-3 text-sm text-gray-500">${ e.name }</label>
+            <div class="-my-1 flex items-center">
+                <input ${ isChecked } id="size-${ e.id }" name="size" value="${ e.id }" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-offset-0 focus:ring-0">
+                <label for="size-${ e.id }" class="pl-3 py-1 text-sm text-gray-500">${ e.name }</label>
             </div>
             `
         )

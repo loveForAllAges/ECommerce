@@ -21,15 +21,17 @@
     {% include 'adm/components/sidebar.html' %}
     
     <div class="flex flex-1 flex-col md:pl-64 h-screen">
-        {% include 'adm/components/header.html' %}
-        {% block content %}
-        {% endblock %}
+        <!-- {% include 'adm/components/header.html' %} -->
+        <div class="p-4 sm:p-6 lg:p-8">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 
     <div id="toastMessage"></div>
 
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/adm.js' %}"></script> -->
+    <!-- <script type="text/javascript" src="{% static 'js/supportChatAdm.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'flowbite/dist/flowbite.min.js' %}"></script>
     {% block scripts %}
     {% endblock scripts %}

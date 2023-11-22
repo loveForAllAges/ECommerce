@@ -4,10 +4,6 @@
 
 {% block content %}
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32">
-    <!-- <div class="py-8">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Аккаунт</h1>
-    </div> -->
-
     <div class="">
         <div class="py-8">
             <div class="md:flex md:items-center md:justify-between">
@@ -20,7 +16,7 @@
                     <div class="mt-4 text-center md:mt-0 md:pt-1 md:text-left">
                     <p class="text-sm text-gray-500">Добро пожаловать,</p>
                     <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                    <p class="text-sm font-medium text-gray-600">{{ request.user.email }}</p>
+                    <p class="text-sm text-gray-500">{{ request.user.email }}</p>
                     </div>
                 </div>
                 <div class="mt-5 flex justify-center md:mt-0 space-x-4">

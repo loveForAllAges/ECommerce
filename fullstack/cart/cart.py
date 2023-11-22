@@ -19,6 +19,7 @@ class Cart:
             cart, created = DBCart.objects.get_or_create(customer=user)
         else:
             cart, created = DBCart.objects.get_or_create(session=self.session.session_key)
+        print(cart)
         return cart
 
     def add(self, product, size):

@@ -6,84 +6,80 @@ ADM Пользователи
 
 
 {% block content %}
-
-
-<div class="p-4 sm:p-6 lg:p-8">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-xl font-semibold text-gray-900">
-                Пользователи <span class="ml-2 text-sm font-normal text-gray-500">{{ object_list|length }}</span>
-            </h1>
-        </div>
+<div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+        <h1 class="text-xl font-semibold text-gray-900">
+            Пользователи <span class="ml-2 text-sm font-normal text-gray-500">{{ object_list|length }}</span>
+        </h1>
     </div>
-    <div class="mt-8 flex flex-col">
-        <div class="-my-2 overflow-x-auto">
-            <div class="inline-block min-w-full py-2 align-middle">
-                <div class="overflow-hidden border rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-300">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Имя</th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Почта</th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Телефон</th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (шт)</th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (₽)</th>
-                                <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Net amount</th>
-                                <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
-                            {% for element in object_list %}
-                            <tr>
-                                <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">{{ element.first_name }} {{ element.last_name }}</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.email }}</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.phone}}</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                                    {% if element.is_superuser %}
-                                    Адм
-                                    {% elif element.is_staff %}
-                                    Стр
-                                    {% else %}
-                                    Плз
-                                    {% endif %}
-                                </td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.order_set.all|length }}</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">0</td>
-                                <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">$4,397.00</td>
-                                <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                    <div class="flex items-center justify-end">
-                                        <button type="button" id="accountDropwownBtn-{{ forloop.counter }}" data-dropdown-placement="bottom-end" data-dropdown-toggle="accountDropwown-{{ forloop.counter }}" data-dropdown-delay={500} class="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                                <div id="accountDropwown-{{ forloop.counter }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                                    <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="accountDropwownBtn-{{ forloop.counter }}">
-                                        <li>
-                                            <a href="{% url 'account-detail' element.pk %}" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                                                Подробнее
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                                                Редактировать
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                                                Удалить
-                                            </a>
-                                        </li>
-                                    </ul>
+</div>
+<div class="mt-8 flex flex-col">
+    <div class="-my-2 overflow-x-auto">
+        <div class="inline-block min-w-full py-2 align-middle">
+            <div class="overflow-hidden border rounded-lg">
+                <table class="min-w-full divide-y divide-gray-300">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Имя</th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Почта</th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Телефон</th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (шт)</th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Заказы (₽)</th>
+                            <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Net amount</th>
+                            <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        {% for element in object_list %}
+                        <tr>
+                            <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">{{ element.first_name }} {{ element.last_name }}</td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.email }}</td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.phone}}</td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                                {% if element.is_superuser %}
+                                Адм
+                                {% elif element.is_staff %}
+                                Стр
+                                {% else %}
+                                Плз
+                                {% endif %}
+                            </td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ element.order_set.all|length }}</td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">0</td>
+                            <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">$4,397.00</td>
+                            <td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                <div class="flex items-center justify-end">
+                                    <button type="button" id="accountDropwownBtn-{{ forloop.counter }}" data-dropdown-placement="bottom-end" data-dropdown-toggle="accountDropwown-{{ forloop.counter }}" data-dropdown-delay={500} class="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
-                            </tr>
-                            {% endfor %}  
-                        </tbody>
-                    </table>
-                </div>
+                            </td>
+                            <div id="accountDropwown-{{ forloop.counter }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                                <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="accountDropwownBtn-{{ forloop.counter }}">
+                                    <li>
+                                        <a href="{% url 'account-detail' element.pk %}" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                            Подробнее
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                            Редактировать
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                            Удалить
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </tr>
+                        {% endfor %}  
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

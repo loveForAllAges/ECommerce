@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render, HttpResponse
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 
 def fill_db(request):
@@ -101,7 +102,7 @@ def fill_db(request):
 
 
     def create_search_history(all_categories, brands, colors, products):
-        from search.models import SearchHistory
+        from product.models import SearchHistory
 
         for i in all_categories:
             SearchHistory.objects.get_or_create(request=i.name)
@@ -133,16 +134,16 @@ def fill_db(request):
 
 
 def add_delivery_types(request):
-    from order.models import DeliveryType
+    from order.models import Delivery
 
     item_list = [
-        ('Самовывоз', 'Адрес: г. Москва, ул. Главная, 1, 1', 'Бесплатно'),
-        ('Доставка СДЭК', 'Доставка осуществляется по Москве в пределах МКАД', '500 ₽'),
-        ('Доставка курьером', 'Наложенный платеж', 'Доставка по всей России'),
+        ('Самовывоз', 'Адрес: г. Москва, ул. Главная, 1, 1', 0, '', 'pickup'),
+        ('Доставка СДЭК', 'Доставка осуществляется по Москве в пределах МКАД', 500, '', 'delivery'),
+        ('Доставка курьером', 'Доставка по всей России', 0, 'Наложенный платеж', 'sdek'),
     ]
 
     for i in item_list:
-        DeliveryType.objects.get_or_create(name=i[0], description=i[1], price=i[2])
+        Delivery.objects.get_or_create(name=i[0], description=i[1], price=i[2], info=i[3], slug=i[4])
 
     return HttpResponse("Success")
 
@@ -150,16 +151,20 @@ def add_delivery_types(request):
 urlpatterns = [
     # path('a/', fill_db),
     # path('admin/', admin.site.urls),
-    path('', include('landing.urls')),
     # path('add_delivery_types', add_delivery_types),
+
     path('cart/', include('cart.urls')),
-    path('category/', include('category.urls')),
+    # path('category/', include('category.urls')),
     path('orders/', include('order.urls')),
     path('account/', include('account.urls')),
     path('products/', include('product.urls')),
     path('adm/', include('adm.urls')),
     path('api/', include('api.urls')),
-    path('chat/', include('chat.urls'))
+    path('chat/', include('chat.urls')),
+    
+    path('catalog', TemplateView.as_view(template_name='pages/catalog.html'), name='catalog'),
+    # Home page view
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 
 

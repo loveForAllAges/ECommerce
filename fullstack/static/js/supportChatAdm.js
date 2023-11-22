@@ -1,13 +1,14 @@
 const sendChatMessageBtn = document.getElementById("agent-chat-send-message");
 const chatInput = document.getElementById("agent-chat-input");
 const chatWindow = document.getElementById("agent-chat-window");
-const chatSocket = new WebSocket(`ws://${window.location.host}/ws/admin_chat/`);
 
-scrollToBottom()
 
-function scrollToBottom() {
-    chatWindow.scrollTop = chatWindow.scrollHeight
-}
+
+// scrollToBottom()
+
+// function scrollToBottom() {
+//     chatWindow.scrollTop = chatWindow.scrollHeight
+// }
 
 function checkInput() {
     if (chatInput.value === '') {
@@ -17,7 +18,7 @@ function checkInput() {
     }
 }
 
-chatInput.addEventListener('input', checkInput)
+// chatInput.addEventListener('input', checkInput)
 
 function onChatMessage(data) {
     if (data.type === 'chat_message') {
@@ -52,38 +53,63 @@ function onChatMessage(data) {
     scrollToBottom()
 }
 
-chatSocket.onmessage = function(e) {
-    onChatMessage(JSON.parse(e.data))
+
+
+
+
+const chatSocket = new WebSocket(`ws://${window.location.host}/ws/support/`);
+
+chatSocket.onopen = function() {
+    console.log('opened')
+
+    function sendd() {
+        chatSocket.send(JSON.stringify({
+            'type': 'message',
+            'content': 'hello',
+        }))
+        console.log('sended')    
+    }
+    
+    sendd()
 }
 
-chatInput.onkeyup = function(e) {
-    if (e.keyCode == 13 && chatInput.value !== '') {
-        sendMessage()
-        checkInput()
-    }
+chatSocket.onmessage = function(e) {
+    console.log('received', JSON.parse(e.data))
+    // onChatMessage(JSON.parse(e.data))
 }
+
+
+
+
+// chatInput.onkeyup = function(e) {
+//     if (e.keyCode == 13 && chatInput.value !== '') {
+//         sendMessage()
+//         checkInput()
+//     }
+// }
 
 function sendMessage() {
     chatSocket.send(JSON.stringify({
         'type': 'message',
         'content': chatInput.value,
-        'is_agent': true
+        'is_agent': true,
+        'sender': 'adm'
     }))
 
     chatInput.value = ''
 }
 
-sendChatMessageBtn.onclick = function(e) {
-    e.preventDefault()
-    if (chatInput.value !== '') {
-        sendMessage()
-    }
-    return false
-}
+// sendChatMessageBtn.onclick = function(e) {
+//     e.preventDefault()
+//     if (chatInput.value !== '') {
+//         sendMessage()
+//     }
+//     return false
+// }
 
-chatInput.onkeyup = function(e) {
-    if (e.keyCode == 13 && chatInput.value !== '') {
-        sendMessage()
-        checkInput()
-    }
-}
+// chatInput.onkeyup = function(e) {
+//     if (e.keyCode == 13 && chatInput.value !== '') {
+//         sendMessage()
+//         checkInput()
+//     }
+// }

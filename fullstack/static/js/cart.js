@@ -75,7 +75,6 @@ function updateCart(data) {
             } else {
                 var wishlistBtnColor = 'text-gray-500 hover:text-gray-600'
             }
-            var img = item.product.images[0];
 
             if (item.size) {
                 sizeHTML = `<div class="mt-1 text-sm text-gray-500">${ item.size.name } размер</div>`
@@ -89,7 +88,7 @@ function updateCart(data) {
                 `
                 <li class="flex group p-4 relative">
                     <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md">
-                        <img src="${ img.image }" class="h-full w-full object-cover object-center">
+                        <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center">
                     </div>
                     <div class="flex flex-col flex-1 space-y-1 justify-between">
                         <a href="${ item.product.id }" class="flex space-x-4">

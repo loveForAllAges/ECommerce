@@ -1,4 +1,5 @@
 function homePagePreview() {
+    $('#homePage').empty();
     for (var i = 0; i < 2; i++) {
         var products = [];
         for (var j = 0; j < 4; j++) products.push(generateProductCardPreloader());
@@ -20,7 +21,7 @@ function homePagePreview() {
 
 
 function homeCategoriesPreview() {
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 2; i++) {
         $('#homeCategoryList').append(
             `
             <div class="animate-pulse group relative h-64 sm:h-96 overflow-hidden sm:aspect-w-4 sm:aspect-h-5 rounded-xl flex flex-col xl:w-auto">
@@ -56,7 +57,7 @@ function getPageData() {
                         <div class="">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-2xl font-bold tracking-tight text-gray-900">${ element.title }</h2>
-                                <a href="/category/${ element.url }" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
+                                <a href="/catalog/${ element.url }" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
                                     Смотреть все
                                 </a>
                             </div>
@@ -82,7 +83,7 @@ function updateHomeCategories(categories) {
     categories.forEach(category => {
         $('#homeCategoryList').append(
             `
-            <a href="/category/?category=${ category.id }" class="duration-150 group relative h-64 sm:h-96 overflow-hidden sm:aspect-w-4 sm:aspect-h-5 rounded-xl hover:opacity-75 flex flex-col xl:w-auto">
+            <a href="/catalog?category=${ category.id }" class="duration-150 group relative h-64 sm:h-96 overflow-hidden sm:aspect-w-4 sm:aspect-h-5 rounded-xl hover:opacity-75 flex flex-col xl:w-auto">
                 <span aria-hidden="true" class="absolute inset-0">
                     <img src="${ category.url }" alt="" class="h-full w-full object-cover object-center">
                 </span>

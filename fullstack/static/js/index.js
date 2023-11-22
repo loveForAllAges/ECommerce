@@ -7,6 +7,7 @@ function getMainCategories() {
             mainCategories = data;
 
             updateHeaderCategories(data);
+            // console.log('OK')
 
             if ($('#homePage')[0]) {
                 updateHomeCategories(data);

@@ -13,7 +13,6 @@ function checkoutPage(data) {
         } else {
             var price_per_once = ''
         }
-        var img = item.product.images[0];
         if (item.product.in_wishlist) {
             var wishlistBtnColor = 'text-rose-500 hover:text-rose-600'
         } else {
@@ -30,7 +29,7 @@ function checkoutPage(data) {
             `
             <li class="flex group py-4 relative">
                 <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-                    <img src="${ img.image }" class="h-full w-full object-cover object-center">
+                    <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center">
                 </div>
                 <div class="flex flex-col flex-1 space-y-1 justify-between">
                     <a href="${ item.product.id }" class="flex space-x-4">
@@ -74,12 +73,16 @@ $(document).ready(function(){
         })
         .then(response => response.json())
         .then(data => {
-            data.forEach(element => {
+            console.log('data', data)
+            data.forEach((element, key) => {
                 var isChecked = (element.slug === 'pickup') ? 'checked' : '';
                 var price = (element.info) ? element.info : element.price + ' ₽';
+                var angles = '';
+                if (key === 0) angles = 'rounded-tl-md rounded-tr-md';
+                else if (key === data.length - 1) angles = 'rounded-bl-md rounded-br-md';
                 $('#checkoutDeliveryLabels').append(
                     `
-                    <label for="delivery-${ element.id }" class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
+                    <label for="delivery-${ element.id }" class="${ angles } duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
                         <input type="radio" data-price=${ element.price } required id="delivery-${ element.id }" ${isChecked} name="delivery" value="${ element.slug }" class="checkoutDeliveryInput duration-150 mt-0.5 h-4 w-4 shrink-0 cursor-pointer text-blue-600 border-gray-300 focus:ring-blue-600">
                         <span class="ml-3 w-full">
                             <div class="flex justify-between text-sm">

@@ -5,6 +5,8 @@ const chatWindow = document.getElementById("chat-window");
 const chatClose = document.getElementById("chat-close");
 let chatSocket = null
 
+
+
 function scrollToBottom() {
     chatWindow.scrollTop = chatWindow.scrollHeight
 }
@@ -63,7 +65,8 @@ function sendMessage() {
     chatSocket.send(JSON.stringify({
         'type': 'message',
         'content': chatInput.value,
-        'is_agent': false
+        'is_agent': false,
+        'sender': data.pk
     }))
 
     chatInput.value = ''
@@ -71,20 +74,38 @@ function sendMessage() {
 
 chatOpen.onclick = async function(e) {
     chatInput.focus();
-    data = await getChatData();
+    // data = await getChatData();
     chatWindow.textContent = '';
-    for (i in data.messages) {
-        data.messages[i]['type'] = 'chat_message'
-        onChatMessage(data.messages[i]);
-    }
+    // for (i in data.messages) {
+    //     data.messages[i]['type'] = 'chat_message'
+    //     onChatMessage(data.messages[i]);
+    // }
 
-    chatSocket = new WebSocket(`ws://${window.location.host}/ws/${data.pk}/`);
-    console.log(chatSocket);
+    chatSocket = new WebSocket(`ws://${window.location.host}/ws/support/`);
+
+    // chatSocket.onmessage = function(e) {
+    //     onChatMessage(JSON.parse(e.data))
+    // }
 
     chatSocket.onmessage = function(e) {
-        onChatMessage(JSON.parse(e.data))
+        console.log('received', JSON.parse(e.data))
+        // onChatMessage(JSON.parse(e.data))
     }
     scrollToBottom()
+
+    chatSocket.onopen = function() {
+        console.log('opened')
+    
+        function sendd() {
+            chatSocket.send(JSON.stringify({
+                'type': 'message',
+                'content': 'goodbye',
+            }))
+            console.log('sended')    
+        }
+        
+        sendd()
+    }
 }
 
 function checkInput() {

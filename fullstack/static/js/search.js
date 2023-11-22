@@ -22,7 +22,7 @@ $(document).ready(function(){
                     console.log('data', data)
                     $('#searchResult').empty();
                     var uri = new URL(window.location.protocol + '//' + window.location.host);
-                    uri.pathname += 'category/';
+                    uri.pathname += 'catalog';
                     if (data.length) {
                         data.forEach(function (result) {
                             uri.searchParams.set('search', result.request);

@@ -4,6 +4,39 @@ from asgiref.sync import sync_to_async
 from .models import Message, Chat
 
 
+class SupportChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add('support', self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard('support', self.channel_name)
+
+    async def receive(self, text_data=None, bytes_data=None):
+        # return await super().receive(text_data, bytes_data)
+        print('text_data', text_data)
+        print('bytes_data', bytes_data)
+        data = json.loads(text_data)
+
+        print(data)
+        await self.channel_layer.group_send(
+            'support', {
+                'type': data['type'],
+                'content': data['content'],
+            }
+        )
+
+    async def message(self, event):
+        await self.send(text_data=json.dumps({
+            'type': event['type'],
+            'content': event['content'],
+        }))
+
+
+
+
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.chat_id = self.scope['url_route']['kwargs']['pk']

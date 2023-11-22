@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from search.models import SearchHistory
+from product.models import SearchHistory
 
 
 class SearchHistorySerializer(serializers.ModelSerializer):

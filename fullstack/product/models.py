@@ -1,5 +1,6 @@
 from django.db import models
 from django.shortcuts import reverse
+from config.settings import AUTH_USER_MODEL
 
 from category.models import Category, Brand, Size
 
@@ -34,3 +35,11 @@ class ProductImage(models.Model):
         img = img.crop((left, top, right, bottom))
         img.thumbnail((4096, 4096))
         img.save(self.image.path)
+
+
+class SearchHistory(models.Model):
+    request = models.CharField(max_length=128)
+    customer = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.request

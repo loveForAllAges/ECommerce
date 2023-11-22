@@ -1,4 +1,4 @@
-<div class="fixed hidden md:block bottom-0 right-0 mb-4 mr-4 z-40">
+<div class="fixed block bottom-0 right-0 mb-4 mr-4 z-40">
     <button type="button" id="chat-open" data-drawer-target="chat-widget" data-drawer-body-scrolling="true" data-drawer-show="chat-widget" data-drawer-placement="right" data-drawer-backdrop="false" aria-controls="chat-widget" class="flex items-center justify-center text-white bg-blue-700 rounded-full w-12 h-12 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700">
         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
@@ -6,10 +6,10 @@
     </button>
 </div>
 
-<div id="chat-widget" class="mb-4 pr-4 fixed top-auto bottom-0 right-0 z-40 transition-transform translate-x-full" tabindex="-1" aria-labelledby="chat-widget">
-    <div class="bg-white w-80 border shadow rounded-xl">
+<div id="chat-widget" class="mb-4 md:pr-4 fixed md:top-auto bottom-0 right-0 z-40 transition-transform translate-x-full" tabindex="-1" aria-labelledby="chat-widget">
+    <div class="bg-white w-screen h-screen md:h-auto md:w-80 border md:shadow md:rounded-xl">
         <div class="border-b">
-            <div class="h-12 flex items-center justify-between rounded-t space-x-4 px-4">
+            <div class="h-14 flex items-center justify-between rounded-t space-x-4 px-4">
                 <h2 class="text-md font-medium text-gray-900">Чат</h2>
             
                 <button type="button" id="chat-close" data-drawer-hide="chat-widget" aria-controls="filtersModal" class="p-1 -mr-1 text-gray-400 hover:text-gray-500">
@@ -20,12 +20,12 @@
             </div>
         </div>
 
-        <div class="h-96 p-2 overflow-y-auto bg-gray-100" id="chat-window">
+        <div class="h-[calc(100%-112px)] md:h-96 p-2 overflow-y-auto bg-gray-100" id="chat-window">
         </div>
 
-        <div class="border-t border-gray-200 h-12 flex align-middle justify-between">
+        <div class="border-t border-gray-200 h-14 flex align-middle justify-between">
             <div class="flex items-center justify-between w-full">
-                <input id="chat-input" type="text" name="send" class="block w-full bg-transparent border-none rounded-lg text-sm h-full border-transparent p-4 text-gray-900 focus:border-transparent focus:outline-none focus:ring-0" placeholder="Сообщение">
+                <input id="chat-input" type="text" name="send" autocomplete="off" class="block w-full bg-transparent border-none rounded-lg text-sm h-full border-transparent p-4 text-gray-900 focus:border-transparent focus:outline-none focus:ring-0" placeholder="Сообщение">
                 <div class="flex items-center justify-between">
                     <button id="chat-send-message" type="button" disabled class="inline-flex items-center rounded-full border border-transparent p-2 text-blue-500 hover:text-blue-600 duration-150 disabled:cursor-not-allowed disabled:text-gray-400">
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

@@ -13,6 +13,16 @@ from django.http import Http404
 from django.db.models import Count
 
 
+
+
+
+
+
+
+
+
+
+
 class StaffOnly(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self) -> bool | None:
         if self.request.user.is_staff or self.request.user.is_superuser:

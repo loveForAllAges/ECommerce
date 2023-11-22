@@ -1,26 +1,22 @@
-from django.http import JsonResponse
-
 from product.models import Product, Brand, Size
 from product.serializers import ProductSerializer, MainCategorySerializer
 from category.models import Category
 from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
 from django.shortcuts import get_object_or_404
-from django.core import serializers
-from search.models import SearchHistory
-import json
+from product.models import SearchHistory
 from account.models import Address
 
-from rest_framework import response, views, status, permissions, generics, viewsets, mixins
+from rest_framework import response, views, status, generics, viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from order.models import OrderItem, Delivery
+from order.models import OrderItem, Delivery, Order
 from cart.cart import Cart
 from order.serializers import DeliverySerializer, OrderSerializer
 from .filters import ProductFitler
 from .serializer import SearchHistorySerializer
-from config.permissions import IsStaffOrReadOnly
+from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 
 
 class WishlistAPIView(views.APIView):
@@ -47,17 +43,13 @@ class DeliveryListAPIView(generics.ListAPIView):
     serializer_class = DeliverySerializer
 
 
-class CartExists(permissions.BasePermission):
-    def has_permission(self, request, view):
-        cart = Cart(request)
-        if len(cart):
-            return True
-        return False
+class OrderAPIView(generics.ListCreateAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticatedOrCreateOnly, CartExists]
 
-
-class OrderAPIView(views.APIView):
-    permission_classes = [CartExists]
-
+    def get_queryset(self):
+        return Order.objects.filter(customer=self.request.user)
+    
     def post(self, request):
         data = request.data.copy()
         if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):
@@ -90,10 +82,12 @@ class OrderAPIView(views.APIView):
         cart = Cart(request)
 
         for i in cart.get_cart()['goods']:
-            OrderItem.objects.create(
+            item = OrderItem.objects.create(
                 order=order, product_id=i['product']['id'], quantity=i['quantity'], 
-                price=i['total_price'], size_id=i['size']['id']
+                price=i['total_price']
             )
+            if i['size']:
+                item.size_id = i['size']['id']
 
         cart.clear()
 
@@ -133,7 +127,7 @@ class SubCategoriesAPIView(generics.ListAPIView):
 class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes = [IsStaffOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
 
 
 class SearchAPIListView(generics.ListAPIView):
@@ -150,6 +144,7 @@ class ProductAPIView(generics.ListCreateAPIView):
     filterset_class = ProductFitler
     orderding_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
+    permission_classes = [IsStaffOrReadOnly]
 
     def list(self, request, *args, **kwargs):
         query_list = self._get_query_list(request)
