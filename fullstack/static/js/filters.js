@@ -37,7 +37,7 @@ function updatePageData(queryDict={}) {
                     updateFilterData(productFilters, data.queries);
                 })
                 .catch(function(error) {
-                    console.log('Error')
+                    console.log('Error', error)
                 })
 
             updateQueryData(data.queries);

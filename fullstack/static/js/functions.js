@@ -87,7 +87,7 @@ function productListPreloader(cont=$('#itemList'), count=8) {
 function generateProductCardPreloader() {
     return `
         <div class="relative group animate-pulse">
-            <div>
+            <div class="space-y-3 space">
                 <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
                     <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded">
                         <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -95,11 +95,24 @@ function generateProductCardPreloader() {
                         </svg>
                     </div>
                 </div>
-                <div class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-                    <div class="h-2 md:h-3 bg-gray-200 rounded-full"></div>
+                <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+                    <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
                 </div>
-                <p class="mt-2"><div class="h-3 md:h-4 bg-gray-200 rounded-full w-24"></div></p>
+                <div>
+                    <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
+                </div>
             </div>
         </div>
     `
+}
+
+
+function updateHeaderCategories(categories) {
+    categories.forEach(category => {
+        $('#mainCategoryHeader').append(
+            `
+                <a href="/category/?category=${ category.id }" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">${ category.name }</a>
+            `
+        )
+    })
 }

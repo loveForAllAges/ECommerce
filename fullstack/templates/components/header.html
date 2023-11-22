@@ -48,10 +48,7 @@
 
 <header class="h-12 md:h-16 bg-white z-30 fixed top-0 inset-x-0 border-b border-gray-200 hidden md:flex items-center">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full flex items-center">
-        <div class="sm:flex flex-1 items-center justify-start space-x-8">
-            {% for category in categories %}
-            <a href="{% url 'category' %}?category={{ category.id }}" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">{{ category.name }}</a>
-            {% endfor %}
+        <div id="mainCategoryHeader" class="sm:flex flex-1 items-center justify-start space-x-8">
         </div>
 
         <a href="{% url 'main' %}" class="">

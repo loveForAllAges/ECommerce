@@ -13,6 +13,25 @@ ERROR_MESSAGES = {
 }
 
 
+class MainCategorySerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'url')
+
+    def get_url(self, instance, *args, **kwargs):
+        last_product = instance.products.order_by('-id').first()
+
+        if last_product:
+            url = last_product.images.first().image.url
+        else:
+            url = 'static/images/emptyCategoryLogo.jpg'
+
+        request = self.context.get('request')
+        return request.build_absolute_uri(url)
+
+
 class ProductImageListingField(serializers.RelatedField):
     def to_representation(self, value):
         request = self.context.get('request')

@@ -5,8 +5,16 @@ function getMainCategories() {
         url: '/api/main-categories',
         success: function(data) {
             mainCategories = data;
+
+            updateHeaderCategories(data);
+
+            if ($('#homePage')[0]) {
+                updateHomeCategories(data);
+            }
         },
-        error: function(error) {}
+        error: function(error) {
+            console.log('Error')
+        }
     })
 }
 
@@ -15,12 +23,8 @@ getMainCategories();
 
 
 $(document).ready(function(){
-    // window.addEventListener("load", function () {
-    //     var loader = document.getElementById("preloader");
-    //     loader.style.display = "none";
-    // });
-
-
-
     getCart();
+    if ($('#homePage')[0]) {
+        homeCategoriesPreview();
+    }
 })

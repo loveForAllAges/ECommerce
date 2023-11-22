@@ -1,6 +1,6 @@
 from .models import Category
 
-
+# TO DELETE
 def categories(request):
     result = list()
     category_list = Category.objects.filter(parent=None)

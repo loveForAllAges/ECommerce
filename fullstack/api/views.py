@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 from product.models import Product, Brand, Size
-from product.serializers import ProductSerializer
+from product.serializers import ProductSerializer, MainCategorySerializer
 from category.models import Category
 from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
 from django.shortcuts import get_object_or_404
@@ -116,7 +116,13 @@ class ProductFiltersAPIView(views.APIView):
 
 class MainCategoriesAPIView(generics.ListAPIView):
     queryset = Category.objects.filter(parent__isnull=True)
-    serializer_class = CategorySerializer
+    serializer_class = MainCategorySerializer
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
+
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return response.Response(serializer.data)
 
 
 class SubCategoriesAPIView(generics.ListAPIView):

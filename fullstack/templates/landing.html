@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load my_filters %}
 
 {% block content %}
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32 md:pt-8 pt-4">
+<!-- <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32 md:pt-8 pt-4">
     <div class="relative overflow-hidden rounded-3xl shadow">
         <div class="absolute inset-0">
             <img src="{% static '/images/emptyCategoryLogo.jpg' %}" alt="" class="h-full w-full object-cover object-center">
@@ -17,37 +16,14 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
-
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="">
-        <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-900">Категории</h2>
-        </div>
-
-
-        <div class="mt-8 mx-auto grid grid-cols-2 gap-x-3 sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 lg:gap-x-8">
-            {% for category in categories %}
-            <a href="{% url 'category' %}?category={{ category.slug }}" class="duration-150 group relative h-64 sm:h-96 overflow-hidden sm:aspect-w-4 sm:aspect-h-5 rounded-xl hover:opacity-75 flex flex-col xl:w-auto">
-                <span aria-hidden="true" class="absolute inset-0">
-                    <img src="{{ category.logo }}" alt="" class="h-full w-full object-cover object-center">
-                </span>
-                <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-gray-800 opacity-50"></span>
-                <span class="relative mt-auto flex justify-center items-end p-6 text-xl font-bold text-white">{{ category.name }}</span>
-            </a>
-            {% endfor %}
-        </div>
+<div class="mx-auto max-w-7xl p-4 md:p-6 lg:p-8 space-y-16">
+    <div id="homeCategoryList" class="mx-auto grid grid-cols-2 gap-x-3 sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 lg:gap-x-8">
     </div>
-</div>
-
-
-<div id="pagePreloader" class="mx-auto max-w-7xl px-4 py-24 lg:py-32 sm:px-6 lb:px-8">
-</div>
-
-
-<div id="page">
-
+    
+    <div id="homePage" class="space-y-16">
+    </div>
 </div>
 {% endblock %}
 
