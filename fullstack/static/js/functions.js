@@ -84,7 +84,7 @@ function updateHeaderCategories(categories) {
     categories.forEach(category => {
         $('#mainCategoryHeader').append(
             `
-            <a href="/category/?category=${ category.id }" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">${ category.name }</a>
+            <a href="/catalog?category=${ category.id }" class="flex items-center text-sm duration-150 text-black hover:text-blue-700">${ category.name }</a>
             `
         )
     })

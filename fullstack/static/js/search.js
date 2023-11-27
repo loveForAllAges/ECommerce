@@ -5,7 +5,8 @@ $(document).ready(function(){
 
     $('#searchForm').submit(function(e) {
         e.preventDefault();
-        var uri = new URL(window.location.href);
+        var uri = new URL(window.location.protocol + '//' + window.location.host);
+        uri.pathname += 'catalog';
         uri.searchParams.set('search', $('#searchInput').val());
         window.location.href = uri.toString();
     })

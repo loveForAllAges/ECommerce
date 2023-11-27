@@ -14,7 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from order.models import OrderItem, Delivery, Order
 from cart.cart import Cart
 from order.serializers import DeliverySerializer, OrderSerializer
-from .filters import ProductFitler
+from .filters import ProductFilter
 from .serializer import SearchHistorySerializer
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 
@@ -141,8 +141,8 @@ class ProductAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
-    filterset_class = ProductFitler
-    orderding_fields = ['id', 'price']
+    filterset_class = ProductFilter
+    ordering_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
     permission_classes = [IsStaffOrReadOnly]
 

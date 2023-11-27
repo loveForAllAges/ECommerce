@@ -1,11 +1,24 @@
-function fillProductModal(nam='', description='', price='', images=null, category='', brands='', sizes='') {
+function fillProductModal(nam='', description='', price='', images=null, category='', brands=[], sizes=[]) {
     $('#productName').val(nam);
     $('#productDescription').val(description);
     $('#productPrice').val(price);
-    // $('#productCategory').val(category);
-    // $('#productBrands').val(brands);
-    // $('#productSizes').val(sizes);
-    // $('#productImages').val(images);
+
+    $("#productCategory option[value='" + category + "']").prop("selected", true);
+
+    $('#productBrand li input[type="checkbox"]').each(function() {
+        var val = parseInt($(this).val(), 10);
+        if ($.inArray(val, brands) !== -1) {
+            $(this).prop('checked', true);
+        }
+    })
+
+    $('#productSize li input[type="checkbox"]').each(function() {
+        var val = parseInt($(this).val(), 10);
+        if ($.inArray(val, sizes) !== -1) {
+            $(this).prop('checked', true);
+        }
+    })
+    
     if (images) {
         loadFilesFromServer(images)
             .then(function() {
@@ -22,27 +35,27 @@ var uploadedImages = [];
 var productList = [];
 
 
-function getProductList() {
-    $.ajax({
-        url: '/api/products',
-        success: function(data) {
-            productList = data;
-            if (data.items && data.items.length > 0) {
-                $('#productList').removeClass('hidden');
-                $('#productList').empty();
-                data.items.forEach(function(product) {
-                    updateProductList(product)
-                })
-            } else {
-                $('#productList').addClass('hidden');
-                $('#productListEmpty').removeClass('hidden');
-            }
-        },
-        error: function(error) {
-            console.log('Error')
-        }
-    })
-}
+// function getProductList() {
+//     $.ajax({
+//         url: '/api/products',
+//         success: function(data) {
+//             productList = data;
+//             if (data.items && data.items.length > 0) {
+//                 $('#productList').removeClass('hidden');
+//                 $('#productList').empty();
+//                 data.items.forEach(function(product) {
+//                     updateProductList(product)
+//                 })
+//             } else {
+//                 $('#productList').addClass('hidden');
+//                 $('#productListEmpty').removeClass('hidden');
+//             }
+//         },
+//         error: function(error) {
+//             console.log('Error')
+//         }
+//     })
+// }
 
 
 function openProductModal(productId) {
@@ -51,9 +64,8 @@ function openProductModal(productId) {
     $.ajax({
         url: `/api/products/${productId}`,
         success: function(data) {
-            console.log('data', data)
             fillProductModal(data.name, data.description, data.price,
-                data.images, data.category, data.brands, data.sizes      
+                data.images, data.category, data.brand, data.sizes      
             )
         },
         error: function(error) {
@@ -77,7 +89,6 @@ function resetProductForm() {
     $('#productModalForm input[name="pk"]').remove();
     $('#fileList').empty();
     uploadedImages = [];
-    console.log('ee', uploadedImages);
 }
 
 
@@ -130,7 +141,7 @@ function loadFilesFromServer(serverFileUrls) {
 }
 
 
-function updateProductList(data) {
+function updateProductList(data, update=false) {
     var inStock = (data.in_stock) ? 
     `
     <svg class="mx-auto h-5 w-5 flex-shrink-0 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -138,9 +149,8 @@ function updateProductList(data) {
     </svg>
     ` : ''
 
-    $('#productList').append(
-        `
-        <tr>
+    content = `
+        <tr id='product-${ data.id }'>
             <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
                 <div class="h-8 w-8 flex-shrink-0">
                     <img class="h-8 w-8 rounded-lg" src="${ data.images[0] }" alt="">
@@ -159,29 +169,34 @@ function updateProductList(data) {
                         </svg>
                     </button>
                 </div>
+                <div id="productDropwown-${ data.id }" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                    <ul class="p-1 space-y-1 text-sm font-normal text-gray-700" aria-labelledby="productDropwownBtn-${ data.id }">
+                        <li>
+                            <a href="${ data.url }" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                Подробнее
+                            </a>
+                        </li>
+                        <li>
+                            <button type="button" data-drawer-target="productModal" onclick="openProductModal(${ data.id })" data-drawer-show="productModal" data-drawer-placement="right" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                Редактировать
+                            </button>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
+                                Удалить
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </td>
-            <div id="productDropwown-${ data.id }" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="productDropwownBtn-${ data.id }">
-                    <li>
-                        <a href="${ data.url }" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                            Подробнее
-                        </a>
-                    </li>
-                    <li>
-                        <button type="button" data-drawer-target="productModal" data-drawer-show="productModal" data-drawer-placement="right" data-id="${ data.id }" class="editProductBtn hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                            Редактировать
-                        </button>
-                    </li>
-                    <li>
-                        <a href="#" class="hover:bg-gray-100 hover:text-gray-900 duration-150 text-gray-700 flex items-center py-2 px-4 rounded-md">
-                            Удалить
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </tr>
         `
-    )
+    
+    if (update) {
+        $(`#product-${ update }`).replaceWith(content);
+    } else {
+        $('#productList').append(content);
+    }
 }
 
 
@@ -229,6 +244,11 @@ function updateErrorFields(error) {
 }
 
 
+// function sendProductForm(event) {
+
+// }
+
+
 $(document).ready(function() {
     // getProductList();
 
@@ -272,15 +292,17 @@ $(document).ready(function() {
     $('#productModalForm').submit(function(e) {
         e.preventDefault();
 
-        const formData = new FormData(this);
+        const formData = new FormData($('#productModalForm')[0]);
         var pk = $(this).find('input[name="pk"]');
         var method = 'POST';
         var url = '/api/products';
         var message = 'Товар создан';
+        var update_id = null;
         if (pk.length > 0) {
-            formData.append('pk', pk.val());
+            update_id = pk.val();
+            formData.append('pk', update_id);
             method = 'PATCH';
-            url = `/api/products/${pk.val()}`
+            url = `/api/products/${update_id}`
             message = 'Изменения сохранены'
         }
         formData.append(`images`, uploadedImages);
@@ -295,12 +317,18 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
-                updateProductList(data);
+                updateProductList(data, update_id);
                 showMessage(message);
+
                 $('#productModalClose').click();
+
+                initDropdowns();
             },
             error: function(error) {
+                console.log(error)
+                // console.log('OKOKOK', $('#productModal').isVisible())
                 updateErrorFields(error);
+                // button.removeAttribute('data-drawer-hide');
             }
         })
     })
