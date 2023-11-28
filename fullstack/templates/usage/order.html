@@ -17,7 +17,7 @@
                     <div class="absolute top-4 left-4 -ml-px mt-0.5 h-full w-0.5 {% if status.0 > object.status %}bg-gray-300{% else %}bg-blue-600{% endif %}" aria-hidden="true"></div>
                     {% endif %}
                     {% if status.0 < object.status %}
-                    <a href="#" class="group relative flex items-start">
+                    <div class="group relative flex items-start">
                         <span class="flex h-9 items-center">
                             <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 group-hover:bg-blue-800">
                                 <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -29,9 +29,9 @@
                             <span class="text-sm font-medium">{{ status.1 }}</span>
                             <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
                         </span>
-                    </a>
+                    </div>
                     {% elif status.0 == object.status %}
-                    <a href="#" class="group relative flex items-start">
+                    <div class="group relative flex items-start">
                         <span class="flex h-9 items-center">
                             <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-blue-600 bg-white">
                                 <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
@@ -41,9 +41,9 @@
                             <span class="text-sm text-blue-600 font-medium">{{ status.1 }}</span>
                             <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
                         </span>
-                    </a>
+                    </div>
                     {% else %}
-                    <a href="#" class="group relative flex items-start">
+                    <div class="group relative flex items-start">
                         <span class="flex h-9 items-center">
                             <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-white group-hover:border-gray-400">
                                 <span class="h-2.5 w-2.5 rounded-full bg-transparent group-hover:bg-gray-300"></span>
@@ -53,7 +53,7 @@
                             <span class="text-sm text-gray-500 font-medium">{{ status.1 }}</span>
                             <span class="text-sm text-gray-500">{{ object.get_status_display }}</span>
                         </span>
-                    </a>
+                    </div>
                     {% endif %}
                 </li>
                 {% endfor %}
@@ -63,7 +63,7 @@
             <ul class=" divide-y divide-gray-200">
                 {% for product in object.goods.all %}
                 <li class="flex group relative py-4">
-                    <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md" href="{% url 'product' product.product.id %}">
+                    <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-xl" href="{% url 'product' product.product.id %}">
                         <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center">
                     </div>
                     <div class="flex flex-col flex-1 space-y-1 justify-between">

@@ -106,6 +106,9 @@ function getAccountPageData() {
             $('#accountOrderDesc').html('История ваших заказов');
             $('#accountMenu').removeClass('hidden');
             uploadOrdersIntoAccountPage(data.orders);
+            if (data.is_staff) {
+                addAdmBtn();
+            }
         },
         error: function(error) {
             
