@@ -5,8 +5,9 @@ from category.serializers import BrandSerializer, SizeSerializer, CategorySerial
 from django.shortcuts import get_object_or_404
 from product.models import SearchHistory
 from account.models import Address
+from account.serializers import AccountSerializer
 
-from rest_framework import response, views, status, generics, viewsets, mixins
+from rest_framework import response, views, status, generics, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -42,6 +43,15 @@ class DeliveryListAPIView(generics.ListAPIView):
     queryset = Delivery.objects.all()
     serializer_class = DeliverySerializer
 
+
+class AccountAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = AccountSerializer(request.user, context={'request': request})
+        print(serializer.data)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 class OrderAPIView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer

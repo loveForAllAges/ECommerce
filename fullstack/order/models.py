@@ -30,7 +30,7 @@ ORDER_CHOICES = (
 class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     number = models.IntegerField(unique=True, blank=True, editable=False)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='orders')
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     email = models.EmailField(blank=True)

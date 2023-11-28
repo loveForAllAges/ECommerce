@@ -60,7 +60,7 @@ function showMessage(message) {
 function generateProductCardPreloader() {
     return `
         <div class="relative group animate-pulse">
-            <div class="space-y-3 space">
+            <div class="space-y-3">
                 <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
                     <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded">
                         <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">

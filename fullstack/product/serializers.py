@@ -43,7 +43,7 @@ class ProductSerializer(serializers.ModelSerializer):
     in_wishlist = serializers.SerializerMethodField()
     # size = SizeSerializer(many=True, read_only=True)
     # category = CategorySerializer()
-    url = serializers.HyperlinkedIdentityField(view_name='product')
+    url = serializers.HyperlinkedIdentityField(view_name='product', lookup_field='pk', read_only=True)
     # brand = serializers.PrimaryKeyRelatedField(many=True, queryset)
     name = serializers.CharField(max_length=128, error_messages={
         'required': ERROR_MESSAGES['required'],

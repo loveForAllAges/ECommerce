@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load my_filters %}
-
+{% load static %}
 
 {% block content %}
 <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 space-y-16">
@@ -11,13 +10,13 @@
                     <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
             </span>
-            <div class="mt-4 text-center md:mt-0 md:pt-1 md:text-left">
-            <p class="text-sm text-gray-500">Добро пожаловать,</p>
-            <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-            <p class="text-sm text-gray-500">{{ request.user.email }}</p>
+            <div class="mt-4 text-center md:mt-0 md:text-left">
+            <div id="accountWelcomeText" class="text-sm text-gray-500"><div class="my-1 h-3 bg-gray-200 rounded-full w-24"></div></div>
+            <div id="accountName" class="text-xl font-bold text-gray-900 sm:text-2xl"><div class="my-2.5 h-6 bg-gray-200 rounded-full w-36"></div></div>
+            <div id="accountEmail" class="text-sm text-gray-500"><div class="my-1 h-3 bg-gray-200 rounded-full w-32"></div></div>
             </div>
         </div>
-        <div class="mt-5 flex justify-center md:mt-0 space-x-4">
+        <div id="accountMenu" class="hidden mt-5 flex justify-center md:mt-0 space-x-4">
             <a href="{% url 'adm' %}" class="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                 <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -35,80 +34,61 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                 </svg>
-            </button>                      
+            </button>
         </div>
     </div>
 
     <div class="divide-y divide-gray-200">
         <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">Заказы<span class="text-sm text-gray-500 font-normal ml-2">{{ object_list|length }}</span></h3>
-            <p class="max-w-2xl text-sm text-gray-500">История ваших заказов</p>
+            <div id="accountOrderTitle" class="text-lg font-medium leading-6 text-gray-900"><div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div></div>
+            <div id="accountOrderDesc" class="max-w-2xl text-sm text-gray-500"><div class="mt-2 mb-1 h-3 bg-gray-200 rounded-full w-48"></div></div>
         </div>
-        <ul role="list" class="mt-6 py-8 grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8">
-            {% for order in object_list %}
-            <li class="group relative">
-                <div class="relative aspect-w-1 aspect-h-1 rounded-lg bg-gray-50">
-                    {% for product in order.goods.all %}
-                    {% if forloop.counter == 1 %}
-                    <div class="absolute w-1/2 h-1/2 rounded-lg border-gray-100 p-1">
-                        <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                    </div>
-                    {% elif forloop.counter == 2 %}
-                    <div class="absolute left-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                        <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                    </div>
-                    {% elif forloop.counter == 3 %}
-                    <div class="absolute top-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                        <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                    </div>
-                    {% elif forloop.counter == 4 %}
-                    <div class="absolute top-auto left-auto w-1/2 h-1/2 rounded-lg p-1 border-gray-100">
-                        <img src="{{ product.product.images.all.0.image.url }}" class="h-full w-full object-cover object-center rounded-lg">
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                    <div class="absolute left-2 top-1">
-                        {% if order.status == 0 %}
-                        <span class="inline-flex items-center rounded-lg bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
-                            <svg class="mr-1.5 h-2 w-2 text-blue-400" fill="currentColor" viewBox="0 0 8 8">
-                            <circle cx="4" cy="4" r="3" />
+        <ul id="accountOrderList" class="mt-6 py-8 grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8">
+            <li class="group relative space-y-3 animate-pulse">
+                <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
+                    <div class="absolute w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
+                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
                             </svg>
-                            {{ order.get_status_display }}
-                        </span>
-                        {% elif order.status == 1 %}
-                        <span class="inline-flex items-center rounded-lg bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
-                            <svg class="mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
-                            <circle cx="4" cy="4" r="3" />
+                        </div>
+                    </div>
+                    <div class="absolute left-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
+                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
                             </svg>
-                            {{ order.get_status_display }}
-                        </span>
-                        {% elif order.status == 2 or order.status == 3 %}
-                        <span class="inline-flex items-center rounded-lg bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
-                            <svg class="mr-1.5 h-2 w-2 text-red-400" fill="currentColor" viewBox="0 0 8 8">
-                            <circle cx="4" cy="4" r="3" />
+                        </div>
+                    </div>
+                    <div class="absolute top-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
+                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
                             </svg>
-                            {{ order.get_status_display }}
-                        </span>
-                        {% elif order.status == 4 %}
-                        <span class="inline-flex items-center rounded-lg bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">
-                            <svg class="mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
-                            <circle cx="4" cy="4" r="3" />
+                        </div>
+                    </div>
+                    <div class="absolute top-auto left-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
+                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
                             </svg>
-                            {{ order.get_status_display }}
-                        </span>
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
-                <a href="{% url 'order-detail' order.pk %}" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-                    <span aria-hidden="true" class="absolute inset-0"></span>
-                    Заказ #{{ order.number }}
-                </a>
-                <p class="mt-1 text-gray-900 font-medium">{{ order.total_price|add_space_separator }} ₽</p>
+                <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+                    <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
+                </div>
+                <div>
+                    <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
+                </div>
             </li>
-            {% endfor %}
         </ul>
     </div>
 </div>
 
 {% include 'components/logoutModal.html' %}
 {% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/accountPage.js' %}"></script>
+{% endblock scripts %}

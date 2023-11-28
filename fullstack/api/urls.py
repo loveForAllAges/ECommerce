@@ -18,4 +18,6 @@ urlpatterns = [
     path('delivery/', views.DeliveryListAPIView.as_view()),
 
     path('orders/', views.OrderAPIView.as_view()),
+
+    path('account', views.AccountAPIView.as_view())
 ]
