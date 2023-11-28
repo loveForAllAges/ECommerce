@@ -25,7 +25,7 @@ getMainCategories();
 
 $(document).ready(function(){
     getCart();
-    if ($('#homePage')[0]) {
-        homeCategoriesPreview();
-    }
+    // if ($('#homePage')[0]) {
+    //     homeCategoriesPreview();
+    // }
 })

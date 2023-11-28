@@ -18,6 +18,7 @@ from order.serializers import DeliverySerializer, OrderSerializer
 from .filters import ProductFilter
 from .serializer import SearchHistorySerializer
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
+from config.functions import send_email
 
 
 class WishlistAPIView(views.APIView):
@@ -83,7 +84,7 @@ class OrderAPIView(generics.ListCreateAPIView):
                 address.address = data['address']
                 address.zip_code = data['zip_code']
                 address.save()
-        data['delivery'] = str(Delivery.objects.get(slug=data['delivery']).pk)
+        data['delivery'] = Delivery.objects.get(slug=data['delivery']).pk
         
         order_serializer = OrderSerializer(data=data, context={'request': self.request})
         order_serializer.is_valid(raise_exception=True)
@@ -101,6 +102,7 @@ class OrderAPIView(generics.ListCreateAPIView):
 
         cart.clear()
 
+        send_email(request, request.user, 'Заказ оформлен', f'Заказ успешно оформлен! Отслеживание заказа: {order_serializer.data["url"]}')
         message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
         return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
 

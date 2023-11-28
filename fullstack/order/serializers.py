@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Delivery, Order, OrderItem
 from product.serializers import ProductSerializer, SizeSerializer
+from django.shortcuts import get_object_or_404
 
 
 class DeliverySerializer(serializers.ModelSerializer):
@@ -20,14 +21,19 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    # delivery = DeliverySerializer(read_only=True)
     goods = OrderItemSerializer(many=True, read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='order-detail', read_only=True)
-    status = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
-        fields = ('url', 'number', 'status', 'goods', 'total_price')
+        fields = ('url', 'number', 'status', 'goods', 'total_price', 'delivery', 'customer', 'first_name', 'last_name', 'email')
 
     def get_status(self, obj):
         return {'id': obj.status, 'name': obj.get_status_display()}
+    
+    # def create(self, validated_data):
+    #     print(validated_data)
+    #     delivery = get_object_or_404(Delivery, slug=validated_data.get('delivery'))
+    #     validated_data['delivery'] = delivery
+    #     return super().create(validated_data)
