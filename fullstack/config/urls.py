@@ -1,9 +1,9 @@
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.shortcuts import render, HttpResponse
-from django.contrib import admin
+from django.shortcuts import HttpResponse
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def fill_db(request):
@@ -148,7 +148,14 @@ def add_delivery_types(request):
     return HttpResponse("Success")
 
 
+class AccountTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'pages/account.html'
+
+
 urlpatterns = [
+    path('catalog', TemplateView.as_view(template_name='pages/catalog.html'), name='catalog'),
+    path('account', AccountTemplateView.as_view(), name='account'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
     # path('a/', fill_db),
     # path('admin/', admin.site.urls),
     # path('add_delivery_types', add_delivery_types),
@@ -162,9 +169,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('chat/', include('chat.urls')),
     
-    path('catalog', TemplateView.as_view(template_name='pages/catalog.html'), name='catalog'),
-    # Home page view
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 
 

@@ -51,7 +51,7 @@ class AccountAPIView(views.APIView):
         serializer = AccountSerializer(request.user, context={'request': request})
         print(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 
 class OrderAPIView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer

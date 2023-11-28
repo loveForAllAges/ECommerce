@@ -19,6 +19,8 @@ from django.db.models import Count
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from datetime import date
+from django.db.models import Sum, F
 
 
 class StaffOnly(LoginRequiredMixin, UserPassesTestMixin):
@@ -69,7 +71,26 @@ class StaffRequiredMixin(UserPassesTestMixin):
 
 class AdmView(AdminRequiredMixin, View):
     def get(self, request):
-        return render(request, 'adm/home.html')
+        orders = Order.objects.all()
+        users = User.objects.all()
+
+        context = {
+            'orders': {
+                'total': len(orders.filter()),
+                'active': len(orders.filter(status__in=[0,1,2,3])),
+                'closed': len(orders.filter(status=4)),
+                'cancelled': len(orders.filter(status=5)),
+            },
+            'users': {
+                'total': len(users),
+                'new': len(users.filter(date_joined__date=date.today())),
+                'adm': len(users.filter(is_superuser=True)),
+                'staff': len(users.filter(is_staff=True)),
+            }
+        }
+
+        print(context)
+        return render(request, 'adm/home.html', context=context)
 
 
 class AccountListView(AdminRequiredMixin, generic.ListView):

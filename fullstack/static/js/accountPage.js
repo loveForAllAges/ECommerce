@@ -1,46 +1,46 @@
-function accountPagePreloader() {
-    $('#accountName').html('<div class="my-2.5 h-6 bg-gray-200 rounded-full w-36"></div>');
-    $('#accountEmail').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-32"></div>')
-    $('#accountWelcomeText').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-24"></div>')
-    $('#accountOrderTitle').html('<div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>');
-    $('#accountOrderDesc').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-48"></div>');
-    $('#accountOrderList').empty();
-    for (var i = 0; i < 7; i++) {
-        var items = '';
-        for (var j = 0; j < 4; j++) {
-            var geo = ''
-            if (j == 1) {
-                geo = 'left-auto'
-            } else if (j == 2) {
-                geo = 'top-auto'
-            } else if (j == 3) {
-                geo = 'top-auto left-auto'
-            }
-            items += `
-            <div class="absolute ${ geo } w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                    <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-                    </svg>
-                </div>
-            </div>
-            `
-        }
-        $('#accountOrderList').append(`
-        <li class="group relative space-y-3 animate-pulse">
-            <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
-            ${ items }
-            </div>
-            <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-                <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
-            </div>
-            <div>
-                <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
-            </div>
-        </li>
-        `)
-    }
-}
+// function accountPagePreloader() {
+//     $('#accountName').html('<div class="my-2.5 h-6 bg-gray-200 rounded-full w-36"></div>');
+//     $('#accountEmail').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-32"></div>')
+//     $('#accountWelcomeText').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-24"></div>')
+//     $('#accountOrderTitle').html('<div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>');
+//     $('#accountOrderDesc').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-48"></div>');
+//     $('#accountOrderList').empty();
+//     for (var i = 0; i < 7; i++) {
+//         var items = '';
+//         for (var j = 0; j < 4; j++) {
+//             var geo = ''
+//             if (j == 1) {
+//                 geo = 'left-auto'
+//             } else if (j == 2) {
+//                 geo = 'top-auto'
+//             } else if (j == 3) {
+//                 geo = 'top-auto left-auto'
+//             }
+//             items += `
+//             <div class="absolute ${ geo } w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
+//                 <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+//                     <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+//                         <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+//                     </svg>
+//                 </div>
+//             </div>
+//             `
+//         }
+//         $('#accountOrderList').append(`
+//         <li class="group relative space-y-3 animate-pulse">
+//             <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
+//             ${ items }
+//             </div>
+//             <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+//                 <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
+//             </div>
+//             <div>
+//                 <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
+//             </div>
+//         </li>
+//         `)
+//     }
+// }
 
 
 function uploadOrdersIntoAccountPage(orders) {

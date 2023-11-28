@@ -4,7 +4,6 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
 
 urlpatterns = [
-    path('', views.AccountView.as_view(), name='account'),
     path('settings/', views.AccountEditView.as_view(), name='account-settings'),
 
     path('wishlist/', views.WishlistView.as_view(), name='wishlist'),

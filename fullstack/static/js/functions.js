@@ -72,7 +72,7 @@ function generateProductCardPreloader() {
                     <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
                 </div>
                 <div>
-                    <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
+                    <div class="my-1 h-4 bg-gray-300 rounded-full w-24"></div>
                 </div>
             </div>
         </div>

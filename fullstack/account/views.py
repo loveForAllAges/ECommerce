@@ -1,7 +1,4 @@
-from typing import Any
-from django.db.models.query import QuerySet
-from django.forms.models import BaseModelForm
-from django.views.generic import ListView, CreateView, UpdateView, FormView
+from django.views.generic import ListView, CreateView
 from .models import User
 from django.urls import reverse_lazy
 from .forms import (
@@ -166,14 +163,6 @@ class CustomPasswordChangeView(PasswordChangeView):
     def form_valid(self, form):
         messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен!')
         return super().form_valid(form)
-
-
-class AccountView(LoginRequiredMixin, ListView):
-    template_name = 'usage/account.html'
-    
-    def get_queryset(self) -> QuerySet[Any]:
-        queryset = Order.objects.filter(customer=self.request.user).order_by('-number')
-        return queryset
 
 
 class AccountEditView(LoginRequiredMixin, View):
