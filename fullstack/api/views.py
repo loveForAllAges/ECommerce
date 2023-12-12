@@ -1,22 +1,30 @@
-from product.models import Product, Brand, Size
+from product.models import Product, Brand, Size, SearchHistory
 from product.serializers import ProductSerializer, MainCategorySerializer
+
 from category.models import Category
 from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
-from django.shortcuts import get_object_or_404
-from product.models import SearchHistory
+
+from django.db.models import F, Exists, Case, When, Value, BooleanField, OuterRef
+
+from account.models import User
+
 from account.models import Address
 from account.serializers import AccountSerializer
 
 from rest_framework import response, views, status, generics, viewsets, mixins, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from order.models import OrderItem, Delivery, Order
-from cart.cart import Cart
 from order.serializers import DeliverySerializer, OrderSerializer
+
+from cart.cart import Cart
+
 from .filters import ProductFilter
 from .serializer import SearchHistorySerializer
+
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 from config.functions import send_email
 
@@ -50,7 +58,6 @@ class AccountAPIView(views.APIView):
 
     def get(self, request):
         serializer = AccountSerializer(request.user, context={'request': request})
-        print(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -150,13 +157,28 @@ class SearchAPIListView(generics.ListAPIView):
 
 
 class ProductAPIView(generics.ListCreateAPIView):
-    queryset = Product.objects.all().distinct()
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     filterset_class = ProductFilter
     ordering_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
     permission_classes = [IsStaffOrReadOnly]
+
+    def get_queryset(self):
+        # TODO Обработка случаев для анонимный пользователей
+        if self.request.user.is_authenticated:
+            in_wishlist = Exists(User.objects.filter(
+                id=self.request.user.id,
+                wishlist=OuterRef('pk')
+            ))
+        else:
+            in_wishlist = Exists()
+        queryset = Product.objects.prefetch_related(
+            'brand', 'images', 'size'
+        ).distinct().annotate(
+            in_wishlist=in_wishlist
+        )
+        return queryset
 
     def list(self, request, *args, **kwargs):
         query_list = self._get_query_list(request)
@@ -174,17 +196,16 @@ class ProductAPIView(generics.ListCreateAPIView):
 
         query_list += [['search', search_param, search_param]]
 
-        if category_param:
-            lst = category_param.split(',')
-            query_list += [['category', i, get_object_or_404(Category, pk=i).name] for i in lst]
+        brand_param = [i for i in brand_param.split(',') if i.isdigit()]
+        size_param = [i for i in size_param.split(',') if i.isdigit()]
+        category_param = [i for i in category_param.split(',') if i.isdigit()]
         
         if brand_param:
-            lst = brand_param.split(',')
-            query_list += [['brand', i, get_object_or_404(Brand, pk=i).name] for i in lst]
-
+            query_list += [('brand', i.id, i.name) for i in Brand.objects.filter(id__in=brand_param)]
         if size_param:
-            lst = size_param.split(',')
-            query_list += [['size', i, get_object_or_404(Size, pk=i).name] for i in lst]
+            query_list += [('size', i.id, i.name) for i in Size.objects.filter(id__in=size_param)]
+        if category_param:
+            query_list += [('category', i.id, i.name) for i in Category.objects.filter(id__in=category_param)]
 
         return query_list
 

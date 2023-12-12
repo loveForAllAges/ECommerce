@@ -153,6 +153,8 @@ class AccountTemplateView(LoginRequiredMixin, TemplateView):
 
 
 urlpatterns = [
+    path("__debug__/", include('debug_toolbar.urls')),
+
     path('catalog', TemplateView.as_view(template_name='pages/catalog.html'), name='catalog'),
     path('account', AccountTemplateView.as_view(), name='account'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -168,9 +170,11 @@ urlpatterns = [
     path('adm/', include('adm.urls')),
     path('api/', include('api.urls')),
     path('chat/', include('chat.urls')),
-    
 ]
-
+ 
 
 if settings.DEBUG:
+    # import debug_toolbar
+    # urlpatterns = [
+    # ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

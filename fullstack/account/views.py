@@ -183,8 +183,10 @@ class AccountEditView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
-class WishlistView(View):
+class WishlistView(LoginRequiredMixin, View):
     template_name = 'usage/wishlist.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        wishlist = request.user.wishlist.prefetch_related('images')
+        # print(wishlist[0].name, wishlist[0].images.all(), sep='\n')
+        return render(request, self.template_name, context={'wishlist': wishlist})

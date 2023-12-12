@@ -1,6 +1,10 @@
 from pathlib import Path
+
 from dotenv import load_dotenv
+
 import os
+
+from .logging_formatters import JsonFormatter
 
 
 load_dotenv()
@@ -40,9 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'django_filters',
     'compressor',
+    'debug_toolbar',
+
     'account',
     'product',
     'order',
@@ -50,7 +57,7 @@ INSTALLED_APPS = [
     'category',
     'api',
     'adm',
-    'chat'
+    'chat',
 ]
 
 
@@ -62,7 +69,14 @@ INSTALLED_APPS = [
 # STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+    'localhost',
+]
+
+
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -158,3 +172,42 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} - {asctime} - {module} - {message}',
+            'style': '{',
+        },
+        'json_formatter': {
+            '()': 'config.logging_formatters.JsonFormatter',
+        },
+        'simple': {
+            'format': '{levelname} - {asctime} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'formatter': 'json_formatter',
+            # 'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': 'logging.log',
+        },
+        'console': {
+            'formatter': 'simple',
+            # 'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        }
+    },
+}
+"""

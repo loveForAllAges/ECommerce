@@ -10,10 +10,22 @@ class CharFieldInFilter(BaseInFilter, CharFilter):
 
 
 class ProductFilter(FilterSet):
-    category = CharFieldInFilter(method='filter_category')
-    brand = CharFieldInFilter(field_name='brand__id', lookup_expr='in')
-    size = CharFieldInFilter(field_name='size__id', lookup_expr='in')
+    category = BaseInFilter(method='filter_category')
+    brand = CharFieldInFilter(method='filter_brand')
+    size = CharFieldInFilter(method='filter_size')
     price = RangeFilter()
+
+    def filter_brand(self, queryset, name, values):
+        try:
+            return queryset.filter(brand__id__in=values)
+        except:
+            return queryset.none() 
+
+    def filter_size(self, queryset, name, values):
+        try:
+            return queryset.filter(size__id__in=values)
+        except:
+            return queryset.none()            
 
     def filter_category(self, queryset, name, values):
         try:

@@ -26,7 +26,7 @@ class MainCategorySerializer(serializers.ModelSerializer):
         if last_product:
             url = last_product.images.first().image.url
         else:
-            url = 'static/images/emptyCategoryLogo.jpg'
+            url = 'emptyCategoryLogo.jpg'
 
         request = self.context.get('request')
         return request.build_absolute_uri(url)
@@ -40,7 +40,8 @@ class ProductImageListingField(serializers.RelatedField):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageListingField(many=True, read_only=True)
-    in_wishlist = serializers.SerializerMethodField()
+    in_wishlist = serializers.BooleanField()
+    # in_wishlist = serializers.SerializerMethodField()
     # size = SizeSerializer(many=True, read_only=True)
     # category = CategorySerializer()
     url = serializers.HyperlinkedIdentityField(view_name='product', lookup_field='pk', read_only=True)
@@ -91,13 +92,13 @@ class ProductSerializer(serializers.ModelSerializer):
         #     raise serializers.ValidationError({'images': ['Минимум 1 изображение, максимум 6']})
     #     return data
 
-    def get_in_wishlist(self, obj):
-        request = self.context.get('request')
-        if request.user.is_authenticated:
-            res = request.user.wishlist.filter(id=obj.id).exists()
-        else:
-            res = False
-        return res
+    # def get_in_wishlist(self, obj):
+    #     request = self.context.get('request')
+    #     if request.user.is_authenticated:
+    #         res = request.user.wishlist.filter(id=obj.id).exists()
+    #     else:
+    #         res = False
+    #     return res
 
     def create(self, validated_data):
         images_data = self.context.get('request').FILES.getlist('images')

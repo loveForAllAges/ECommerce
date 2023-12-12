@@ -18,8 +18,7 @@ class Cart:
         if user.is_authenticated:
             cart, created = DBCart.objects.get_or_create(customer=user)
         else:
-            cart, created = DBCart.objects.get_or_create(session=self.session.session_key)
-        print(cart)
+            cart, created = DBCart.objects.get_or_create(session=self.session)
         return cart
 
     def add(self, product, size):
@@ -74,6 +73,7 @@ class Cart:
             print(ex)
 
     def get_cart(self):
+        # cart = self.get_cart_from_db().prefetch_related('product_set__images', 'product_set_product__size', 'product_set_product__brand')
         cart = self.get_cart_from_db()
         serializer = CartSerializer(cart, context={'request': self.request})
         return serializer.data

@@ -10,11 +10,25 @@
     <link rel="stylesheet" href="{% static 'css/scrollbar.css' %}">
     {% endcompress %}
     <title>{% block title %}Title{% endblock %}</title>
-    <script type="text/script" src="{% static '../node_modules/flowbite/plugin.js' %}"></script>
+    <script type="text/script" src="{% static 'flowbite/plugin.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/addProductCard.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
 </head>
 <body class="flex flex-col justify-between min-h-screen">
+    {% if debug %}
+        if (typeof window.htmx !== "undefined") {
+            htmx.on("htmx:afterSettle", function(detail) {
+                if (
+                    typeof window.djdt !== "undefined"
+                    && detail.target instanceof HTMLBodyElement
+                ) {
+                    djdt.show_toolbar();
+                }
+            });
+        }
+    {% endif %}
+
+
     {% include 'components/preloader.html' %}
     {% include 'components/header.html' %}
     {% include 'components/message.html' %}
