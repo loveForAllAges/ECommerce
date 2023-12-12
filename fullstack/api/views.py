@@ -4,14 +4,16 @@ from product.serializers import ProductSerializer, MainCategorySerializer
 from category.models import Category
 from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
 
-from django.db.models import F, Exists, Case, When, Value, BooleanField, OuterRef
+from django.db.models import Exists, OuterRef
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from account.models import User
 
 from account.models import Address
 from account.serializers import AccountSerializer
 
-from rest_framework import response, views, status, generics, viewsets, mixins, permissions
+from rest_framework import response, views, status, generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -27,6 +29,7 @@ from .serializer import SearchHistorySerializer
 
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 from config.functions import send_email
+from config.utils import get_product_queryset
 
 
 class WishlistAPIView(views.APIView):
@@ -169,19 +172,7 @@ class ProductAPIView(generics.ListCreateAPIView):
     permission_classes = [IsStaffOrReadOnly]
 
     def get_queryset(self):
-        # TODO Обработка случаев для анонимный пользователей
-        if self.request.user.is_authenticated:
-            in_wishlist = Exists(User.objects.filter(
-                id=self.request.user.id,
-                wishlist=OuterRef('pk')
-            ))
-        else:
-            in_wishlist = Exists()
-        queryset = Product.objects.prefetch_related(
-            'brand', 'images', 'size'
-        ).distinct().annotate(
-            in_wishlist=in_wishlist
-        )
+        queryset = get_product_queryset(self.request).distinct()
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -215,16 +206,24 @@ class ProductAPIView(generics.ListCreateAPIView):
 
 
 class HomeAPIView(views.APIView):
+    @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request):
         res = list()
         cats = Category.objects.filter(parent__isnull=False)
-
-        data = Product.objects.all().order_by('-id')[:4]
-        res.append({'title': 'Новинки', 'url': '?sort=-id', 'content': ProductSerializer(data, many=True, context={'request': request}).data})
+        products = get_product_queryset(request)
+        data = products.order_by('-id')[:4]
+        res.append({
+            'title': 'Новинки', 
+            'url': '?sort=-id', 
+            'content': ProductSerializer(data, many=True, context={'request': request}).data
+        })
 
         for cat in cats:
-            data = Product.objects.filter(category=cat)[:4]
-            res.append({'title': cat.name, 'url': f'?category={cat.id}', 'content': ProductSerializer(data, many=True, context={'request': request}).data})
+            data = products.filter(category=cat)[:4]
+            res.append({
+                'title': cat.name, 
+                'url': f'?category={cat.id}', 
+                'content': ProductSerializer(data, many=True, context={'request': request}).data
+            })
 
         return response.Response(res, status=status.HTTP_200_OK)
-    
