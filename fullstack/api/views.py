@@ -36,7 +36,12 @@ class WishlistAPIView(views.APIView):
         try:
             data = request.data
             product_id = data.get('product_id')
-            product = Product.objects.get(id=product_id)
+            product = Product.objects.filter(id=product_id).annotate(
+                in_wishlist=~Exists(User.objects.filter(
+                    id=self.request.user.id,
+                    wishlist=OuterRef('pk')
+                ))
+            )[0]
             if request.user.wishlist.filter(id=product_id).exists():
                 request.user.wishlist.remove(product)
             else:
@@ -44,7 +49,6 @@ class WishlistAPIView(views.APIView):
             serializer = ProductSerializer(product, context={'request': self.request})
             return response.Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as ex:
-            print(ex)
             return response.Response({'message': 'Ошибка'}, status=status.HTTP_400_BAD_REQUEST)
 
 
