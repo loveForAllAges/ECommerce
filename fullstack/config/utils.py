@@ -23,6 +23,7 @@ def get_product_queryset(request):
         ))
     else:
         in_wishlist = Exists()
+    print('in_wishlist', in_wishlist)
     queryset = Product.objects.prefetch_related(
         'brand', 'images', 'size'
     ).annotate(

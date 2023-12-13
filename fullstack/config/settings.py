@@ -32,6 +32,9 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 REST_FRAMEWORK = {
     'ORDERING_PARAM': 'sort',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
@@ -59,14 +62,6 @@ INSTALLED_APPS = [
     'adm',
     'chat',
 ]
-
-
-# TAILWIND_APP_NAME = 'theme'
-
-
-# COMPRESS_ROOT = BASE_DIR / 'static'
-# COMPRESS_ENABLED = True
-# STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 
 INTERNAL_IPS = [

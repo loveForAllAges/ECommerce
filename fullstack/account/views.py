@@ -1,19 +1,17 @@
-from django.views.generic import ListView, CreateView
+from .utils import account_activation_token
 from .models import User
-from django.urls import reverse_lazy
 from .forms import (
     CustomUserCreationForm, UserUpdateForm, 
     CustomSetPasswordForm, CustomPasswordResetForm,
     CustomAuthenticationForm, CustomPasswordChangeForm
 )
-from django.contrib.auth.views import PasswordChangeView
-from order.models import Order
+
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.views import View
 from django.contrib.sites.shortcuts import get_current_site
-import threading
-from .utils import account_activation_token
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -23,8 +21,15 @@ from django.utils.html import strip_tags
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, LoginView
 from django.contrib.auth import login
+from django.db.models import Exists, OuterRef
+from django.contrib.auth.views import (
+    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, 
+    LoginView, PasswordChangeView
+)
+
+import threading
+
 
 
 class EmailThread(threading.Thread):
@@ -187,6 +192,14 @@ class WishlistView(LoginRequiredMixin, View):
     template_name = 'usage/wishlist.html'
 
     def get(self, request):
-        wishlist = request.user.wishlist.prefetch_related('images')
-        # print(wishlist[0].name, wishlist[0].images.all(), sep='\n')
+        if request.user.is_authenticated:
+            in_wishlist = Exists(User.objects.filter(
+                id=request.user.id,
+                wishlist=OuterRef('pk')
+            ))
+        else:
+            in_wishlist = Exists()
+        wishlist = request.user.wishlist.prefetch_related('images').annotate(
+            in_wishlist=in_wishlist
+        )
         return render(request, self.template_name, context={'wishlist': wishlist})

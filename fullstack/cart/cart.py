@@ -1,7 +1,10 @@
 from django.conf import settings
 from .models import Cart as DBCart, CartItem
 from .serializers import CartSerializer
-from django.db.models import Q
+from django.db.models import Q, Prefetch, Exists, OuterRef
+from product.models import Product
+from order.models import Order, OrderItem
+from account.models import User
 
 
 class Cart:
@@ -15,10 +18,26 @@ class Cart:
 
     def get_cart_from_db(self):
         user = self.request.user
+
         if user.is_authenticated:
-            cart, created = DBCart.objects.get_or_create(customer=user)
+            in_wishlist = Exists(User.objects.filter(
+                id=user.id,
+                wishlist=OuterRef('pk')
+            ))
         else:
-            cart, created = DBCart.objects.get_or_create(session=self.session)
+            in_wishlist = Exists()
+            
+        cart = DBCart.objects.prefetch_related(
+            Prefetch('cartitem_set', queryset=CartItem.objects.prefetch_related(
+                Prefetch('product', queryset=Product.objects.prefetch_related('images', 'brand', 'size').annotate(in_wishlist=in_wishlist))
+            ))
+        )
+
+        if user.is_authenticated:
+            cart, created = cart.get_or_create(customer=user)
+        else:
+            cart, created = cart.get_or_create(session=self.session)
+
         return cart
 
     def add(self, product, size):

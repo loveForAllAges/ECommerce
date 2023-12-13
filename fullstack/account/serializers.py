@@ -4,14 +4,13 @@ from product.serializers import ProductSerializer
 from order.serializers import OrderSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
+# class UserSerializer(serializers.ModelSerializer):
     # wishlist = ProductSerializer(many=True, read_only=True)
     # is_adm = serializers.SerializerMethodField()
 
-    class Meta:
-        model = User
-        # fields = ('full_name', 'email', 'is_staff')
-        fields = ('__all__')
+    # class Meta:
+    #     model = User
+    #     fields = ('__all__')
 
     # def get_is_adm(self, obj):
     #     print('------', obj)

@@ -4,7 +4,7 @@ from product.serializers import ProductSerializer, MainCategorySerializer
 from category.models import Category
 from category.serializers import BrandSerializer, SizeSerializer, CategorySerializer
 
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Prefetch
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
@@ -13,7 +13,9 @@ from account.models import User
 from account.models import Address
 from account.serializers import AccountSerializer
 
-from rest_framework import response, views, status, generics, permissions
+from rest_framework import (
+    response, views, status, generics, permissions,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -26,6 +28,7 @@ from cart.cart import Cart
 
 from .filters import ProductFilter
 from .serializer import SearchHistorySerializer
+from .pagination import CustomCursorPagination
 
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 from config.functions import send_email
@@ -39,16 +42,16 @@ class WishlistAPIView(views.APIView):
         try:
             data = request.data
             product_id = data.get('product_id')
-            product = Product.objects.filter(id=product_id).annotate(
+            product = Product.objects.annotate(
                 in_wishlist=~Exists(User.objects.filter(
                     id=self.request.user.id,
                     wishlist=OuterRef('pk')
                 ))
-            )[0]
+            ).get(id=product_id)
             if request.user.wishlist.filter(id=product_id).exists():
                 request.user.wishlist.remove(product)
             else:
-                self.request.user.wishlist.add(product)
+                request.user.wishlist.add(product)
             serializer = ProductSerializer(product, context={'request': self.request})
             return response.Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as ex:
@@ -63,8 +66,26 @@ class DeliveryListAPIView(generics.ListAPIView):
 class AccountAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            in_wishlist = Exists(User.objects.filter(
+                id=self.request.user.id,
+                wishlist=OuterRef('pk')
+            ))
+        else:
+            in_wishlist = Exists()
+        queryset = User.objects.prefetch_related(
+            Prefetch('orders', queryset=Order.objects.prefetch_related(
+                Prefetch('goods', queryset=OrderItem.objects.prefetch_related(
+                    Prefetch('product', queryset=Product.objects.prefetch_related('images', 'brand', 'size').annotate(in_wishlist=in_wishlist))
+                ))
+            )),
+        ).get(id=self.request.user.id)
+        print(queryset.orders)
+        return queryset
+
     def get(self, request):
-        serializer = AccountSerializer(request.user, context={'request': request})
+        serializer = AccountSerializer(self.get_queryset(), context={'request': request})
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -105,6 +126,7 @@ class OrderAPIView(generics.ListCreateAPIView):
         order = order_serializer.save()
 
         cart = Cart(request)
+        url = request.build_absolute_uri(order.url())
 
         for i in cart.get_cart()['goods']:
             item = OrderItem.objects.create(
@@ -113,12 +135,13 @@ class OrderAPIView(generics.ListCreateAPIView):
             )
             if i['size']:
                 item.size_id = i['size']['id']
+                item.save()
 
         cart.clear()
 
-        send_email(request, request.user, 'Заказ оформлен', f'Заказ успешно оформлен! Отслеживание заказа: {order_serializer.data["url"]}')
+        send_email(request, request.user, 'Заказ оформлен', f'Заказ успешно оформлен! Отслеживание заказа: {url}')
         message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
-        return response.Response({'data': order_serializer.data, 'message': message}, status=status.HTTP_200_OK)
+        return response.Response({'url': url, 'message': message}, status=status.HTTP_200_OK)
 
 
 class ProductFiltersAPIView(views.APIView):
@@ -165,11 +188,12 @@ class SearchAPIListView(generics.ListAPIView):
 
 class ProductAPIView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
-    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
-    filterset_class = ProductFilter
-    ordering_fields = ['id', 'price']
-    search_fields = ['id', 'name', 'description']
-    permission_classes = [IsStaffOrReadOnly]
+    pagination_class = CustomCursorPagination
+    # filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
+    # filterset_class = ProductFilter
+    # ordering_fields = ['id', 'price']
+    # search_fields = ['id', 'name', 'description']
+    # permission_classes = [IsStaffOrReadOnly]
 
     def get_queryset(self):
         queryset = get_product_queryset(self.request).distinct()
@@ -177,10 +201,18 @@ class ProductAPIView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         query_list = self._get_query_list(request)
-        # filter_data = self._get_filter_data()
+        res = {'queries': query_list}
         queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return response.Response({'items': serializer.data, 'queries': query_list})
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            assert self.paginator is not None
+            res.update(self.paginator.get_paginated_response())
+        else:
+            serializer = self.get_serializer(queryset, many=True)
+        res['items'] = serializer.data
+        return response.Response(res)
 
     def _get_query_list(self, request):
         query_list = list()
@@ -206,7 +238,7 @@ class ProductAPIView(generics.ListCreateAPIView):
 
 
 class HomeAPIView(views.APIView):
-    @method_decorator(cache_page(60 * 60 * 2))
+    # @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request):
         res = list()
         cats = Category.objects.filter(parent__isnull=False)

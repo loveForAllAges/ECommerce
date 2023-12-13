@@ -1,13 +1,17 @@
+var nextPageURL;
+var nextPageProcess = false;
+
 function getCatalogPageData(is_update, queryDict={}) {
     var queryString = formatQueryDictToStr(queryDict);
     if (is_update) {
         $('#itemList').empty();
-        for (var j = 0; j < 12; j++) $('#itemList').append(generateProductCardPreloader());
+        for (var j = 0; j < 12; j++) $('#itemList').append(productCardPreloader);
     }
 
     $.ajax({
         url: '/api/products?' + queryString,
         success: function(data) {
+            nextPageURL = data.next;
             getProductFilters()
                 .then(function(productFilters) {
                     updateFilterData(productFilters, data.queries);
@@ -283,6 +287,33 @@ function sortProductList(key, button) {
 }
 
 
+function loadMore() {
+    nextPageProcess = true;
+    for (var j = 0; j < 12; j++) $('#itemList').append(productCardPreloader);
+
+    $.ajax({
+        url: nextPageURL,
+        success: function(data) {
+            nextPageURL = data.next;
+            $('#itemList > div:gt(-13)').remove();
+            data.items.forEach(function(product) {
+                addProductCard(product, $('#itemList'))
+            })
+            nextPageProcess = false;
+        },
+        error: function(err) {
+            console.log('Err', err)
+        }
+    })
+}
+
+
 $(document).ready(function() {
     getCatalogPageData(false, getQueryDict());
+
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100 && !nextPageProcess && nextPageURL) {
+            loadMore();
+        }
+    })
 })

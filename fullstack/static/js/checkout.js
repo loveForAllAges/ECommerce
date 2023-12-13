@@ -143,8 +143,8 @@ $(document).ready(function(){
             }
         })
         .then(data => {
-            window.location.href = data.data.url;
-        })
+            window.location.href = data.url;
+        }) 
         .catch(error => {
         })
     })

@@ -43,6 +43,7 @@ function getPageData() {
     $.ajax({
         url: '/api/home',
         success: function(data) {
+            console.log(data)
             $('#homePage').empty();
             data.forEach(element => {
                 if (element.content.length) {
