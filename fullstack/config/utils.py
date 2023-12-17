@@ -1,10 +1,12 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.db.models import Exists, OuterRef, Value
-from django.contrib.auth import get_user_model
-
-from product.models import Product
-
 from six import text_type
+import threading
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.core.mail import EmailMultiAlternatives
+from django.utils.encoding import force_bytes, force_str
+from django.urls import reverse
+from django.contrib.sites.shortcuts import get_current_site
 
 
 class AppTokenGenerator(PasswordResetTokenGenerator):
@@ -15,21 +17,39 @@ class AppTokenGenerator(PasswordResetTokenGenerator):
 account_activation_token = AppTokenGenerator()
 
 
-def product_in_wishlist_query(request):
-    if request.user.is_authenticated:
-        in_wishlist = Exists(get_user_model().objects.filter(
-            id=request.user.id,
-            wishlist=OuterRef('pk')
-        ))
-    else:
-        in_wishlist = Exists(get_user_model().objects.none())
-    return in_wishlist
+class EmailThread(threading.Thread):
+    def __init__(self, email):
+        super().__init__()
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send(fail_silently=False)
 
 
-def get_product_queryset(request):
-    queryset = Product.objects.prefetch_related(
-        'brand', 'images', 'size'
-    ).annotate(
-        in_wishlist=product_in_wishlist_query(request)
+def send_email(request, user, title, content):
+    current_site = get_current_site(request)
+    email_body = {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    }
+    
+    link = reverse('activate', kwargs={
+                    'uidb64': email_body['uid'], 'token': email_body['token']})
+    
+    email_body.update({'url': 'http://'+current_site.domain+link})
+    
+    email_subject = title
+    html_content = content
+    text_content = content
+    
+    email = EmailMultiAlternatives(
+        email_subject,
+        text_content,
+        settings.EMAIL_HOST_USER,
+        [user.email],
     )
-    return queryset
+    email.attach_alternative(html_content, "text/html")
+    EmailThread(email).start()

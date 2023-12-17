@@ -5,7 +5,7 @@ from django.db.models import Q, Prefetch, Exists, OuterRef, Value, Case, When, B
 from product.models import Product
 from order.models import Order, OrderItem
 from account.models import User
-from config.utils import product_in_wishlist_query
+from product.utils import product_in_wishlist_query
 
 
 class Cart:
@@ -87,7 +87,6 @@ class Cart:
             print(ex)
 
     def get_cart(self):
-        # cart = self.get_cart_from_db().prefetch_related('product_set__images', 'product_set_product__size', 'product_set_product__brand')
         cart = self.get_cart_from_db()
         serializer = CartSerializer(cart, context={'request': self.request})
         return serializer.data

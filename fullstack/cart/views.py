@@ -1,7 +1,7 @@
 from .cart import Cart
 from product.models import Product
 from django.shortcuts import get_object_or_404
-from category.models import Size
+from product.models import Size
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -32,7 +32,7 @@ class CartAPIView(APIView):
 
         return Response(res, status=st)
 
-    def put(self, request):
+    def delete(self, request):
         size_id = request.data.get('size_id', '')
         product_id = request.data.get('product_id', '')
         action = request.data.get('action', '')

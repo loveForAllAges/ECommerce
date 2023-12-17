@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 import os
 
-from .logging_formatters import JsonFormatter
+# from .logging_formatters import JsonFormatter
 
 
 load_dotenv()
@@ -41,7 +41,7 @@ REST_FRAMEWORK = {
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    'daphne',
+    # 'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -50,17 +50,14 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
-    'compressor',
+    # 'compressor',
     'debug_toolbar',
 
     'account',
     'product',
     'order',
     'cart',
-    'category',
-    'api',
     'adm',
-    'chat',
 ]
 
 
@@ -103,7 +100,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
-ASGI_APPLICATION = 'config.asgi.application'
+# ASGI_APPLICATION = 'config.asgi.application'
 
 
 DATABASES = {
@@ -114,11 +111,11 @@ DATABASES = {
 }
 
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels.layers.InMemoryChannelLayer'
+#     }
+# }
 
 
 # AUTH_PASSWORD_VALIDATORS = [

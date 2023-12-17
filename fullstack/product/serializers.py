@@ -1,7 +1,32 @@
 from rest_framework import serializers
-from .models import Product, ProductImage
-from category.serializers import SizeSerializer, BrandSerializer, CategorySerializer
-from category.models import Category, Brand, Size
+from rest_framework.reverse import reverse
+
+from .models import Product, ProductImage, Size, Brand, Category, SearchHistory
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'slug')
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ('__all__')
+
+
+class SizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Size
+        fields = ('__all__')
+
+
+class SearchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchHistory
+        fields = ('request',)
+
 
 
 ERROR_MESSAGES = {
@@ -14,22 +39,23 @@ ERROR_MESSAGES = {
 
 
 class MainCategorySerializer(serializers.ModelSerializer):
-    url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'url')
+        fields = ('id', 'name', 'image')
 
-    def get_url(self, instance, *args, **kwargs):
-        last_product = instance.products.order_by('-id').first()
+    def get_image(self, instance, *args, **kwargs):
+        child = Category.objects.filter(parent=instance).order_by('-id').first()
+        last_product = child.products.order_by('-id').first()
 
         if last_product:
-            url = last_product.images.first().image.url
+            request = self.context.get('request')
+            res = request.build_absolute_uri(last_product.images.first().image.url)
         else:
-            url = 'emptyCategoryLogo.jpg'
+            res = None
 
-        request = self.context.get('request')
-        return request.build_absolute_uri(url)
+        return res
 
 
 class ProductImageListingField(serializers.RelatedField):
@@ -38,13 +64,54 @@ class ProductImageListingField(serializers.RelatedField):
         return request.build_absolute_uri(value.image.url)
 
 
+class PreviewProductSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='product_detail')
+    images = ProductImageListingField(many=True, read_only=True)
+    in_wishlist = serializers.BooleanField()
+
+    class Meta:
+        model = Product
+        fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist')
+
+
+class CartProductSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='product_detail')
+    images = ProductImageListingField(many=True, read_only=True)
+    in_wishlist = serializers.BooleanField()
+
+    class Meta:
+        model = Product
+        fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist', 'size')
+
+
+
+# class DetailProductSerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
+    # title = serializers.ModelField('name')
+    title = serializers.SerializerMethodField()
+    products = PreviewProductSerializer(many=True)
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ('url', 'title', 'products')
+
+    def get_title(self, obj):
+        return obj.name
+
+    def get_url(self, obj):
+        return reverse(
+            'catalog', request=self.context.get('request')
+        ) + '?category=' + str(obj.id)
+
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageListingField(many=True, read_only=True)
     in_wishlist = serializers.BooleanField()
     # in_wishlist = serializers.SerializerMethodField()
     # size = SizeSerializer(many=True, read_only=True)
     # category = CategorySerializer()
-    url = serializers.HyperlinkedIdentityField(view_name='product', lookup_field='pk', read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='product_detail', lookup_field='pk', read_only=True)
     # brand = serializers.PrimaryKeyRelatedField(many=True, queryset)
     name = serializers.CharField(max_length=128, error_messages={
         'required': ERROR_MESSAGES['required'],

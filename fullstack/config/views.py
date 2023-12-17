@@ -1,0 +1,183 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.shortcuts import HttpResponse
+
+
+class AccountTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'pages/account_detail.html'
+
+
+class WishlistTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'pages/wish_list.html'
+
+
+
+from django.urls import reverse
+from product.models import Brand, Size, Category, Product, ProductImage, SearchHistory
+from order.models import Delivery
+from random import randint, sample, randrange, choices
+from PIL import Image
+from django.core.files import File
+import os
+
+
+def fill_db(request):
+    categories = request.build_absolute_uri(reverse('fill_categories'))
+    brands = request.build_absolute_uri(reverse('fill_brands'))
+    sizes = request.build_absolute_uri(reverse('fill_sizes'))
+    products = request.build_absolute_uri(reverse('fill_products'))
+    deliveries = request.build_absolute_uri(reverse('fill_deliveries'))
+    search = request.build_absolute_uri(reverse('fill_search_history'))
+    return HttpResponse(
+        f'<a href="{categories}">Создать категории</a><br>'
+        f'<a href="{brands}">Создать бренды</a><br>'
+        f'<a href="{sizes}">Создать размеры</a><br>'
+        f'<a href="{products}">Создать товары</a><br>'
+        f'<a href="{deliveries}">Создать виды доставок</a><br>'
+        f'<a href="{search}">Создать поисковые запросы</a>'
+    )
+
+
+def fill_products(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Товары уже существуют!'
+
+    if not Product.objects.all().exists():
+        message = 'Товары созданы существуют!'
+        brands = Brand.objects.all()
+        sizes = Size.objects.all()
+        subcategories = Category.objects.filter(parent__isnull=False)
+
+        max_brands = len(brands)
+        max_sizes = len(sizes)
+        
+        for i in range(1, 10):
+            random_category = choices(subcategories)
+            random_brands = sample(list(brands), randint(1, max_brands))
+            random_sizes = sample(list(sizes), randint(1, max_sizes))
+
+            p1 = Product.objects.create(
+                name=f'product name {i}', 
+                category=random_category[0], 
+                description=f'this is product descriptions you can see this is product descriptions you can see this is product descriptions you can see - {i}', 
+                price=randrange(1000, 1000000, 1000)
+            )
+            p1.brand.set(random_brands)
+            p1.size.set(random_sizes)
+
+            img_path = 'static/images/exampleProduct/1.jpeg'
+            image_filename = os.path.basename(img_path)
+            with open(img_path, 'rb') as img_file:
+                product_image = ProductImage(product=p1, image=File(img_file, name=image_filename))
+                product_image.save()
+            img_path = 'static/images/exampleProduct/2.jpeg'
+            image_filename = os.path.basename(img_path)
+            with open(img_path, 'rb') as img_file:
+                product_image = ProductImage(product=p1, image=File(img_file, name=image_filename))
+                product_image.save()
+            img_path = 'static/images/exampleProduct/3.jpeg'
+            image_filename = os.path.basename(img_path)
+            with open(img_path, 'rb') as img_file:
+                product_image = ProductImage(product=p1, image=File(img_file, name=image_filename))
+                product_image.save()
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )
+
+
+def fill_brands(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Бренды уже существуют!'
+
+    if not Brand.objects.all().exists():
+        message = 'Бренды созданы!'
+        name_list = [
+            ('Adidas', 'adidas'), ('Nike', 'nike'), ('Puma', 'puma'),
+            ('Gucci', 'gucci'), ('Converse', 'converse'), ('Vans', 'vans'),
+        ]
+        for i in name_list:
+            Brand.objects.create(name=i[0], slug=i[1])
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )
+
+
+def fill_sizes(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Размеры уже существуют!'
+
+    if not Size.objects.all().exists():
+        message = 'Размеры созданы!'
+        name_list = [
+            ('41', '41'), ('42', '42'), ('43', '43'),
+            ('44', '44'), ('45', '45'), ('46', '46'),
+            ('s', 'S'), ('m', 'M'), ('l', 'L'),
+            ('xl', 'XL'), ('xxl', 'XXL'), ('xxxl', 'XXXL'),
+        ]
+        for i in name_list:
+            Size.objects.create(name=i[1], slug=i[0])
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )
+
+
+def fill_categories(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Категории уже существуют!'
+
+    if not Category.objects.all().exists():
+        message = 'Категории созданы!'
+        name_list = [
+            ('shoes', 'Обувь', (('sneackers', 'Кроссовки'), ('boots', 'Ботинки'), ('slippers', 'Тапки'))), 
+            ('clothes', 'Одежда', (('tshirts', 'Футболки'), ('trousers', 'Штаны'), ('jackets', 'Куртки'))), 
+            ('accessories', 'Аксессуары', (('watch', 'Часы'), ('glasses', 'Очки'), ('bags', 'Сумки'))),
+        ]
+        for i in name_list:
+            c = Category.objects.create(slug=i[0], name=i[1])
+            for j in i[2]:
+                ch = Category.objects.create(slug=j[0], name=j[1])
+                c.children.add(ch)
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )            
+
+
+def fill_deliveries(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Виды доставки уже существуют!'
+
+    if not Delivery.objects.all().exists():
+        message = 'Виды доставки созданы!'
+        item_list = [
+            ('Самовывоз', 'Адрес: г. Москва, ул. Главная, 1, 1', 0, '', 'pickup'),
+            ('Доставка СДЭК', 'Доставка осуществляется по Москве в пределах МКАД', 500, '', 'delivery'),
+            ('Доставка курьером', 'Доставка по всей России', 0, 'Наложенный платеж', 'sdek'),
+        ]
+        for i in item_list:
+            Delivery.objects.get_or_create(name=i[0], description=i[1], price=i[2], info=i[3], slug=i[4])
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )
+
+
+def fill_search_history(request):
+    back = request.build_absolute_uri(reverse('fill_db'))
+    message = 'Поисковые запросы уже существуют!'
+
+    if not SearchHistory.objects.all().exists():
+        message = 'Поисковые запросы созданы!'
+        all_categories = Category.objects.all()
+        brands = Brand.objects.all()
+        products = Product.objects.all()
+
+        for i in all_categories:
+            SearchHistory.objects.get_or_create(request=i.name)
+
+        for i in brands:
+            SearchHistory.objects.get_or_create(request=i.name)
+
+        for i in products:
+            SearchHistory.objects.get_or_create(request=i.name)
+    return HttpResponse(
+        f'{message}<br><a href="{back}">Назад</a>'
+    )

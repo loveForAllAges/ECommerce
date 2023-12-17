@@ -1,7 +1,7 @@
 from django.db import models
 from product.models import Product
 from datetime import datetime
-from category.models import Size
+from product.models import Size
 import uuid
 from account.models import User
 from django.shortcuts import reverse

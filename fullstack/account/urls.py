@@ -6,7 +6,7 @@ from django.shortcuts import render
 urlpatterns = [
     path('settings/', views.AccountEditView.as_view(), name='account-settings'),
 
-    path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
+    # path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
     
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('signup/', views.SignupView.as_view(), name='signup'),
@@ -20,4 +20,8 @@ urlpatterns = [
     path('password-reset-done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('password-reset-complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+
+
+    path('api/account', views.AccountAPIView.as_view()),
 ]

@@ -1,4 +1,4 @@
-from .utils import account_activation_token
+from config.utils import account_activation_token
 from .models import User
 from .forms import (
     CustomUserCreationForm, UserUpdateForm, 
@@ -188,18 +188,44 @@ class AccountEditView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
-class WishlistView(LoginRequiredMixin, View):
-    template_name = 'usage/wishlist.html'
 
-    def get(self, request):
-        if request.user.is_authenticated:
+from product.models import Product
+
+from django.db.models import Exists, OuterRef, Prefetch
+
+from account.models import User
+
+from account.serializers import AccountSerializer
+
+from rest_framework import (
+    response, views, status, permissions,
+)
+
+
+from order.models import OrderItem, Order
+
+
+class AccountAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
             in_wishlist = Exists(User.objects.filter(
-                id=request.user.id,
+                id=self.request.user.id,
                 wishlist=OuterRef('pk')
             ))
         else:
             in_wishlist = Exists()
-        wishlist = request.user.wishlist.prefetch_related('images').annotate(
-            in_wishlist=in_wishlist
-        )
-        return render(request, self.template_name, context={'wishlist': wishlist})
+        queryset = User.objects.prefetch_related(
+            Prefetch('orders', queryset=Order.objects.prefetch_related(
+                Prefetch('goods', queryset=OrderItem.objects.prefetch_related(
+                    Prefetch('product', queryset=Product.objects.prefetch_related('images', 'brand', 'size').annotate(in_wishlist=in_wishlist))
+                ))
+            )),
+        ).get(id=self.request.user.id)
+        print(queryset.orders)
+        return queryset
+
+    def get(self, request):
+        serializer = AccountSerializer(self.get_queryset(), context={'request': request})
+        return response.Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,25 +1,20 @@
 
-function putCart() {
-    var productId = this.dataset.product;
-    var action = this.dataset.action;
-    var sizeId = this.dataset.size;
-
+function updateCart(HTTPmethod, productId, sizeId) {
     fetch('/cart/', {
-        method: 'PUT',
+        method: HTTPmethod,
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
             'product_id': productId,
-            'action': action,
             'size_id': sizeId,
         })
     })
 
     .then(response => response.json())
     .then(data => {
-        updateCart(data);
+        renderCart(data);
 
         const checkoutItems = document.querySelector("#checkoutItems");
         if (checkoutItems) {
@@ -41,7 +36,7 @@ function getCart() {
     })
     .then(response => response.json())
     .then(data => {
-        updateCart(data);
+        renderCart(data);
 
         const checkoutItems = document.querySelector("#checkoutItems");
         if (checkoutItems) {
@@ -53,7 +48,7 @@ function getCart() {
     })
 }
 
-function updateCart(data) {
+function renderCart(data) {
     $("#cartItems").empty();
     $("#cartSize").text(data.size);
     $("#cartSize_m").text(data.size);
@@ -100,13 +95,13 @@ function updateCart(data) {
                         </a>
                         <div class="ml-4">
                             <span class="isolate inline-flex rounded-md border border-gray-200">
-                                <button type="button" data-product="${ item.product.id }" data-action="minus" data-size="${ itemSize}" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                <button type="button" onclick="updateCart('PUT', ${ item.product.id }, ${ itemSize })" class="relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
                                     </svg>
                                 </button>
                                 <div class="relative justify-center cursor-default inline-flex items-center w-7 h-7 text-sm text-gray-900">${ item.quantity }</div>
-                                <button type="button" data-product="${ item.product.id }" data-action="plus" data-size="${ itemSize }" class="cartBtn relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                <button type="button" onclick="updateCart('POST', ${ item.product.id }, ${ itemSize })" class="relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
                                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
