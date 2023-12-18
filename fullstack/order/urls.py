@@ -1,5 +1,6 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+
+from .views import *
 
 
 urlpatterns = [
@@ -10,10 +11,9 @@ urlpatterns = [
 
     # path('checkout/', views.CheckoutView.as_view(), name='checkout'),
 
-    path('wishlist/', views.WishlistAPIView.as_view()),
 
-    path('delivery/', views.DeliveryListAPIView.as_view()),
+    path('delivery/', DeliveryListAPIView.as_view()),
 
-    path('orders/', views.OrderAPIView.as_view()),
+    path('orders/', OrderAPIView.as_view()),
 
 ]

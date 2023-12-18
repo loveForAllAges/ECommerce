@@ -14,6 +14,7 @@ api_urlpatterns = [
 
 
 urlpatterns = [
+    path('', include('rest_framework.urls')),
     path("__debug__/", include('debug_toolbar.urls')),
 
     path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
@@ -30,12 +31,6 @@ urlpatterns = [
 
 
     path('fill_db', fill_db, name='fill_db'),
-    path('fill_products', fill_products, name='fill_products'),
-    path('fill_categories', fill_categories, name='fill_categories'),
-    path('fill_deliveries', fill_deliveries, name='fill_deliveries'),
-    path('fill_brands', fill_brands, name='fill_brands'),
-    path('fill_sizes', fill_sizes, name='fill_sizes'),
-    path('fill_search_history', fill_search_history, name='fill_search_history'),
 ]
  
 

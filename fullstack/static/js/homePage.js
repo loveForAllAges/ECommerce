@@ -1,8 +1,10 @@
 function getPageData() {
     $.ajax({
         url: '/api/products/home',
+        headers: {
+            'Authorization': token,
+        },
         success: function(data) {
-            console.log(data);
             renderCart(data.cart);
             renderHeaderCategories(data.categories);
             renderHomeCategories(data.categories);

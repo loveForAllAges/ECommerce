@@ -6,12 +6,11 @@ from .serializers import MainCategorySerializer, Product, Category
 
 def product_in_wishlist_query(request):
     if request.user.is_authenticated:
-        in_wishlist = Exists(get_user_model().objects.filter(
-            id=request.user.id,
-            wishlist=OuterRef('pk')
+        in_wishlist = Exists(Product.objects.filter(
+            wish=request.user, id=OuterRef('pk')
         ))
     else:
-        in_wishlist = Exists(get_user_model().objects.none())
+        in_wishlist = Exists(Product.objects.none())
     return in_wishlist
 
 

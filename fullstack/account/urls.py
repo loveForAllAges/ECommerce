@@ -3,6 +3,9 @@ from . import views
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
 
+from rest_framework.authtoken.views import ObtainAuthToken
+
+
 urlpatterns = [
     path('settings/', views.AccountEditView.as_view(), name='account-settings'),
 
@@ -21,7 +24,7 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('password-reset-complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
-
+    path('token', ObtainAuthToken.as_view()),
 
     path('api/account', views.AccountAPIView.as_view()),
 ]

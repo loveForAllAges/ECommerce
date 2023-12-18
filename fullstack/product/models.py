@@ -59,6 +59,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.PositiveIntegerField()
     in_stock = models.BooleanField(default=False)
+    wish = models.ManyToManyField(AUTH_USER_MODEL)
 
 
 class ProductImage(models.Model):

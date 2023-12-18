@@ -69,35 +69,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from account.models import Address
-from rest_framework import views, status, response, generics
+from rest_framework import views, status, response, generics, viewsets
 from django.db.models import OuterRef, Exists
 from django.contrib.auth import get_user_model
-
-
-User = get_user_model()
-
-
-class WishlistAPIView(views.APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            data = request.data
-            product_id = data.get('product_id')
-            product = Product.objects.annotate(
-                in_wishlist=~Exists(User.objects.filter(
-                    id=self.request.user.id,
-                    wishlist=OuterRef('pk')
-                ))
-            ).get(id=product_id)
-            if request.user.wishlist.filter(id=product_id).exists():
-                request.user.wishlist.remove(product)
-            else:
-                request.user.wishlist.add(product)
-            serializer = ProductSerializer(product, context={'request': self.request})
-            return response.Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as ex:
-            return response.Response({'message': 'Ошибка'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeliveryListAPIView(generics.ListAPIView):

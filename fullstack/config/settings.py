@@ -28,14 +28,17 @@ CART_SESSION_ID = 'cart'
 
 SESSION_SAVE_EVERY_REQUEST = True 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
+SESSION_COOKIE_HTTPONLY = False
 
+# AUTHENTICATION_BACKENDS = ['account.backend.CustomBackend']
 
 REST_FRAMEWORK = {
     'ORDERING_PARAM': 'sort',
+    # TODO РАСКОМЕНТИТЬ ПОСЛЕ РАЗРАБОТКИ
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
-    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     # 'compressor',
     'debug_toolbar',
@@ -100,7 +104,6 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
-# ASGI_APPLICATION = 'config.asgi.application'
 
 
 DATABASES = {
@@ -109,13 +112,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels.layers.InMemoryChannelLayer'
-#     }
-# }
 
 
 # AUTH_PASSWORD_VALIDATORS = [

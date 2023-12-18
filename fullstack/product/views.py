@@ -30,6 +30,10 @@ from .serializers import *
 from .pagination import CustomCursorPagination
 from config.permissions import IsStaffOrReadOnly
 from .decorators import cart_and_categories
+from django.shortcuts import get_object_or_404
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import views, response, authentication
 
 
 class ProductAPIView(generics.ListCreateAPIView):
@@ -89,17 +93,6 @@ class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsStaffOrReadOnly]
 
 
-# class MainCategoriesAPIView(generics.ListAPIView):
-#     queryset = Category.objects.filter(parent__isnull=True)
-#     serializer_class = MainCategorySerializer
-
-    # def list(self, request, *args, **kwargs):
-    #     queryset = self.filter_queryset(self.get_queryset())
-
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return response.Response(serializer.data)
-
-
 class ProductFiltersAPIView(views.APIView):
     def get(self, request):
         brands = Brand.objects.all()
@@ -144,7 +137,46 @@ class HomeAPIView(views.APIView):
             ).data
         }]
 
+        print(res)
         res += CategorySerializer(categories, many=True, context={'request': request}).data
         return response.Response({
             'content': res,
         })
+
+
+class ProductWishAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PreviewProductSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Product.objects.filter(wish=self.request.user).annotate(
+            in_wishlist=product_in_wishlist_query(self.request)
+        ).prefetch_related('images')
+        return queryset
+
+    def get_object(self):
+        queryset = Product.objects.annotate(
+            in_wishlist=product_in_wishlist_query(self.request)
+        ).prefetch_related('images')
+
+        obj = get_object_or_404(queryset, pk=self.request.data.get('product_id'))
+        return obj
+
+    @cart_and_categories
+    def get(self, request, *args, **kwargs):
+        data  = self.get_queryset()
+        serializer = PreviewProductSerializer(data, many=True, context={'request': request})
+        return response.Response({'content': serializer.data})
+
+    def post(self, request, *args, **kwargs):
+        data = self.get_object()
+        data.wish.add(self.request.user)
+        serializer = PreviewProductSerializer(data, context={'request': request})
+        return response.Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        data = self.get_object()
+        data.wish.remove(self.request.user)
+        serializer = PreviewProductSerializer(data, context={'request': request})
+        return response.Response(serializer.data)

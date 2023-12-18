@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Delivery, Order, OrderItem
-from product.serializers import ProductSerializer, SizeSerializer
+from product.serializers import ProductSerializer, SizeSerializer, PreviewProductSerializer
 from django.shortcuts import get_object_or_404
 
 
