@@ -4,19 +4,19 @@ from rest_framework.reverse import reverse
 from .models import Product, ProductImage, Size, Brand, Category, SearchHistory
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class FiltersCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name', 'slug')
 
 
-class BrandSerializer(serializers.ModelSerializer):
+class FiltersBrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ('__all__')
 
 
-class SizeSerializer(serializers.ModelSerializer):
+class FiltersSizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Size
         fields = ('__all__')

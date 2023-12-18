@@ -1,7 +1,17 @@
+const emptyCatalogHTML = `
+<div id="itemListEmpty" class="col-span-2 md:col-span-3 lg:col-span-4 mt-10 text-center">
+    <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
+    </svg>
+    <p class="mt-2 text-sm text-gray-900">Ничего не найдено</p>
+    <a href="{% url 'catalog' %}" class="duration-150 text-gray-500 hover:text-gray-600 text-sm">Очистить фильтры</a>
+</div>
+`
+
 var nextPageURL;
 var nextPageProcess = false;
 
-function getCatalogPageData(is_update, queryDict={}) {
+function getPageData(is_update, queryDict={}) {
     var queryString = formatQueryDictToStr(queryDict);
     if (is_update) {
         $('#itemList').empty();
@@ -12,66 +22,53 @@ function getCatalogPageData(is_update, queryDict={}) {
         url: '/api/products?' + queryString,
         success: function(data) {
             nextPageURL = data.next;
-            getProductFilters()
-                .then(function(productFilters) {
-                    updateFilterData(productFilters, data.queries);
 
-                    updateQueryData(data.queries);
-                    updateURL(queryDict);
-            
-                    if (!is_update) {
-                        $('#pageContent').append(filtersModal);
-                        $('#catalogTitle').html('Каталог товаров');
-                        $('#catalogDesc').html('Результат по запросу:');
-                        $('#catalogOrderBtn').html(`
-                        <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="group inline-flex justify-center items-center text-sm duration-150 font-medium text-gray-900 hover:text-blue-700">
-                            Сортировать
-                            <svg class="ml-2 h-4 w-4 duration-150 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        `);
-                        $('#catalogFilterBtn').html(`
-                        <button type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="space-x-2 inline-block font-medium text-sm text-gray-900 hover:text-blue-700">
-                            <span>Фильтры</span>
-                            <span class="filterLength font-normal text-xs text-gray-500"></span>
-                        </button>
-                        `)
-                    }
-    
-                    if (data.items && data.items.length > 0) {
-                        $('#itemList').empty();
-                        data.items.forEach(function(product) {
-                            addProductCard(product, $('#itemList'))
-                        })
-                    } else {
-                        $('#itemList').html(`
-                        <div id="itemListEmpty" class="col-span-2 md:col-span-3 lg:col-span-4 mt-10 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
-                            </svg>
-                            <p class="mt-2 text-sm text-gray-900">Ничего не найдено</p>
-                            <a href="{% url 'catalog' %}" class="duration-150 text-gray-500 hover:text-gray-600 text-sm">Очистить фильтры</a>
-                        </div>
-                        `);
-                    }
-    
-                    wishlistBtns = document.querySelectorAll('.wishlistBtn');
-                    wishlistBtns.forEach(button => {
-                        button.addEventListener('click', updateWishlist)
-                    })
+            updateFilterData(productFilters, data.queries);
 
-                    // initModals();
-                    initFlowbite();
+            updateQueryData(data.queries);
+            updateURL(queryDict);
+    
+            if (!is_update) {
+                renderPage();
+            }
+
+            if (data.content && data.content.length > 0) {
+                $('#itemList').empty();
+                data.content.forEach(function(product) {
+                    addProductCard(product, $('#itemList'))
                 })
-                .catch(function(error) {
-                    console.log('Error', error)
-                })
+            } else {
+                $('#itemList').html(emptyCatalogHTML);
+            }
+
+            // initModals();
+            initFlowbite();
         },
         error: function(error) {
             console.log('err', error)
         }
     })
+}
+
+
+function renderPage() {
+    $('#pageContent').append(filtersModal);
+    $('#catalogTitle').html('Каталог товаров');
+    $('#catalogDesc').html('Результат по запросу:');
+    $('#catalogOrderBtn').html(`
+    <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="group inline-flex justify-center items-center text-sm duration-150 font-medium text-gray-900 hover:text-blue-700">
+        Сортировать
+        <svg class="ml-2 h-4 w-4 duration-150 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    `);
+    $('#catalogFilterBtn').html(`
+    <button type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="space-x-2 inline-block font-medium text-sm text-gray-900 hover:text-blue-700">
+        <span>Фильтры</span>
+        <span class="filterLength font-normal text-xs text-gray-500"></span>
+    </button>
+    `)
 }
 
 
@@ -85,7 +82,7 @@ function removeQuery(key, values) {
         }
     }
 
-    getCatalogPageData(true, queryDict);
+    getPageData(true, queryDict);
 }
 
 
@@ -233,7 +230,7 @@ function updateFilters() {
         queryDict['sort'] = [sortQuery];
     }
 
-    getCatalogPageData(true, queryDict);
+    getPageData(true, queryDict);
 }
 
 
@@ -283,7 +280,7 @@ function sortProductList(key, button) {
     
     var queryDict = getQueryDict();
     queryDict['sort'] = [key];
-    getCatalogPageData(true, queryDict);
+    getPageData(true, queryDict);
 }
 
 
@@ -309,7 +306,7 @@ function loadMore() {
 
 
 $(document).ready(function() {
-    getCatalogPageData(false, getQueryDict());
+    getPageData(false, getQueryDict());
 
     $(window).scroll(function () {
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100 && !nextPageProcess && nextPageURL) {

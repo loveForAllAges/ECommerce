@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Delivery, Order, OrderItem
-from product.serializers import ProductSerializer, SizeSerializer, PreviewProductSerializer
+from product.serializers import ProductSerializer, PreviewProductSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -12,7 +12,7 @@ class DeliverySerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
-    size = SizeSerializer(read_only=True)
+    # size = SizeSerializer(read_only=True)
     # price = serializers.SerializerMethodField()
 
     class Meta:

@@ -1,39 +1,22 @@
-from typing import Any
-from django.db import models
-from .models import Product, ProductImage
-from django.views.generic import DetailView
-from .utils import get_product_queryset, product_in_wishlist_query
+from .models import Product
+from .utils import preview_product_queryset, product_in_wishlist_query
 from django.db.models import Exists, OuterRef, Prefetch
-from django.contrib.auth import get_user_model
 
 
-# class ProductDetailView(DetailView):
-#     model = Product
-#     template_name = 'usage/product.html'
-
-#     def get_queryset(self):
-#         queryset = get_product_queryset(self.request)
-#         return queryset
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['rec_list'] = Product.objects.prefetch_related('images').annotate(
-#             in_wishlist=product_in_wishlist_query(self.request)
-#         )[:4]
-#         return context
-
-
-from rest_framework import generics, response, views, status
+from rest_framework import generics, response, views, viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .serializers import *
 from .pagination import CustomCursorPagination
 from config.permissions import IsStaffOrReadOnly
-from .decorators import cart_and_categories
+from .decorators import cart_and_categories, cart_and_categories_and_filters
 from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import views, response, authentication
+from rest_framework import authentication
+from rest_framework.response import Response
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ProductAPIView(generics.ListCreateAPIView):
@@ -46,7 +29,7 @@ class ProductAPIView(generics.ListCreateAPIView):
     # permission_classes = [IsStaffOrReadOnly]
 
     def get_queryset(self):
-        queryset = get_product_queryset(self.request).distinct()
+        queryset = preview_product_queryset(self.request).distinct()
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -87,28 +70,39 @@ class ProductAPIView(generics.ListCreateAPIView):
         return query_list
 
 
+class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PreviewProductSerializer
+    pagination_class = CustomCursorPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    # filterset_class = ProductFilter
+    # ordering_fields = ['-id', 'price']
+    search_fields = ['id', 'name', 'description']
+    # permission_classes = [IsStaffOrReadOnly]
+
+    def get_queryset(self):
+        queryset = preview_product_queryset(self.request).distinct()
+        return queryset
+    
+    @cart_and_categories_and_filters
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        next = None
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            next = self.paginator.get_paginated_response()
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'content': serializer.data, 'next': next})
+    
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
 class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsStaffOrReadOnly]
-
-
-class ProductFiltersAPIView(views.APIView):
-    def get(self, request):
-        brands = Brand.objects.all()
-        brand_serializer = BrandSerializer(brands, many=True)
-        sizes = Size.objects.all()
-        size_serializer = SizeSerializer(sizes, many=True)
-        caterogies = Category.objects.filter(parent__isnull=False)
-        category_serializer = CategorySerializer(caterogies, many=True)
-        return response.Response({
-            'brands': brand_serializer.data, 'sizes': size_serializer.data, 'categories': category_serializer.data
-        })
-
-
-# class SubCategoriesAPIView(generics.ListAPIView):
-#     queryset = Category.objects.filter(parent__isnull=False)
-#     serializer_class = CategorySerializer
 
 
 class SearchAPIListView(generics.ListAPIView):
@@ -137,7 +131,6 @@ class HomeAPIView(views.APIView):
             ).data
         }]
 
-        print(res)
         res += CategorySerializer(categories, many=True, context={'request': request}).data
         return response.Response({
             'content': res,

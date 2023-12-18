@@ -61,7 +61,6 @@ from cart.cart import Cart
 
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 from config.utils import send_email
-from product.utils import get_product_queryset
 from product.models import Product, Brand, Size, SearchHistory
 from product.serializers import ProductSerializer, MainCategorySerializer
 from rest_framework.permissions import IsAuthenticated

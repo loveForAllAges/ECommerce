@@ -1,19 +1,3 @@
-function getProductFilters() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            url: '/api/product-filters',
-            method: 'GET',
-            success: function(data) {
-                resolve(data);
-            },
-            error: function(error) {
-                reject(false);
-            }
-        })
-    })
-}
-
-
 function getCookie(data='csrftoken') {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

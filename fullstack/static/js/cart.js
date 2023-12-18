@@ -129,11 +129,6 @@ function renderCart(data) {
         })
     }
 
-    wishlistBtns = document.querySelectorAll('.wishlistBtn');
-    wishlistBtns.forEach(button => {
-        button.addEventListener('click', updateWishlist)
-    })
-
     var cartBtns = document.querySelectorAll('.cartBtn');
     cartBtns.forEach(button => {
         button.addEventListener('click', putCart)
