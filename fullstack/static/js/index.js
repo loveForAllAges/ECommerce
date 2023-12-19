@@ -1,31 +1,33 @@
-// var mainCategories = [];
+$('#searchForm').submit(function(e) {
+    e.preventDefault();
+    var uri = new URL(window.location.protocol + '//' + window.location.host);
+    uri.pathname += 'catalog';
+    uri.searchParams.set('search', $('#searchInput').val());
+    window.location.href = uri.toString();
+})
 
-// function getMainCategories() {
-//     $.ajax({
-//         url: '/api/main-categories',
-//         success: function(data) {
-//             mainCategories = data;
+$("#searchInput").on('input', function () {
+    var query = $(this).val();
 
-//             updateHeaderCategories(data);
-//             // console.log('OK')
-
-//             if ($('#homePage')[0]) {
-//                 updateHomeCategories(data);
-//             }
-//         },
-//         error: function(error) {
-//             console.log('Error')
-//         }
-//     })
-// }
-
-
-// // getMainCategories();
-
-
-// $(document).ready(function(){
-//     // getCart();
-//     // if ($('#homePage')[0]) {
-//     //     homeCategoriesPreview();
-//     // }
-// })
+    if (query.length >= 2) {
+        $.ajax({
+            url: '/api/products/search?request=' + query,
+            success: function (data) {
+                $('#searchResult').empty();
+                var uri = new URL(window.location.protocol + '//' + window.location.host);
+                uri.pathname += 'catalog';
+                if (data.length) {
+                    data.forEach(function (result) {
+                        uri.searchParams.set('search', result.request);
+                        $('#searchResult').append('<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="'+ uri.toString() +'" class="truncate flex-auto">' + result.request + '</a></li>');
+                    });
+                } else {
+                    uri.searchParams.set('search', query);
+                    $('#searchResult').append(`<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="${ uri.toString() }" class="truncate flex-auto">${ query }</a></li>`);
+                }
+            }
+        });
+    } else {
+        $('#searchResult').empty();
+    }
+});

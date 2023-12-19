@@ -1,89 +1,37 @@
-from .models import Product
-from .utils import preview_product_queryset, product_in_wishlist_query
-from django.db.models import Exists, OuterRef, Prefetch
-
-
-from rest_framework import generics, response, views, viewsets
-from rest_framework.filters import SearchFilter, OrderingFilter
-
-from .serializers import *
-from .pagination import CustomCursorPagination
-from config.permissions import IsStaffOrReadOnly
-from .decorators import cart_and_categories, cart_and_categories_and_filters
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
-
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import authentication
-from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import generics, views, viewsets
 
-class ProductAPIView(generics.ListCreateAPIView):
-    serializer_class = ProductSerializer
-    pagination_class = CustomCursorPagination
-    # filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
-    # filterset_class = ProductFilter
-    # ordering_fields = ['id', 'price']
-    # search_fields = ['id', 'name', 'description']
-    # permission_classes = [IsStaffOrReadOnly]
+from .utils import preview_product_queryset, product_in_wishlist_query
+from .serializers import *
+from .pagination import CustomCursorPagination
+from .filters import ProductFilter
+from .decorators import (
+    cart_and_categories, cart_and_categories_and_filters_and_queries
+)
 
-    def get_queryset(self):
-        queryset = preview_product_queryset(self.request).distinct()
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        query_list = self._get_query_list(request)
-        res = {'queries': query_list}
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            assert self.paginator is not None
-            res.update(self.paginator.get_paginated_response())
-        else:
-            serializer = self.get_serializer(queryset, many=True)
-        res['items'] = serializer.data
-        return response.Response(res)
-
-    def _get_query_list(self, request):
-        query_list = list()
-        search_param = request.query_params.get('search', '')
-        category_param = request.query_params.get('category', '')
-        brand_param = request.query_params.get('brand', '')
-        size_param = request.query_params.get('size', '')
-
-        query_list += [['search', search_param, search_param]]
-
-        brand_param = [i for i in brand_param.split(',') if i.isdigit()]
-        size_param = [i for i in size_param.split(',') if i.isdigit()]
-        category_param = [i for i in category_param.split(',') if i.isdigit()]
-        
-        if brand_param:
-            query_list += [('brand', i.id, i.name) for i in Brand.objects.filter(id__in=brand_param)]
-        if size_param:
-            query_list += [('size', i.id, i.name) for i in Size.objects.filter(id__in=size_param)]
-        if category_param:
-            query_list += [('category', i.id, i.name) for i in Category.objects.filter(id__in=category_param)]
-
-        return query_list
+# from config.permissions import IsStaffOrReadOnly
 
 
-class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
+class MoreProductAPIView(generics.ListAPIView):
     serializer_class = PreviewProductSerializer
     pagination_class = CustomCursorPagination
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    # filterset_class = ProductFilter
+    filterset_class = ProductFilter
+    # TODO Не работает Сортировка вместе с пагинацией. Исправить
     # ordering_fields = ['-id', 'price']
     search_fields = ['id', 'name', 'description']
-    # permission_classes = [IsStaffOrReadOnly]
 
     def get_queryset(self):
         queryset = preview_product_queryset(self.request).distinct()
         return queryset
     
-    @cart_and_categories_and_filters
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         next = None
@@ -92,7 +40,31 @@ class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(page, many=True)
             next = self.paginator.get_paginated_response()
 
-        serializer = self.get_serializer(queryset, many=True)
+        return Response({'content': serializer.data, 'next': next})
+    
+
+
+class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PreviewProductSerializer
+    pagination_class = CustomCursorPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filterset_class = ProductFilter
+    # TODO Не работает Сортировка вместе с пагинацией. Исправить
+    # ordering_fields = ['-id', 'price']
+    search_fields = ['id', 'name', 'description']
+
+    def get_queryset(self):
+        queryset = preview_product_queryset(self.request).distinct()
+        return queryset
+    
+    @cart_and_categories_and_filters_and_queries
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        next = None
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        next = self.paginator.get_paginated_response(request)
+
         return Response({'content': serializer.data, 'next': next})
     
     def retrieve(self, request, *args, **kwargs):
@@ -102,13 +74,14 @@ class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
 class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsStaffOrReadOnly]
+    # permission_classes = [IsStaffOrReadOnly]
 
 
-class SearchAPIListView(generics.ListAPIView):
-    queryset = SearchHistory.objects.all()
+class SearchListAPIView(generics.ListAPIView):
+    # TODO Отображает все истории поиска
+    queryset = SearchHistory.objects.filter()
     serializer_class = SearchHistorySerializer
-    filter_backends = [SearchFilter]
+    filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ['request']
 
 
@@ -132,15 +105,14 @@ class HomeAPIView(views.APIView):
         }]
 
         res += CategorySerializer(categories, many=True, context={'request': request}).data
-        return response.Response({
+        return Response({
             'content': res,
         })
 
 
-class ProductWishAPIView(views.APIView):
+class WishAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PreviewProductSerializer
-    authentication_classes = [authentication.TokenAuthentication]
 
     def get_queryset(self, *args, **kwargs):
         queryset = Product.objects.filter(wish=self.request.user).annotate(
@@ -160,16 +132,16 @@ class ProductWishAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         data  = self.get_queryset()
         serializer = PreviewProductSerializer(data, many=True, context={'request': request})
-        return response.Response({'content': serializer.data})
+        return Response({'content': serializer.data})
 
     def post(self, request, *args, **kwargs):
         data = self.get_object()
         data.wish.add(self.request.user)
         serializer = PreviewProductSerializer(data, context={'request': request})
-        return response.Response(serializer.data)
+        return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
         data = self.get_object()
         data.wish.remove(self.request.user)
         serializer = PreviewProductSerializer(data, context={'request': request})
-        return response.Response(serializer.data)
+        return Response(serializer.data)

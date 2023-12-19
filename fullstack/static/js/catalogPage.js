@@ -19,30 +19,36 @@ function getPageData(is_update, queryDict={}) {
     }
 
     $.ajax({
-        url: '/api/products?' + queryString,
+        url: '/api/products/catalog?' + queryString,
+        headers: {
+            'Authorization': token,
+        },
         success: function(data) {
+            console.log('data', data);
             nextPageURL = data.next;
 
-            updateFilterData(productFilters, data.queries);
+            renderFilterMenu(data.categories, data.filters, data.queries);
 
             updateQueryData(data.queries);
             updateURL(queryDict);
-    
+
             if (!is_update) {
-                renderPage();
+                renderPageTitle();
+                renderCart(data.cart);
+                renderHeaderCategories(data.categories);    
             }
 
             if (data.content && data.content.length > 0) {
                 $('#itemList').empty();
                 data.content.forEach(function(product) {
-                    addProductCard(product, $('#itemList'))
+                    renderProductCard(product, $('#itemList'))
                 })
             } else {
                 $('#itemList').html(emptyCatalogHTML);
             }
 
             // initModals();
-            initFlowbite();
+            // initFlowbite();
         },
         error: function(error) {
             console.log('err', error)
@@ -51,24 +57,13 @@ function getPageData(is_update, queryDict={}) {
 }
 
 
-function renderPage() {
-    $('#pageContent').append(filtersModal);
+function renderPageTitle() {
     $('#catalogTitle').html('Каталог товаров');
     $('#catalogDesc').html('Результат по запросу:');
-    $('#catalogOrderBtn').html(`
-    <button id="sortDropdownBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="group inline-flex justify-center items-center text-sm duration-150 font-medium text-gray-900 hover:text-blue-700">
-        Сортировать
-        <svg class="ml-2 h-4 w-4 duration-150 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-        </svg>
-    </button>
-    `);
-    $('#catalogFilterBtn').html(`
-    <button type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="space-x-2 inline-block font-medium text-sm text-gray-900 hover:text-blue-700">
-        <span>Фильтры</span>
-        <span class="filterLength font-normal text-xs text-gray-500"></span>
-    </button>
-    `)
+    $('#catalogSortBtnPreloader')[0].classList.add('hidden');
+    $('#catalogSortBtn')[0].classList.remove('hidden');
+    $('#catalogFilterBtnPreloader')[0].classList.add('hidden');
+    $('#catalogFilterBtn')[0].classList.remove('hidden');
 }
 
 
@@ -108,7 +103,7 @@ function updateQueryData(data) {
 
 
 
-function updateFilterData(data, queries) {
+function renderFilterMenu(categories, data, queries) {
     function isValueInQueries(key, value) {
         for (let i = 0; i < queries.length; i++) {
             if (queries[i][0] === key && parseInt(queries[i][1]) === value) {
@@ -130,7 +125,7 @@ function updateFilterData(data, queries) {
     var subCount = 0;
 
     $('#mainCategoryList').empty();
-    mainCategories.forEach(e => {
+    categories.forEach(e => {
         var isChecked = (isValueInQueries('category', e.id)) ? 'checked' : '';
         subCount = (isChecked) ? subCount + 1 : subCount;
         $('#mainCategoryList').append(
@@ -293,8 +288,8 @@ function loadMore() {
         success: function(data) {
             nextPageURL = data.next;
             $('#itemList > div:gt(-13)').remove();
-            data.items.forEach(function(product) {
-                addProductCard(product, $('#itemList'))
+            data.content.forEach(function(product) {
+                renderProductCard(product, $('#itemList'))
             })
             nextPageProcess = false;
         },

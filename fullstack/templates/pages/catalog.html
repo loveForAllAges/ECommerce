@@ -18,12 +18,18 @@
     </div>
     <div class="flex items-center justify-between h-12 sm:h-16">
         <div class="relative inline-block text-left">
-            <div id="catalogOrderBtn">
+            <div id="catalogSortBtnPreloader">
                 <div class="py-1"><div class="h-3 bg-gray-300 rounded-full w-24"></div></div>
             </div>
+            <button id="catalogSortBtn" data-dropdown-toggle="sortDropdown" data-dropdown-delay="150" type="button" class="hidden group inline-flex justify-center items-center text-sm duration-150 font-medium text-gray-900 hover:text-blue-700">
+                Сортировать
+                <svg class="ml-2 h-4 w-4 duration-150 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+            </button>
 
             <div id="sortDropdown" class="z-10 hidden w-56 bg-white divide-y divide-gray-100 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="sortDropdownBtn">
+                <ul class="p-1 space-y-1 text-sm text-gray-700" aria-labelledby="catalogSortBtn">
                     <li>
                         <button type="button" onclick="sortProductList('name', this)" class="sortProductListBtn text-gray-900 font-medium bg-gray-100 flex items-center py-2 px-4 rounded-md w-full">
                             Сначала популярные
@@ -48,9 +54,13 @@
             </div>
         </div>
 
-        <div id="catalogFilterBtn">
+        <div id="catalogFilterBtnPreloader">
             <div class="py-1"><div class="h-3 bg-gray-300 rounded-full w-20"></div></div>
         </div>
+        <button id="catalogFilterBtn" type="button" data-drawer-target="filtersModal" data-drawer-show="filtersModal" data-drawer-placement="right" aria-controls="filtersModal" class="hidden space-x-2 inline-block font-medium text-sm text-gray-900 hover:text-blue-700">
+            <span>Фильтры</span>
+            <span class="filterLength font-normal text-xs text-gray-500"></span>
+        </button>
     </div>
   
   
@@ -71,124 +81,121 @@
     for (var i = 0; i < 12; i++) preview += productCardPreloader;
     document.getElementById('itemList').innerHTML = preview;
 </script>
+
+<div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-96 dark:bg-gray-800" tabindex="-1">
+    <form class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
+        <div class="border-b h-12 md:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
+            <h2 class="text-lg font-medium text-gray-900">
+                Фильтры <span class="filterLength ml-2 font-normal text-xs text-gray-500"></span>
+            </h2>
+        
+            <button type="button" data-drawer-hide="filtersModal" aria-controls="filtersModal" class="-mr-1 p-1 text-gray-400 hover:text-gray-500">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto">
+            <div id="accordion-flush" class="divide-y divide-gray-200" data-accordion="open" data-accordion="collapse">
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-category" class="-mx-4 -my-4 md:-my-6">
+                        <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-category-body" aria-expanded="false" aria-controls="accordion-category-body">
+                            <span class="font-medium text-gray-900">
+                                Категория
+                                <span id="categoryParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
+                            </span>
+                            <span class="ml-6 flex items-center">
+                                <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+                    <div id="accordion-category-body" class="hidden mt-6" aria-labelledby="accordion-category">
+                        <div id="mainCategoryList" class="grid grid-cols-3 gap-4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-type" class="-mx-4 -my-4 md:-my-6">
+                        <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-type-body" aria-expanded="false" aria-controls="accordion-type-body">
+                            <span class="font-medium text-gray-900">
+                                Тип
+                                <span id="typeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
+                            </span>
+                            <span class="ml-6 flex items-center">
+                                <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+                    <div id="accordion-type-body" class="hidden mt-6" aria-labelledby="accordion-type">
+                        <div id="categoryList" class="grid grid-cols-3 gap-4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-brand" class="-mx-4 -my-4 md:-my-6">
+                        <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-brand-body" aria-expanded="false" aria-controls="accordion-brand-body">
+                            <span class="font-medium text-gray-900">
+                                Бренд
+                                <span id="brandParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
+                            </span>
+                            <span class="ml-6 flex items-center">
+                                <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+                    <div id="accordion-brand-body" class="hidden mt-6" aria-labelledby="accordion-brand">
+                        <div id="brandList" class="grid grid-cols-3 gap-4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 md:px-4 md:py-6 relative">
+                    <h3 id="accordion-size" class="-mx-4 -my-4 md:-my-6">
+                        <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-size-body" aria-expanded="false" aria-controls="accordion-size-body">
+                            <span class="font-medium text-gray-900">
+                                Размер
+                                <span id="sizeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
+                            </span>
+                            <span class="ml-6 flex items-center">
+                                <svg data-accordion-icon class="h-5 w-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+                    <div id="accordion-size-body" class="hidden mt-6" aria-labelledby="accordion-size">
+                        <div id="sizeList" class="grid grid-cols-3 gap-4">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 md:px-4 md:py-6 text-center">
+                    <a href="{% url 'catalog' %}" class="text-sm inline-flex text-gray-500 hover:text-gray-600">
+                        Очистить фильтры
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full h-12 md:h-16 bg-white flex align-middle justify-between px-4">
+            <div class="flex items-center justify-between space-x-4 w-full">
+                <button onclick="updateFilters()" data-drawer-hide="filtersModal" aria-controls="filtersModal" type="button" class="inline-flex w-full flex-1 items-center justify-center rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock content %}
 
 {% block scripts %}
-<script>
-    var filtersModal = `
-    <div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-96 dark:bg-gray-800" tabindex="-1">
-        <form class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
-            <div class="border-b h-12 md:h-16 flex items-center justify-between rounded-t space-x-4 px-4">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Фильтры <span class="filterLength ml-2 font-normal text-xs text-gray-500"></span>
-                </h2>
-            
-                <button type="button" data-drawer-hide="filtersModal" aria-controls="filtersModal" class="-mr-1 p-1 text-gray-400 hover:text-gray-500">
-                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto">
-                <div id="accordion-flush" class="divide-y divide-gray-200" data-accordion="open" data-accordion="collapse">
-                    <div class="p-4 md:px-4 md:py-6 relative">
-                        <h3 id="accordion-category" class="-mx-4 -my-4 md:-my-6">
-                            <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-category-body" aria-expanded="false" aria-controls="accordion-category-body">
-                                <span class="font-medium text-gray-900">
-                                    Категория
-                                    <span id="categoryParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
-                                </span>
-                                <span class="ml-6 flex items-center">
-                                    <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                            </button>
-                        </h3>
-                        <div id="accordion-category-body" class="hidden mt-6" aria-labelledby="accordion-category">
-                            <div id="mainCategoryList" class="grid grid-cols-3 gap-4">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:px-4 md:py-6 relative">
-                        <h3 id="accordion-type" class="-mx-4 -my-4 md:-my-6">
-                            <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-type-body" aria-expanded="false" aria-controls="accordion-type-body">
-                                <span class="font-medium text-gray-900">
-                                    Тип
-                                    <span id="typeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
-                                </span>
-                                <span class="ml-6 flex items-center">
-                                    <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                            </button>
-                        </h3>
-                        <div id="accordion-type-body" class="hidden mt-6" aria-labelledby="accordion-type">
-                            <div id="categoryList" class="grid grid-cols-3 gap-4">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:px-4 md:py-6 relative">
-                        <h3 id="accordion-brand" class="-mx-4 -my-4 md:-my-6">
-                            <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-brand-body" aria-expanded="false" aria-controls="accordion-brand-body">
-                                <span class="font-medium text-gray-900">
-                                    Бренд
-                                    <span id="brandParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
-                                </span>
-                                <span class="ml-6 flex items-center">
-                                    <svg data-accordion-icon class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                            </button>
-                        </h3>
-                        <div id="accordion-brand-body" class="hidden mt-6" aria-labelledby="accordion-brand">
-                            <div id="brandList" class="grid grid-cols-3 gap-4">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:px-4 md:py-6 relative">
-                        <h3 id="accordion-size" class="-mx-4 -my-4 md:-my-6">
-                            <button type="button" class="m-0 flex w-full items-center justify-between bg-white p-4 sm:px-4 sm:py-6 text-sm text-gray-400" data-accordion-target="#accordion-size-body" aria-expanded="false" aria-controls="accordion-size-body">
-                                <span class="font-medium text-gray-900">
-                                    Размер
-                                    <span id="sizeParamLength" class="ml-2 text-xs font-normal text-gray-500"></span>
-                                </span>
-                                <span class="ml-6 flex items-center">
-                                    <svg data-accordion-icon class="h-5 w-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                            </button>
-                        </h3>
-                        <div id="accordion-size-body" class="hidden mt-6" aria-labelledby="accordion-size">
-                            <div id="sizeList" class="grid grid-cols-3 gap-4">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4 md:px-4 md:py-6 text-center">
-                        <a href="{% url 'catalog' %}" class="text-sm inline-flex text-gray-500 hover:text-gray-600">
-                            Очистить фильтры
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full h-12 md:h-16 bg-white flex align-middle justify-between px-4">
-                <div class="flex items-center justify-between space-x-4 w-full">
-                    <button onclick="updateFilters()" data-drawer-hide="filtersModal" aria-controls="filtersModal" type="button" class="inline-flex w-full flex-1 items-center justify-center rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
-                        Сохранить
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-    `
-</script>
 <script type="text/javascript" src="{% static 'js/catalogPage.js' %}"></script>
 {% endblock scripts %}

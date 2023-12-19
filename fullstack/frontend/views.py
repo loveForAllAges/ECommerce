@@ -12,11 +12,12 @@ class WishlistTemplateView(LoginRequiredMixin, TemplateView):
 
 
 
+
+
 from django.urls import reverse
 from product.models import Brand, Size, Category, Product, ProductImage, SearchHistory
 from order.models import Delivery
 from random import randint, sample, randrange, choices
-from PIL import Image
 from django.core.files import File
 import os
 
