@@ -43,8 +43,7 @@ class MoreProductAPIView(generics.ListAPIView):
         return Response({'content': serializer.data, 'next': next})
     
 
-
-class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
+class CatalogListAPIView(generics.ListAPIView):
     serializer_class = PreviewProductSerializer
     pagination_class = CustomCursorPagination
     filter_backends = [SearchFilter, DjangoFilterBackend]
@@ -66,15 +65,21 @@ class CatalogViewSet(viewsets.ReadOnlyModelViewSet):
         next = self.paginator.get_paginated_response(request)
 
         return Response({'content': serializer.data, 'next': next})
-    
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
 
 
 class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductDetailSerializer
     # permission_classes = [IsStaffOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Product.objects.select_related('category').prefetch_related(
+            'images', 'brand', 'size'
+        ).annotate(in_wishlist=product_in_wishlist_query(self.request))
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        print('OK')
+        return super().retrieve(request, *args, **kwargs)
 
 
 class SearchListAPIView(generics.ListAPIView):

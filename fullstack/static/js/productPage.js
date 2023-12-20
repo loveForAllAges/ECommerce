@@ -1,5 +1,14 @@
 function getPageData() {
-
+    productId = window.location.pathname.split('/')[2];
+    $.ajax({
+        url: 'api/products/' + productId,
+        success: function(data) {
+            console.log('data', data);
+        },
+        error: function(error) {
+            console.log('error');
+        }
+    })
 }
 
 
@@ -80,6 +89,11 @@ function renderPage() {
 }
 
 
+function renderRecomendations() {
+    renderProductCard(data, $('#recomendations'));
+}
+
+
 $(document).ready(function(){
     var addToCartForm = document.querySelector('#addToCartForm');
 
@@ -107,4 +121,8 @@ $(document).ready(function(){
             console.log('addToCartForm err', error)
         })
     })
+})
+
+$(document).ready(function() {
+    getPageData();
 })

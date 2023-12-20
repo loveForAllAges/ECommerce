@@ -4,6 +4,19 @@ from rest_framework.reverse import reverse
 from .models import Product, ProductImage, Size, Brand, Category, SearchHistory
 
 
+ERROR_MESSAGES = {
+    'required': 'Это обязательное поле',
+    'blank': 'Это обязательное поле',
+    'invalid': 'Неверный формат',
+    'max_value': 'Максимальная цена - 10 000 000 ₽',
+    'min_value': 'Минимальная цена - 1 ₽',
+    'does_not_exist': 'Неверные данные',
+    'incorrect_type': 'Неверный формат',
+    'null': 'Это обязательное поле',
+    'empty': 'Это обязательное поле',
+}
+
+
 class FiltersCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -26,16 +39,6 @@ class SearchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchHistory
         fields = ('request',)
-
-
-
-ERROR_MESSAGES = {
-    'required': 'Это обязательное поле',
-    'invalid': 'Неверный формат',
-    'etc': 'Неверные данные',
-    'max_value': 'Максимальная цена - 10 000 000 ₽',
-    'min_value': 'Минимальная цена - 1 ₽',
-}
 
 
 class MainCategorySerializer(serializers.ModelSerializer):
@@ -84,8 +87,6 @@ class CartProductSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist', 'size')
 
 
-
-# class DetailProductSerializer(serializers.HyperlinkedModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     # title = serializers.ModelField('name')
     title = serializers.SerializerMethodField()
@@ -105,53 +106,58 @@ class CategorySerializer(serializers.ModelSerializer):
         ) + '?category=' + str(obj.id)
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    images = ProductImageListingField(many=True, read_only=True)
+class ProductDetailSerializer(serializers.ModelSerializer):
     in_wishlist = serializers.BooleanField()
-    # in_wishlist = serializers.SerializerMethodField()
-    # size = SizeSerializer(many=True, read_only=True)
-    # category = CategorySerializer()
-    url = serializers.HyperlinkedIdentityField(view_name='product_detail', lookup_field='pk', read_only=True)
-    # brand = serializers.PrimaryKeyRelatedField(many=True, queryset)
-    name = serializers.CharField(max_length=128, error_messages={
-        'required': ERROR_MESSAGES['required'],
-        'blank': ERROR_MESSAGES['required'],
-        'invalid': ERROR_MESSAGES['invalid'],
-        'max_length': 'Максимальная длина названия - 128 символов'
-    })
-    description = serializers.CharField(error_messages={
-        'required': ERROR_MESSAGES['required'],
-        'blank': ERROR_MESSAGES['required'],
-    })
-    price = serializers.IntegerField(min_value=1, max_value=10000000, error_messages={
-        'required': ERROR_MESSAGES['required'],
-        'invalid': ERROR_MESSAGES['invalid'],
-        'max_value': ERROR_MESSAGES['max_value'],
-        'min_value': ERROR_MESSAGES['min_value'],
-    })
-    category = serializers.PrimaryKeyRelatedField(error_messages={
-        'null': ERROR_MESSAGES['required'],
-        'does_not_exist': ERROR_MESSAGES['etc'],
-        'required': ERROR_MESSAGES['required'],
-        'incorrect_type': ERROR_MESSAGES['invalid'],
-    }, queryset=Category.objects.all())
-    brand = serializers.PrimaryKeyRelatedField(error_messages={
-        'null': ERROR_MESSAGES['required'],
-        'does_not_exist': ERROR_MESSAGES['etc'],
-        'required': ERROR_MESSAGES['required'],
-        'incorrect_type': ERROR_MESSAGES['invalid'],
-        'empty': ERROR_MESSAGES['required']
-    }, queryset=Brand.objects.all(), many=True, allow_empty=False)
-    size = serializers.PrimaryKeyRelatedField(error_messages={
-        'null': ERROR_MESSAGES['required'],
-        'does_not_exist': ERROR_MESSAGES['etc'],
-        'required': ERROR_MESSAGES['required'],
-        'incorrect_type': ERROR_MESSAGES['invalid'],
-    }, queryset=Size.objects.all(), required=False, many=True)
+    # category = FiltersCategorySerializer()
+    brand = serializers.StringRelatedField(many=True)
+    category = serializers.StringRelatedField()
+    size = serializers.StringRelatedField(many=True)
+    # brand = FiltersBrandSerializer(many=True)
+    # size = FiltersSizeSerializer(many=True)
+    images = ProductImageListingField(many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ('__all__')
+        fields = (
+            'id', 'name', 'description', 'price', 'brand', 'size', 
+            'category', 'images', 'in_wishlist',
+        )
+
+
+
+class ProductCreateSerializer(serializers.ModelSerializer):
+    images = ProductImageListingField(many=True, read_only=True)
+    in_wishlist = serializers.BooleanField()
+    # url = serializers.HyperlinkedIdentityField(view_name='product_detail', lookup_field='pk', read_only=True)
+    name = serializers.CharField(
+        max_length=128, 
+        error_messages=ERROR_MESSAGES.update(
+            {'max_length': 'Максимальная длина названия - 128 символов'}
+        )
+    )
+    description = serializers.CharField(error_messages=ERROR_MESSAGES)
+    price = serializers.IntegerField(min_value=1, max_value=10000000, error_messages=ERROR_MESSAGES)
+    category = serializers.PrimaryKeyRelatedField(
+        error_messages=ERROR_MESSAGES, 
+        queryset=Category.objects.all(), write_only=True
+    )
+    brand = serializers.PrimaryKeyRelatedField(
+        error_messages=ERROR_MESSAGES, 
+        queryset=Brand.objects.all(), 
+        many=True, allow_empty=False, write_only=True
+    )
+    size = serializers.PrimaryKeyRelatedField(
+        error_messages=ERROR_MESSAGES, 
+        queryset=Size.objects.all(), 
+        required=False, many=True, write_only=True
+    )
+
+    class Meta:
+        model = Product
+        fields = (
+            'id', 'name', 'description', 'price', 'brand', 'size', 
+            'category', 'images', 'in_wishlist',
+        )
 
     # def validate(self, data):
         # images_data = self.context.get('request').FILES.getlist('images')

@@ -18,6 +18,5 @@ urlpatterns = [
     path('auth/', include('account.urls')),
     path('adm/', include('adm.urls')),
 
-
     path('fill_db', fill_db, name='fill_db'),
 ]

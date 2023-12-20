@@ -62,7 +62,7 @@ from cart.cart import Cart
 from config.permissions import IsStaffOrReadOnly, IsAuthenticatedOrCreateOnly, CartExists
 from config.utils import send_email
 from product.models import Product, Brand, Size, SearchHistory
-from product.serializers import ProductSerializer, MainCategorySerializer
+from product.serializers import ProductDetailSerializer, MainCategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
