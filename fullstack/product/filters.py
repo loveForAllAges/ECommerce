@@ -17,7 +17,6 @@ class ProductFilter(FilterSet):
 
     def filter_category(self, queryset, name, values):
         # return queryset.filter(Q(category__id__in=values) | Q(category__parent__id__in=values))
-
         try:
             return queryset.filter(Q(category__id__in=values) | Q(category__parent__id__in=values))
         except:

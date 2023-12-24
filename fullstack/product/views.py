@@ -10,7 +10,7 @@ from rest_framework import generics, views, viewsets
 
 from .utils import preview_product_queryset, product_in_wishlist_query
 from .serializers import *
-from .pagination import CustomCursorPagination
+from .pagination import CustomCursorPagination, CustomPageNumberPagination
 from .filters import ProductFilter
 from .decorators import (
     cart_and_categories, cart_and_categories_and_filters_and_queries
@@ -46,7 +46,7 @@ class MoreProductAPIView(generics.ListAPIView):
 class CatalogListAPIView(generics.ListAPIView):
     serializer_class = PreviewProductSerializer
     pagination_class = CustomCursorPagination
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     filterset_class = ProductFilter
     # TODO Не работает Сортировка вместе с пагинацией. Исправить
     # ordering_fields = ['-id', 'price']
@@ -58,11 +58,13 @@ class CatalogListAPIView(generics.ListAPIView):
     
     @cart_and_categories_and_filters_and_queries
     def list(self, request, *args, **kwargs):
+        print("OK")
         queryset = self.filter_queryset(self.get_queryset())
         next = None
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         next = self.paginator.get_paginated_response(request)
+        print(next)
 
         return Response({'content': serializer.data, 'next': next})
 
