@@ -4,7 +4,7 @@ from django.shortcuts import HttpResponse
 
 
 class AccountTemplateView(LoginRequiredMixin, TemplateView):
-    template_name = 'pages/account_detail.html'
+    template_name = 'pages/account.html'
 
 
 class WishlistTemplateView(TemplateView):

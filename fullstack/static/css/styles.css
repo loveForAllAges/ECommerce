@@ -1179,16 +1179,16 @@ select {
   z-index: 30;
 }
 
+.z-40 {
+  z-index: 40;
+}
+
 .z-50 {
   z-index: 50;
 }
 
 .col-span-2 {
   grid-column: span 2 / span 2;
-}
-
-.-m-1 {
-  margin: -0.25rem;
 }
 
 .-m-2 {
@@ -3174,10 +3174,6 @@ select {
 :is(.dark .dark\:bg-gray-800) {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
-
-:is(.dark .dark\:bg-opacity-80) {
-  --tw-bg-opacity: 0.8;
 }
 
 :is(.dark .dark\:text-gray-200) {

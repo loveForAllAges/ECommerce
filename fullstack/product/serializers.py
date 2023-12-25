@@ -38,7 +38,7 @@ class FiltersSizeSerializer(serializers.ModelSerializer):
 class SearchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchHistory
-        fields = ('request',)
+        fields = ('content',)
 
 
 class MainCategorySerializer(serializers.ModelSerializer):

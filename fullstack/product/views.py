@@ -76,16 +76,14 @@ class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
-        print('OK')
         return super().retrieve(request, *args, **kwargs)
 
 
 class SearchListAPIView(generics.ListAPIView):
-    # TODO Отображает все истории поиска
-    queryset = SearchHistory.objects.filter()
+    queryset = SearchHistory.objects.all()
     serializer_class = SearchHistorySerializer
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ['request']
+    filter_backends = [SearchFilter]
+    search_fields = ('content',)
 
 
 class HomeAPIView(views.APIView):

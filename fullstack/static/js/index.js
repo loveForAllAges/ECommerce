@@ -11,15 +11,15 @@ $("#searchInput").on('input', function () {
 
     if (query.length >= 2) {
         $.ajax({
-            url: '/api/products/search?request=' + query,
+            url: '/api/products/search?search=' + query,
             success: function (data) {
                 $('#searchResult').empty();
                 var uri = new URL(window.location.protocol + '//' + window.location.host);
                 uri.pathname += 'catalog';
                 if (data.length) {
                     data.forEach(function (result) {
-                        uri.searchParams.set('search', result.request);
-                        $('#searchResult').append('<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="'+ uri.toString() +'" class="truncate flex-auto">' + result.request + '</a></li>');
+                        uri.searchParams.set('search', result.content);
+                        $('#searchResult').append('<li class="group duration-150 flex items-center rounded-xl px-3 py-2 hover:bg-gray-900 hover:bg-opacity-5 hover:text-gray-900"><a href="'+ uri.toString() +'" class="truncate flex-auto">' + result.content + '</a></li>');
                     });
                 } else {
                     uri.searchParams.set('search', query);
@@ -33,4 +33,4 @@ $("#searchInput").on('input', function () {
 });
 
 
-modalBgStyles = "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-30"
+modalBgStyles = "bg-gray-900 bg-opacity-50 fixed inset-0 z-30 z-40"

@@ -97,7 +97,7 @@ function uploadOrdersIntoAccountPage(orders) {
 
 function getAccountPageData() {
     $.ajax({
-        url: '/api/account',
+        url: '/account/api/account',
         success: function(data) {
             $('#accountName').html(data.full_name);
             $('#accountEmail').html(data.email);
@@ -111,7 +111,6 @@ function getAccountPageData() {
             }
         },
         error: function(error) {
-            
         }
     })
 }

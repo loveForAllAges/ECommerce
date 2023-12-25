@@ -27,7 +27,7 @@ class EmailThread(threading.Thread):
         self.email.send(fail_silently=False)
 
 
-def send_email(request, user, title, content):
+def send_email(request, user, title, content, url=False):
     current_site = get_current_site(request)
     email_body = {
         'user': user,
@@ -44,6 +44,9 @@ def send_email(request, user, title, content):
     email_subject = title
     html_content = content
     text_content = content
+    if url:
+        html_content += email_body['url']
+        text_content += email_body['url']
     
     email = EmailMultiAlternatives(
         email_subject,

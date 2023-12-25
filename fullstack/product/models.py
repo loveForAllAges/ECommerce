@@ -83,8 +83,7 @@ class ProductImage(models.Model):
 
 
 class SearchHistory(models.Model):
-    request = models.CharField(max_length=128)
-    customer = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    content = models.CharField(max_length=128)
 
     def __str__(self):
-        return self.request
+        return self.content

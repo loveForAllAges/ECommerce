@@ -13,6 +13,7 @@ api_urlpatterns = [
 urlpatterns = [
     path('', include('frontend.urls')),
     path("__debug__/", include('debug_toolbar.urls')),
+    path('account/', include('account.urls')),
     path('api/', include(api_urlpatterns)),
 ]
  

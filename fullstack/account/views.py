@@ -28,18 +28,7 @@ from django.contrib.auth.views import (
     LoginView, PasswordChangeView
 )
 
-import threading
-
-
-
-class EmailThread(threading.Thread):
-    def __init__(self, email):
-        super().__init__()
-        self.email = email
-        threading.Thread.__init__(self)
-
-    def run(self):
-        self.email.send(fail_silently=False)
+from config.utils import send_email
 
 
 class CustomLoginView(LoginView):
@@ -55,33 +44,7 @@ class SignupView(UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         user = form.save()
-
-        current_site = get_current_site(self.request)
-        email_body = {
-            'user': user,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': account_activation_token.make_token(user),
-        }
-        
-        link = reverse('activate', kwargs={
-                       'uidb64': email_body['uid'], 'token': email_body['token']})
-        
-        email_body.update({'url': 'http://'+current_site.domain+link})
-        
-        email_subject = 'Активация аккаунта'
-        html_content = render_to_string('email/activateAccount.html', email_body)
-        text_content = strip_tags(html_content)
-        
-        email = EmailMultiAlternatives(
-            email_subject,
-            text_content,
-            settings.EMAIL_HOST_USER,
-            [user.email],
-        )
-        email.attach_alternative(html_content, "text/html")
-        EmailThread(email).start()
-
+        send_email(self.request, user, 'Активация аккаунта', f'Аккаунт создан. Подтвердите это, перейдя по ссылке: ', url=True)
         messages.add_message(self.request, messages.SUCCESS, 'Аккаунт создан! Проверьте почту для активации аккаунта')
         return super().form_valid(form)
 
@@ -190,40 +153,29 @@ class AccountEditView(LoginRequiredMixin, View):
 
 
 from product.models import Product
+from product.utils import preview_product_queryset
+from account.models import User
+from account.serializers import AccountSerializer
+from order.models import OrderItem, Order
 
 from django.db.models import Exists, OuterRef, Prefetch
-
-from account.models import User
-
-from account.serializers import AccountSerializer
 
 from rest_framework import (
     response, views, status, permissions,
 )
 
 
-from order.models import OrderItem, Order
-
-
 class AccountAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            in_wishlist = Exists(User.objects.filter(
-                id=self.request.user.id,
-                wishlist=OuterRef('pk')
-            ))
-        else:
-            in_wishlist = Exists()
         queryset = User.objects.prefetch_related(
             Prefetch('orders', queryset=Order.objects.prefetch_related(
                 Prefetch('goods', queryset=OrderItem.objects.prefetch_related(
-                    Prefetch('product', queryset=Product.objects.prefetch_related('images', 'brand', 'size').annotate(in_wishlist=in_wishlist))
+                    Prefetch('product', queryset=preview_product_queryset(self.request))
                 ))
             )),
         ).get(id=self.request.user.id)
-        print(queryset.orders)
         return queryset
 
     def get(self, request):

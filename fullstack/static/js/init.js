@@ -45,8 +45,8 @@ function renderHeaderCategories(categories) {
     })
 }
 
-const token = '';
-// const token = 'Token e051d811b89793a27bc3c423736ef4165ffe42d5';
+// const token = '';
+const token = 'Token e051d811b89793a27bc3c423736ef4165ffe42d5';
 const csrftoken = getCookie();
 const sessionid = getCookie('sessionid');
 

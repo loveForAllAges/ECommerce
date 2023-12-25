@@ -34,10 +34,9 @@ SESSION_COOKIE_HTTPONLY = False
 
 REST_FRAMEWORK = {
     'ORDERING_PARAM': 'sort',
-    # TODO РАСКОМЕНТИТЬ ПОСЛЕ РАЗРАБОТКИ
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
 
