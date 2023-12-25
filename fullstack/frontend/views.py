@@ -7,7 +7,7 @@ class AccountTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/account_detail.html'
 
 
-class WishlistTemplateView(LoginRequiredMixin, TemplateView):
+class WishlistTemplateView(TemplateView):
     template_name = 'pages/wish_list.html'
 
 

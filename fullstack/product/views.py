@@ -24,8 +24,8 @@ class MoreProductAPIView(generics.ListAPIView):
     pagination_class = CustomCursorPagination
     filter_backends = [SearchFilter, DjangoFilterBackend]
     filterset_class = ProductFilter
-    # TODO Не работает Сортировка вместе с пагинацией. Исправить
-    # ordering_fields = ['-id', 'price']
+    ordering = '-id'
+    ordering_fields = ['id', 'price']
     search_fields = ['id', 'name', 'description']
 
     def get_queryset(self):
@@ -39,7 +39,6 @@ class MoreProductAPIView(generics.ListAPIView):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             next = self.paginator.get_paginated_response()
-
         return Response({'content': serializer.data, 'next': next})
     
 
@@ -48,8 +47,8 @@ class CatalogListAPIView(generics.ListAPIView):
     pagination_class = CustomCursorPagination
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     filterset_class = ProductFilter
-    # TODO Не работает Сортировка вместе с пагинацией. Исправить
-    # ordering_fields = ['-id', 'price']
+    ordering_fields = ['id', 'price']
+    ordering = '-id'
     search_fields = ['id', 'name', 'description']
 
     def get_queryset(self):
@@ -58,14 +57,11 @@ class CatalogListAPIView(generics.ListAPIView):
     
     @cart_and_categories_and_filters_and_queries
     def list(self, request, *args, **kwargs):
-        print("OK")
         queryset = self.filter_queryset(self.get_queryset())
         next = None
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         next = self.paginator.get_paginated_response(request)
-        print(next)
-
         return Response({'content': serializer.data, 'next': next})
 
 
@@ -118,7 +114,6 @@ class HomeAPIView(views.APIView):
 
 
 class WishAPIView(views.APIView):
-    permission_classes = [IsAuthenticated]
     serializer_class = PreviewProductSerializer
 
     def get_queryset(self, *args, **kwargs):
@@ -137,18 +132,27 @@ class WishAPIView(views.APIView):
 
     @cart_and_categories
     def get(self, request, *args, **kwargs):
-        data  = self.get_queryset()
-        serializer = PreviewProductSerializer(data, many=True, context={'request': request})
-        return Response({'content': serializer.data})
+        response = []
+        if request.user.is_authenticated:
+            data  = self.get_queryset()
+            serializer = PreviewProductSerializer(data, many=True, context={'request': request})
+            response = serializer.data
+        return Response({'content': response})
 
     def post(self, request, *args, **kwargs):
-        data = self.get_object()
-        data.wish.add(self.request.user)
-        serializer = PreviewProductSerializer(data, context={'request': request})
-        return Response(serializer.data)
+        response = None
+        if request.user.is_authenticated:
+            data = self.get_object()
+            data.wish.add(self.request.user)
+            serializer = PreviewProductSerializer(data, context={'request': request})
+            response = serializer.data
+        return Response(response)
 
     def delete(self, request, *args, **kwargs):
-        data = self.get_object()
-        data.wish.remove(self.request.user)
-        serializer = PreviewProductSerializer(data, context={'request': request})
-        return Response(serializer.data)
+        response = None
+        if request.user.is_authenticated:
+            data = self.get_object()
+            data.wish.remove(self.request.user)
+            serializer = PreviewProductSerializer(data, context={'request': request})
+            response = serializer.data
+        return Response(response)

@@ -45,8 +45,8 @@ function renderHeaderCategories(categories) {
     })
 }
 
-
-const token = 'Token e051d811b89793a27bc3c423736ef4165ffe42d5';
+const token = '';
+// const token = 'Token e051d811b89793a27bc3c423736ef4165ffe42d5';
 const csrftoken = getCookie();
 const sessionid = getCookie('sessionid');
 
@@ -106,6 +106,10 @@ function renderProductCard(productData, list) {
 
 
 function updateWishStatus(HTTPmethod, productId) {
+    if (!token) {
+        showMessage('Необходимо авторизоваться');
+        return;
+    }
     function onBtn(obj) {
         obj.classList.add(`text-rose-500`)
         obj.classList.add(`hover:text-rose-600`)
