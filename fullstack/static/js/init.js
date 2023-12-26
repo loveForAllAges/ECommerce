@@ -77,7 +77,7 @@ var productCardPreloader = `
 function showLoading() {
     $('#body').append(`
     <div class="pointer-events-none fixed inset-0 flex items-center justify-center z-100" id="loading">
-        <div class="relative h-12 w-12 flex items-center justify-center bg-black/30 backdrop-blur-sm rounded-xl">
+        <div class="relative h-12 w-12 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-xl">
             <div class="animate-spin left-2 top-2 absolute border-l-2 border-white w-[calc(100%-16px)] h-[calc(100%-16px)] rounded-full"></div>
             <div class="animate-spin-left left-3 top-3 absolute border-r-2 border-white w-[calc(100%-24px)] h-[calc(100%-24px)] rounded-full"></div>
             <div class="animate-spin left-4 top-4 absolute border-l-2 border-white w-[calc(100%-32px)] h-[calc(100%-32px)] rounded-full"></div>

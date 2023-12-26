@@ -1,49 +1,23 @@
-from .forms import (
-    CustomSetPasswordForm, CustomPasswordResetForm,
-)
+from django.db.models import Prefetch
+from django.contrib.auth import update_session_auth_hash, authenticate, login, logout
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.urls import reverse
 
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import Http404
-from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import (
-    PasswordResetView, PasswordResetConfirmView, 
-)
-
-from config.utils import send_email
 from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework import (
+    views, status, permissions, generics
+)
 
-
-class CustomPasswordResetView(UserPassesTestMixin, PasswordResetView):
-    template_name = "auth/passwordReset.html"
-    email_template_name = 'email/resetPassword.html'
-    subject_template_name = 'email/resetPasswordSubject.txt'
-    html_email_template_name = 'email/resetPassword.html'
-    form_class = CustomPasswordResetForm
-    
-    def test_func(self):
-        user = self.request.user
-        if user.is_authenticated:
-            raise Http404
-        return True
-
-
-class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmView):
-    template_name = "auth/passwordResetConfirm.html"
-    success_url = reverse_lazy('login')
-    form_class = CustomSetPasswordForm
-    post_reset_login = True
-
-    def form_valid(self, form):
-        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен!')
-        return super().form_valid(form)
-    
-    def test_func(self):
-        user = self.request.user
-        if user.is_authenticated:
-            raise Http404
-        return True
+from product.utils import preview_product_queryset
+from order.models import OrderItem, Order
+from config.utils import account_activation_token, send_email, decode_user
+from product.decorators import cart_and_categories
+from account.serializers import (
+    AccountSerializer, UserSerializer, User, SettingsSerializer, 
+    PasswordChangeSerializer, PasswordResetSerializer
+)
 
 
 # class UserListView(UserPassesTestMixin, ListView):
@@ -54,24 +28,6 @@ class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmVi
 #         if not self.request.user.is_authenticated or not self.request.user.is_staff:
 #             raise Http404
 #         return True
-
-
-from product.utils import preview_product_queryset
-from account.serializers import (
-    AccountSerializer, UserSerializer, User, SettingsSerializer, 
-    PasswordChangeSerializer
-)
-from order.models import OrderItem, Order
-
-from django.db.models import Prefetch
-from django.contrib.auth import authenticate
-from django.contrib.auth import update_session_auth_hash
-
-from rest_framework import (
-    views, status, permissions, generics
-)
-from rest_framework.response import Response
-from product.decorators import cart_and_categories
 
 
 class AccountAPIView(views.APIView):
@@ -103,7 +59,7 @@ class LoginAPIView(views.APIView):
             login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             response['token'] = 'Token ' + token.key
-            response['redirect_url'] = reverse_lazy('account_detail')
+            response['redirect_url'] = reverse('account_detail')
         else:
             response['error'] = 'Неверный логин или пароль'
         return Response(response)
@@ -118,7 +74,20 @@ class SignupAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         headers = self.get_success_headers(serializer.data)
-        send_email(request, user, 'Регистрация', f'Подтвердить регистрацию: ', url=True)
+
+        url = reverse(
+            'activate', 
+            kwargs={
+                'uidb64': urlsafe_base64_encode(force_bytes(user.pk)), 
+                'token': account_activation_token.make_token(user)
+            }
+        )
+
+        send_email(
+            user.email, 
+            'Регистрация',
+            f'Подтвердить регистрацию: ' + request.build_absolute_uri(url)
+        )
         return Response({}, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -134,7 +103,7 @@ class LogoutAPIView(views.APIView):
     def post(self, request, *args, **kwargs):
         request.user.auth_token.delete()
         logout(request)
-        response = {'redirect_url': reverse_lazy('login')}
+        response = {'redirect_url': reverse('login')}
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -160,3 +129,39 @@ class ChangePasswordAPIView(views.APIView):
         user = serializer.save()
         update_session_auth_hash(self.request, user)
         return Response({'message': 'Пароль изменен'})
+
+
+class PasswordResetAPIView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email_reset', '')
+        try:
+            user = User.objects.get(email=email)
+
+            url = reverse(
+                'password_reset_process', 
+                kwargs={
+                    'uidb64': urlsafe_base64_encode(force_bytes(user.pk)), 
+                    'token': account_activation_token.make_token(user)
+                }
+            )
+
+            send_email(
+                user.email, 
+                'Сброс пароля',
+                f'Ссылка для сброса пароля: ' + request.build_absolute_uri(url)
+            )
+        except Exception as ex:
+            print(ex)
+        return Response({})
+
+
+class PasswordResetProcessAPIView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        print(args, kwargs)
+        print(request.data)
+        user = decode_user(kwargs['uidb64'], kwargs['token'])
+        print('USER', user)
+        serializer = PasswordResetSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'redirect_url': reverse('login')})

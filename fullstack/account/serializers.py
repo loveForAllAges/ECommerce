@@ -67,3 +67,18 @@ class PasswordChangeSerializer(serializers.Serializer):
         instance.set_password(validated_data['new_password1'])
         instance.save()
         return instance
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    new_password1 = serializers.CharField(max_length=128)
+    new_password2 = serializers.CharField(max_length=128)
+
+    def validate(self, attrs):
+        if attrs['new_password1'] != attrs['new_password2']:
+            raise serializers.ValidationError('Пароли не совпадают')
+        return super().validate(attrs)
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password1'])
+        instance.save()
+        return instance

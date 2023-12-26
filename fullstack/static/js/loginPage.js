@@ -26,8 +26,44 @@ function login(e) {
 }
 
 
+function passwordReset(e) {
+    e.preventDefault();
+    showLoading();
+    var formData = $(this).serialize();
+    $.ajax({
+        url: '/api/auth/password_reset',
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            hideLoading();
+            $("#successReset").removeClass('hidden');
+            $("#passwordResetForm").addClass('hidden');
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    })
+}
+
+
+function goToPasswordResetForm() {
+    $("#loginForm").addClass('hidden');
+    $("#passwordResetForm").removeClass('hidden');
+}
+
+
+function goToLoginForm() {
+    $("#loginForm").removeClass('hidden');
+    $("#passwordResetForm").addClass('hidden');
+}
+
+
 $(document).ready(function() {
     getSimplePageData();
 
-    $('#login').submit(login);
+    $('#loginForm').submit(login);
+    $('#passwordResetForm').submit(passwordReset);
 })

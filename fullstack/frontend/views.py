@@ -1,13 +1,10 @@
+from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from django.shortcuts import HttpResponse
-from django.http import Http404
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
-from config.utils import account_activation_token
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import HttpResponse, HttpResponse as HttpResponse, redirect
+from django.http import Http404, HttpRequest
 
-from account.models import User
+from config.utils import decode_user
 from frontend.permissions import AnonymousUserMixin
 
 
@@ -29,20 +26,29 @@ class SignupTemplateView(AnonymousUserMixin, TemplateView):
 
 class ActivateTemplateView(AnonymousUserMixin, TemplateView):
     def get(self, request, uidb64, token):
-        id = force_str(urlsafe_base64_decode(uidb64))
-        user = get_object_or_404(User, pk=id)
-
-        if not account_activation_token.check_token(user, token) or user.is_active:
+        user = decode_user(uidb64, token)
+        if user.is_active:
             raise Http404
-
         user.is_active = True
         user.save()
 
         return redirect('login')
 
-
-class SettingsTemplateView(TemplateView):
+from django.contrib.auth.views import PasswordResetConfirmView
+class SettingsTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/settings.html'
+
+
+class PasswordResetTemplateView(AnonymousUserMixin, TemplateView):
+    template_name = 'auth/password_reset.html'
+
+
+class PasswordResetProcessTemplateView(AnonymousUserMixin, TemplateView):
+    template_name = 'auth/password_reset_process.html'
+   
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        decode_user(kwargs['uidb64'], kwargs['token'])
+        return super().get(request, *args, **kwargs)
 
 
 from django.urls import reverse

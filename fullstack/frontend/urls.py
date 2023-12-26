@@ -20,9 +20,8 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', ActivateTemplateView.as_view(), name='activate'),
     path('settings/', SettingsTemplateView.as_view(), name='settings'),
 
-    path("password-reset/", TemplateView.as_view(template_name='pages/signup.html'), name="password_reset"),
-    path('password-reset-done/', TemplateView.as_view(template_name='pages/signup.html'), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', TemplateView.as_view(template_name='pages/signup.html'), name='password_reset_confirm'),
+    path("password_reset/", PasswordResetTemplateView.as_view(), name="password_reset"),
+    path('password_reset/<uidb64>/<token>/', PasswordResetProcessTemplateView.as_view(), name='password_reset_process'),
 
     path('adm/', include('adm.urls')),
 

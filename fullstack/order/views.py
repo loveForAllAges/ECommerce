@@ -128,6 +128,11 @@ class OrderAPIView(generics.ListCreateAPIView):
 
         cart.clear()
 
-        send_email(request, request.user, 'Заказ оформлен', f'Заказ успешно оформлен! Отслеживание заказа: {url}')
+        send_email(
+            request.user.email, 
+            'Заказ оформлен',
+            f'Заказ успешно оформлен! Отслеживание заказа: ' + request.build_absolute_uri(url)
+        )
+
         message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
         return response.Response({'url': url, 'message': message}, status=status.HTTP_200_OK)
