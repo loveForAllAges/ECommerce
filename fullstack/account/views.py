@@ -1,20 +1,14 @@
 from .forms import (
-    CustomUserCreationForm, UserUpdateForm, 
     CustomSetPasswordForm, CustomPasswordResetForm,
-    CustomAuthenticationForm, CustomPasswordChangeForm
 )
 
-from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import Http404, HttpResponse
-from django.views import View
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import (
-    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, 
-    LoginView, PasswordChangeView
+    PasswordResetView, PasswordResetConfirmView, 
 )
 
 from config.utils import send_email
@@ -33,17 +27,7 @@ class CustomPasswordResetView(UserPassesTestMixin, PasswordResetView):
         if user.is_authenticated:
             raise Http404
         return True
-    
 
-class CustomPasswordResetDoneView(UserPassesTestMixin, PasswordResetDoneView):
-    template_name = "auth/passwordResetDone.html"
-    
-    def test_func(self):
-        user = self.request.user
-        if user.is_authenticated:
-            raise Http404
-        return True
-    
 
 class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmView):
     template_name = "auth/passwordResetConfirm.html"
@@ -72,41 +56,16 @@ class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmVi
 #         return True
 
 
-class CustomPasswordChangeView(PasswordChangeView):
-    template_name= "auth/passwordChange.html"
-    success_url= reverse_lazy('account')
-    form_class = CustomPasswordChangeForm
-
-    def form_valid(self, form):
-        messages.add_message(self.request, messages.SUCCESS, 'Пароль обновлен!')
-        return super().form_valid(form)
-
-
-class AccountEditView(LoginRequiredMixin, View):
-    template_name = 'auth/updateAccount.html'
-    success_url = reverse_lazy('account')
-
-    def get(self, request):
-        return render(request, self.template_name, {'form': UserUpdateForm(instance=request.user)})
-
-    def post(self, request):
-        form = UserUpdateForm(instance=request.user, data=request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.add_message(self.request, messages.SUCCESS, 'Изменения сохранены!')
-            return redirect('account')
-
-        return render(request, self.template_name, {'form': form})
-
-
-
 from product.utils import preview_product_queryset
-from account.serializers import AccountSerializer, UserSerializer, User
+from account.serializers import (
+    AccountSerializer, UserSerializer, User, SettingsSerializer, 
+    PasswordChangeSerializer
+)
 from order.models import OrderItem, Order
 
-from django.db.models import Exists, OuterRef, Prefetch
+from django.db.models import Prefetch
 from django.contrib.auth import authenticate
+from django.contrib.auth import update_session_auth_hash
 
 from rest_framework import (
     views, status, permissions, generics
@@ -177,3 +136,27 @@ class LogoutAPIView(views.APIView):
         logout(request)
         response = {'redirect_url': reverse_lazy('login')}
         return Response(response, status=status.HTTP_200_OK)
+
+
+class SettingsAPIView(views.APIView):
+    @cart_and_categories
+    def get(self, request, *args, **kwargs):
+        serializer = SettingsSerializer(request.user)
+        return Response({'content': serializer.data})
+    
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = SettingsSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response = {'message': 'Изменения сохранены'}
+        return Response(response)
+
+
+class ChangePasswordAPIView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PasswordChangeSerializer(request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        update_session_auth_hash(self.request, user)
+        return Response({'message': 'Пароль изменен'})

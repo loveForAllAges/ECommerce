@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.shortcuts import HttpResponse
 from django.http import Http404
@@ -6,9 +6,9 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from config.utils import account_activation_token
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth import login
 
 from account.models import User
+from frontend.permissions import AnonymousUserMixin
 
 
 class AccountTemplateView(LoginRequiredMixin, TemplateView):
@@ -19,27 +19,15 @@ class WishlistTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/wish_list.html'
 
 
-class AnonymousUser(UserPassesTestMixin):
-    def test_func(self) -> bool | None:
-        if self.request.user.is_authenticated:
-            raise Http404
-        return True
+class LoginTemplateView(AnonymousUserMixin, TemplateView):
+    template_name = 'auth/login.html'
 
 
-class LoginTemplateView(AnonymousUser, TemplateView):
-    template_name = 'pages/login.html'
-
-    def test_func(self) -> bool | None:
-        if self.request.user.is_authenticated:
-            raise Http404
-        return True
+class SignupTemplateView(AnonymousUserMixin, TemplateView):
+    template_name = 'auth/signup.html'
 
 
-class SignupTemplateView(AnonymousUser, TemplateView):
-    template_name = 'pages/signup.html'
-
-
-class ActivateTemplateView(AnonymousUser, TemplateView):
+class ActivateTemplateView(AnonymousUserMixin, TemplateView):
     def get(self, request, uidb64, token):
         id = force_str(urlsafe_base64_decode(uidb64))
         user = get_object_or_404(User, pk=id)
@@ -55,7 +43,6 @@ class ActivateTemplateView(AnonymousUser, TemplateView):
 
 class SettingsTemplateView(TemplateView):
     template_name = 'pages/settings.html'
-
 
 
 from django.urls import reverse
