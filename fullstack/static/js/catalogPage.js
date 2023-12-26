@@ -11,10 +11,9 @@ function getPageData(is_update, queryDict={}) {
     $.ajax({
         url: '/api/products/catalog?' + queryString,
         headers: {
-            'Authorization': token,
+            'Authorization': authToken,
         },
         success: function(data) {
-            console.log('data', data);
             nextPageURL = data.next;
 
             renderFilterMenu(data.categories, data.filters, data.queries);

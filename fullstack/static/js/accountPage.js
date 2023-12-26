@@ -1,49 +1,15 @@
-// function accountPagePreloader() {
-//     $('#accountName').html('<div class="my-2.5 h-6 bg-gray-200 rounded-full w-36"></div>');
-//     $('#accountEmail').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-32"></div>')
-//     $('#accountWelcomeText').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-24"></div>')
-//     $('#accountOrderTitle').html('<div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>');
-//     $('#accountOrderDesc').html('<div class="my-1 h-3 bg-gray-200 rounded-full w-48"></div>');
-//     $('#accountOrderList').empty();
-//     for (var i = 0; i < 7; i++) {
-//         var items = '';
-//         for (var j = 0; j < 4; j++) {
-//             var geo = ''
-//             if (j == 1) {
-//                 geo = 'left-auto'
-//             } else if (j == 2) {
-//                 geo = 'top-auto'
-//             } else if (j == 3) {
-//                 geo = 'top-auto left-auto'
-//             }
-//             items += `
-//             <div class="absolute ${ geo } w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-//                 <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-//                     <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-//                         <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-//                     </svg>
-//                 </div>
-//             </div>
-//             `
-//         }
-//         $('#accountOrderList').append(`
-//         <li class="group relative space-y-3 animate-pulse">
-//             <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
-//             ${ items }
-//             </div>
-//             <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-//                 <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
-//             </div>
-//             <div>
-//                 <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
-//             </div>
-//         </li>
-//         `)
-//     }
-// }
-
-
 function uploadOrdersIntoAccountPage(orders) {
+    if (orders.length == 0) {
+        $("#accountOrderList").html(`
+            <div id="wishListEmpty" class="col-span-3 md:col-span-4 lg:col-span-5 mt-10 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
+                </svg>
+                <p class="mt-2 text-sm text-gray-900">История заказов пустая</p>
+            </div>
+        `);
+        return;
+    }
     $('#accountOrderList').empty();
     orders.slice(0, 4).forEach(order => {
         var items = '';
@@ -95,18 +61,21 @@ function uploadOrdersIntoAccountPage(orders) {
 }
 
 
-function getAccountPageData() {
+function getPageData() {
     $.ajax({
-        url: '/account/api/account',
+        url: '/api/auth/account',
         success: function(data) {
-            $('#accountName').html(data.full_name);
-            $('#accountEmail').html(data.email);
+            console.log(data);
+            renderCart(data.cart);
+            renderHeaderCategories(data.categories);
+            $('#accountName').html(data.content.full_name);
+            $('#accountEmail').html(data.content.email);
             $('#accountWelcomeText').html('Добро пожаловать,');
-            $('#accountOrderTitle').html(`Заказы<span class="text-sm text-gray-500 font-normal ml-2">${ data.orders.length }</span>`);
+            $('#accountOrderTitle').html(`Заказы<span class="text-sm text-gray-500 font-normal ml-2">${ data.content.orders.length }</span>`);
             $('#accountOrderDesc').html('История ваших заказов');
             $('#accountMenu').removeClass('hidden');
-            uploadOrdersIntoAccountPage(data.orders);
-            if (data.is_staff) {
+            uploadOrdersIntoAccountPage(data.content.orders);
+            if (data.content.is_staff) {
                 addAdmBtn();
             }
         },
@@ -116,6 +85,23 @@ function getAccountPageData() {
 }
 
 
+function logout() {
+    authToken = '';
+    $.ajax({
+        url: '/api/auth/logout',
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(data) {
+            location.replace(data.redirect_url);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    })
+}
+
 $(document).ready(function() {
-    getAccountPageData();
+    getPageData();
 })

@@ -7,13 +7,13 @@ api_urlpatterns = [
     path('cart/', include('cart.urls')),
     path('products/', include('product.urls')),
     path('orders/', include('order.urls')),
+    path('auth/', include('account.urls')),
 ]
 
 
 urlpatterns = [
     path('', include('frontend.urls')),
     path("__debug__/", include('debug_toolbar.urls')),
-    path('account/', include('account.urls')),
     path('api/', include(api_urlpatterns)),
 ]
  

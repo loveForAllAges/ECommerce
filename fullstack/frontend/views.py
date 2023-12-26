@@ -1,16 +1,60 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 from django.shortcuts import HttpResponse
+from django.http import Http404
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from config.utils import account_activation_token
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth import login
+
+from account.models import User
 
 
 class AccountTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/account.html'
 
 
-class WishlistTemplateView(TemplateView):
+class WishlistTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/wish_list.html'
 
 
+class AnonymousUser(UserPassesTestMixin):
+    def test_func(self) -> bool | None:
+        if self.request.user.is_authenticated:
+            raise Http404
+        return True
+
+
+class LoginTemplateView(AnonymousUser, TemplateView):
+    template_name = 'pages/login.html'
+
+    def test_func(self) -> bool | None:
+        if self.request.user.is_authenticated:
+            raise Http404
+        return True
+
+
+class SignupTemplateView(AnonymousUser, TemplateView):
+    template_name = 'pages/signup.html'
+
+
+class ActivateTemplateView(AnonymousUser, TemplateView):
+    def get(self, request, uidb64, token):
+        id = force_str(urlsafe_base64_decode(uidb64))
+        user = get_object_or_404(User, pk=id)
+
+        if not account_activation_token.check_token(user, token) or user.is_active:
+            raise Http404
+
+        user.is_active = True
+        user.save()
+
+        return redirect('login')
+
+
+class SettingsTemplateView(TemplateView):
+    template_name = 'pages/settings.html'
 
 
 

@@ -2,7 +2,7 @@ function getPageData() {
     $.ajax({
         url: '/api/products/home',
         headers: {
-            'Authorization': token,
+            'Authorization': authToken,
         },
         success: function(data) {
             renderCart(data.cart);

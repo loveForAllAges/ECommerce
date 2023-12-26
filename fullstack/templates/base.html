@@ -10,7 +10,7 @@
     <script type="text/script" src="{% static 'flowbite/plugin.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
 </head>
-<body class="flex flex-col justify-between min-h-screen">
+<body class="flex flex-col justify-between min-h-screen" id="body">
     {% include 'components/header.html' %}
 
     <div id="pageContent" class="md:mb-auto md:mt-16 mb-12"> 
@@ -20,8 +20,6 @@
 
     {% include 'components/searchModal.html' %}
     {% include 'components/cartModal.html' %}
-
-    <div id="toastMessage"></div>
 
     <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/index.js' %}"></script>

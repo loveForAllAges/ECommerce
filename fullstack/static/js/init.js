@@ -15,22 +15,25 @@ function getCookie(data='csrftoken') {
 
 
 function showMessage(message) {
-    const toastMessage = document.getElementById('toastMessage');
-    if (toastMessage.childElementCount) {
-        toastMessage.innerHTML = '';
+    const is_exists = document.getElementById('message');
+    const body = document.getElementById('body');
+    if (is_exists) {
+        is_exists.remove();
     }
-    let toast = document.createElement('div');
-    toast.innerHTML = `
-    <div class="pointer-events-none fixed inset-0 flex items-center justify-center z-50">
-        <div class="max-w-sm pointer-events-auto cursor-default bg-black text-white text-sm py-1 px-2 rounded-lg shadow bg-opacity-75">
-            <p>${message}</p>
+    const new_message = document.createElement('div');
+    new_message.innerHTML = `
+        <div id="message">
+            <div class="pointer-events-none fixed inset-0 flex items-center justify-center z-50">
+                <div class="max-w-sm pointer-events-auto cursor-default bg-black text-white text-sm py-1 px-2 rounded-lg shadow bg-opacity-75">
+                    <p>${message}</p>
+                </div>
+            </div>
         </div>
-    </div>
-    `
-    toastMessage.appendChild(toast);
+    `;
+    body.appendChild(new_message);
 
     setTimeout(() => {
-        toast.remove();
+        body.removeChild(new_message);
     }, 3000)
 }
 
@@ -45,8 +48,7 @@ function renderHeaderCategories(categories) {
     })
 }
 
-// const token = '';
-const token = 'Token e051d811b89793a27bc3c423736ef4165ffe42d5';
+var authToken = '';
 const csrftoken = getCookie();
 const sessionid = getCookie('sessionid');
 
@@ -70,6 +72,24 @@ var productCardPreloader = `
     </div>
 </div>
 `;
+
+
+function showLoading() {
+    $('#body').append(`
+    <div class="pointer-events-none fixed inset-0 flex items-center justify-center z-100" id="loading">
+        <div class="relative h-12 w-12 flex items-center justify-center bg-black/30 backdrop-blur-sm rounded-xl">
+            <div class="animate-spin left-2 top-2 absolute border-l-2 border-white w-[calc(100%-16px)] h-[calc(100%-16px)] rounded-full"></div>
+            <div class="animate-spin-left left-3 top-3 absolute border-r-2 border-white w-[calc(100%-24px)] h-[calc(100%-24px)] rounded-full"></div>
+            <div class="animate-spin left-4 top-4 absolute border-l-2 border-white w-[calc(100%-32px)] h-[calc(100%-32px)] rounded-full"></div>
+        </div>
+    </div>
+    `);
+}
+
+
+function hideLoading() {
+    $('#loading').remove();
+}
 
 
 function generateProductCard(product) {
@@ -164,6 +184,19 @@ function updateWishStatus(HTTPmethod, productId) {
                 addProductCard(product, $("#wishList"));
             }
             // showMessage('Добавлено в избранное');
+        }
+    })
+}
+
+
+function getSimplePageData() {
+    $.ajax({
+        url: '/api/auth/init',
+        success: function(data) {
+            renderCart(data.cart);
+            renderHeaderCategories(data.categories);
+        },
+        error: function(error) {
         }
     })
 }

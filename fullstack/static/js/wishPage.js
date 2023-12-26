@@ -24,7 +24,7 @@ function getPageData() {
     $.ajax({
         url: '/api/products/wish',
         headers: {
-            'Authorization': token,
+            'Authorization': authToken,
         },
         success: function(data) {
             renderCart(data.cart);

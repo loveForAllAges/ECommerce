@@ -1,5 +1,3 @@
-from config.utils import account_activation_token
-from .models import User
 from .forms import (
     CustomUserCreationForm, UserUpdateForm, 
     CustomSetPasswordForm, CustomPasswordResetForm,
@@ -9,67 +7,18 @@ from .forms import (
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.views import View
-from django.contrib.sites.shortcuts import get_current_site
-from django.conf import settings
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.core.mail import EmailMultiAlternatives
-from django.utils.encoding import force_bytes, force_str
-from django.utils.html import strip_tags
-from django.urls import reverse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login
-from django.db.models import Exists, OuterRef
+from django.contrib.auth import login, logout
 from django.contrib.auth.views import (
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, 
     LoginView, PasswordChangeView
 )
 
 from config.utils import send_email
-
-
-class CustomLoginView(LoginView):
-    template_name='auth/login.html'
-    redirect_authenticated_user = True
-    form_class = CustomAuthenticationForm
-
-
-class SignupView(UserPassesTestMixin, CreateView):
-    template_name = 'auth/signup.html'
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
-
-    def form_valid(self, form):
-        user = form.save()
-        send_email(self.request, user, 'Активация аккаунта', f'Аккаунт создан. Подтвердите это, перейдя по ссылке: ', url=True)
-        messages.add_message(self.request, messages.SUCCESS, 'Аккаунт создан! Проверьте почту для активации аккаунта')
-        return super().form_valid(form)
-
-    def test_func(self):
-        user = self.request.user
-        if user.is_authenticated:
-            raise Http404
-        return True
-
-
-class ActivationView(View):
-    def get(self, request, uidb64, token):
-        id = force_str(urlsafe_base64_decode(uidb64))
-        user = get_object_or_404(User, pk=id)
-
-        if not account_activation_token.check_token(user, token) or user.is_active:
-            raise Http404
-
-        messages.add_message(request, messages.SUCCESS, 'Аккаунт активирован!')
-
-        user.is_active = True
-        login(request, user)
-        user.save()
-
-        return redirect('account')
+from rest_framework.authtoken.models import Token
 
 
 class CustomPasswordResetView(UserPassesTestMixin, PasswordResetView):
@@ -113,14 +62,14 @@ class CustomPasswordResetConfirmView(UserPassesTestMixin, PasswordResetConfirmVi
         return True
 
 
-class UserListView(UserPassesTestMixin, ListView):
-    model = User
-    template_name = 'adm/userList.html'
+# class UserListView(UserPassesTestMixin, ListView):
+#     model = User
+#     template_name = 'adm/userList.html'
 
-    def test_func(self):
-        if not self.request.user.is_authenticated or not self.request.user.is_staff:
-            raise Http404
-        return True
+#     def test_func(self):
+#         if not self.request.user.is_authenticated or not self.request.user.is_staff:
+#             raise Http404
+#         return True
 
 
 class CustomPasswordChangeView(PasswordChangeView):
@@ -152,17 +101,18 @@ class AccountEditView(LoginRequiredMixin, View):
 
 
 
-from product.models import Product
 from product.utils import preview_product_queryset
-from account.models import User
-from account.serializers import AccountSerializer
+from account.serializers import AccountSerializer, UserSerializer, User
 from order.models import OrderItem, Order
 
 from django.db.models import Exists, OuterRef, Prefetch
+from django.contrib.auth import authenticate
 
 from rest_framework import (
-    response, views, status, permissions,
+    views, status, permissions, generics
 )
+from rest_framework.response import Response
+from product.decorators import cart_and_categories
 
 
 class AccountAPIView(views.APIView):
@@ -178,6 +128,52 @@ class AccountAPIView(views.APIView):
         ).get(id=self.request.user.id)
         return queryset
 
+    @cart_and_categories
     def get(self, request):
         serializer = AccountSerializer(self.get_queryset(), context={'request': request})
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'content': serializer.data}, status=status.HTTP_200_OK)
+
+
+class LoginAPIView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        response = dict()
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
+            response['token'] = 'Token ' + token.key
+            response['redirect_url'] = reverse_lazy('account_detail')
+        else:
+            response['error'] = 'Неверный логин или пароль'
+        return Response(response)
+
+
+class SignupAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        send_email(request, user, 'Регистрация', f'Подтвердить регистрацию: ', url=True)
+        return Response({}, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class InitAPIView(views.APIView):
+    @cart_and_categories
+    def get(self, request, *args, **kwargs):
+        return Response(dict())
+
+
+class LogoutAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        request.user.auth_token.delete()
+        logout(request)
+        response = {'redirect_url': reverse_lazy('login')}
+        return Response(response, status=status.HTTP_200_OK)
