@@ -31,7 +31,7 @@ function renderHomePage(data) {
                 <div class="">
                     <div class="flex items-center justify-between">
                         <h2 class="text-2xl font-bold tracking-tight text-gray-900">${ element.title }</h2>
-                        <a href="/catalog${ element.url }" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
+                        <a href="${ element.url }" class="text-sm duration-150 text-gray-500 hover:text-gray-600">
                             Смотреть все
                         </a>
                     </div>

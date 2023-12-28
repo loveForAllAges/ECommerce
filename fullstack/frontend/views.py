@@ -34,7 +34,7 @@ class ActivateTemplateView(AnonymousUserMixin, TemplateView):
 
         return redirect('login')
 
-from django.contrib.auth.views import PasswordResetConfirmView
+
 class SettingsTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/settings.html'
 
@@ -49,6 +49,10 @@ class PasswordResetProcessTemplateView(AnonymousUserMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         decode_user(kwargs['uidb64'], kwargs['token'])
         return super().get(request, *args, **kwargs)
+
+
+class CheckoutTemplateView(TemplateView):
+    template_name = 'pages/checkout.html'
 
 
 from django.urls import reverse

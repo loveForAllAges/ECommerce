@@ -14,7 +14,7 @@ function login(e) {
                 hideLoading();
                 showMessage(data.error);
             } else {
-                authToken = data.token;
+                localStorage.setItem('token', data.token);
                 location.replace(data.redirect_url);
             }
         },

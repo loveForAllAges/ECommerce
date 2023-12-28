@@ -15,7 +15,7 @@
         </div>
 
         <div class="mt-10 sm:mt-16 lg:mt-0 space-y-4">
-            <div class="flex justify-between">
+            <div id="productDetailId" class="flex justify-between">
                 <h1 id="productDetailName" class="text-xl md:text-2xl font-bold text-gray-900">
                     <div class="py-1.5 md:py-2"><div class="animate-pulse h-4 md:h-5 bg-gray-300 rounded-full w-72"></div></div>
                 </h1>
@@ -33,11 +33,6 @@
                         <div class="py-1"><div class="h-3 bg-gray-300 rounded-full w-24"></div></div>
                         <div class="py-1 ml-2 w-full"><div class="h-3 bg-gray-200 rounded-full"></div></div>
                     </div>
-                    <!-- <div class="animate-pulse flex w-full">
-                        <div class="py-1"><div class="h-3 bg-gray-200 rounded-full w-12"></div></div>
-                        <div class="py-1 ml-2"><div class="h-3 bg-gray-200 rounded-full w-36"></div></div>
-                        <div class="py-1 ml-2 w-full"><div class="h-3 bg-gray-300 rounded-full"></div></div>
-                    </div> -->
                 </div>
             </div>
 
@@ -60,12 +55,9 @@
                 </div>
             </div>
   
-            <form id="addToCartForm" class="hidden">
+            <form id="addToCartForm">
                 <div id="sizeFields"></div>
-                <div class="mt-6 sm:flex sm:space-x-4 space-y-2 sm:space-y-0">
-                    <button type="submit" id="addToCartBtn" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white duration-150 hover:bg-blue-700">
-                        Добавить в корзину
-                    </button>
+                <div id="productBtns" class="mt-6 sm:flex sm:space-x-4 space-y-2 sm:space-y-0">
                 </div>
             </form>
         </div>

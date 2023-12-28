@@ -86,7 +86,7 @@ function getPageData() {
 
 
 function logout() {
-    authToken = '';
+    localStorage.setItem('token', '');
     $.ajax({
         url: '/api/auth/logout',
         type: 'POST',

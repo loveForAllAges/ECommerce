@@ -70,7 +70,9 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     def get_queryset(self):
         queryset = Product.objects.select_related('category').prefetch_related(
             'images', 'brand', 'size'
-        ).annotate(in_wishlist=product_in_wishlist_query(self.request))
+        ).annotate(
+            in_wishlist=product_in_wishlist_query(self.request),
+        )
         return queryset
 
     @cart_and_categories

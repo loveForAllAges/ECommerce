@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block content %}
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32">
+<div class="mx-auto py-12 space-y-12 md:space-y-16 md:py-16 max-w-2xl lg:max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="">
-        <div class="py-8">
+        <div class="">
             <h1 id="catalogTitle" class="text-3xl font-bold tracking-tight text-gray-900">
                 <div class="py-2"><div class="h-5 bg-gray-300 rounded-full w-48"></div></div>
             </h1>
@@ -66,15 +66,6 @@
   
   
     <div id="itemList" class="mt-10 grid grid-cols-2 gap-y-4 gap-x-4 md:gap-x-6 md:gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
-    </div>
-
-    <!-- TODO DELETE -->
-    <div id="itemListEmpty" class="hidden mt-10 text-center">
-        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
-        </svg>
-        <p class="mt-2 text-sm text-gray-900">Ничего не найдено</p>
-        <a href="{% url 'catalog' %}" class="duration-150 text-gray-500 hover:text-gray-600 text-sm">Очистить фильтры</a>
     </div>
 </div>
 

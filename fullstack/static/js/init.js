@@ -48,9 +48,10 @@ function renderHeaderCategories(categories) {
     })
 }
 
-var authToken = '';
+var authToken = localStorage.getItem('token');
 const csrftoken = getCookie();
 const sessionid = getCookie('sessionid');
+var cartData;
 
 
 var productCardPreloader = `
@@ -154,7 +155,7 @@ function updateWishStatus(HTTPmethod, productId) {
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
-            'Authorization': token,
+            'Authorization': authToken,
         },
         body: JSON.stringify({'product_id': productId})
     })
@@ -177,7 +178,6 @@ function updateWishStatus(HTTPmethod, productId) {
                     $('#wishList').html(emptyWishListHTML);
                 }
             }
-            // showMessage('Убрано из избранного');
         } else {
             var btns = document.querySelectorAll(`div[data-product-card="${productId}"] div button`);
             btns.forEach(btn => {
@@ -186,10 +186,11 @@ function updateWishStatus(HTTPmethod, productId) {
             })
 
             if ($('#wishList')[0]) {
-                $('#wishListEmpty').classList.add('hidden');
-                addProductCard(product, $("#wishList"));
+                $('#wishListEmpty').addClass('hidden');
+                console.log(product)
+                product.in_wishlist = true;
+                renderProductCard(product, $("#wishList"));
             }
-            // showMessage('Добавлено в избранное');
         }
     })
 }
@@ -209,8 +210,9 @@ function getSimplePageData() {
 
 
 function renderCart(data) {
+    console.log('RENDERING CART');
+    cartData = data;
     $("#cartItems").empty();
-    console.log(data)
     $(".cartSize").text(data.size);
     if (data.goods.length === 0) {
         $("#cartEmpty").removeClass('hidden');
@@ -220,6 +222,7 @@ function renderCart(data) {
         $("#cartCheckout").removeClass('hidden');
         $("#cartTotalPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
         data.goods.forEach(item => {
+            console.log(item)
             if (item.quantity > 1) {
                 var price_per_once = `<p class="text-xs text-gray-500">1 шт / ${ item.product.price.toLocaleString('ru-RU') } ₽</p>`
             } else {
@@ -265,12 +268,12 @@ function renderCart(data) {
                         </div>
                     </div>
                     
-                    <div class="flex flex-col justify-between items-end">
+                    <div class="flex flex-col justify-between items-end" data-product-card=${ item.product.id }>
                         <div class="ml-4 flex flex-col justify-between items-end">
                             <p class="font-medium">${ item.total_price.toLocaleString('ru-RU') } ₽</p>
                             ${ price_per_once }
                         </div>
-                        ${ generateWishBtn(item) }
+                        <div>${ generateWishBtn(item.product) }</div>
                     </div>
                 </li>
                 `
@@ -280,7 +283,7 @@ function renderCart(data) {
 }
 
 
-function updateCart(HTTPmethod, productId, sizeId) {
+function updateCart(HTTPmethod, productId, sizeId, detailPage=false) {
     showLoading();
     $.ajax({
         url: '/api/cart/',
@@ -293,6 +296,7 @@ function updateCart(HTTPmethod, productId, sizeId) {
         },
         success: function(data) {
             renderCart(data.content);
+            if ($('#productDetailName')[0] && productId == window.location.pathname.split('/')[2]) renderProductBtns(sizeId);
             hideLoading();
             showMessage(data.message);
         },
@@ -301,29 +305,4 @@ function updateCart(HTTPmethod, productId, sizeId) {
             showMessage(error.responseJSON.message);
         }
     })
-
-    // fetch('/cart/', {
-    //     method: HTTPmethod,
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-CSRFToken': csrftoken,
-    //     },
-    //     body: JSON.stringify({
-    //         'product_id': productId,
-    //         'size_id': sizeId,
-    //     })
-    // })
-
-    // .then(response => response.json())
-    // .then(data => {
-    //     renderCart(data);
-
-    //     const checkoutItems = document.querySelector("#checkoutItems");
-    //     if (checkoutItems) {
-    //         checkoutPage(data);
-    //     }
-    // })
-    // .catch(error => {
-    //     console.log('err', error)
-    // })
 }

@@ -1,4 +1,6 @@
 var productId = window.location.pathname.split('/')[2];
+var defaultSize;
+
 
 function getPageData() {
     $.ajax({
@@ -8,6 +10,7 @@ function getPageData() {
             renderHeaderCategories(data.categories); 
             renderProduct(data.content);
             renderSimilar(data.similar);
+            renderProductBtns();
         },
         error: function(error) {
             console.log(error);
@@ -24,8 +27,40 @@ function renderSimilar(data) {
 }
 
 
+function renderProductBtns(size=defaultSize) {
+    var cartItems = cartData.goods;
+    console.log('cart', cartItems)
+    var btnsHTML = `
+    <button type="submit" id="addToCartBtn" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white duration-150 hover:bg-blue-700">
+        Добавить в корзину
+    </button>
+    `;
+    for (var i = 0; i < cartItems.length; i++) {
+        console.log(cartItems[i].product.id, productId, cartItems[i].size.id, size)
+        if (cartItems[i].product.id == productId && cartItems[i].size.id == size) {
+            btnsHTML = `
+            <span class="inline-flex rounded-md border border-gray-200">
+                <button type="button" onclick="updateCart('PUT', ${ productId }, ${ size }, true)" class="relative inline-flex items-center justify-center p-2 text-gray-400 hover:text-gray-500 duration-150">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                    </svg>
+                </button>
+                <div class="relative justify-center cursor-default inline-flex items-center w-9 h-9 text-sm text-gray-900">${ cartItems[i].quantity }</div>
+                <button type="button" onclick="updateCart('POST', ${ productId }, ${ size }, true)" class="relative inline-flex items-center justify-center p-2 text-gray-400 hover:text-gray-500 duration-150">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+            </span>
+            `
+            break;
+        }
+    }
+    $("#productBtns").html(btnsHTML);
+}
+
+
 function renderProduct(product) {
-    $("#addToCartForm").removeClass('hidden');
     $('#productDetailName').html(product.name);
     $('#productDetailPrice').html(product.price.toLocaleString('ru-RU') + ' ₽');
     $('#productDetailDescription').html(product.description);
@@ -34,14 +69,16 @@ function renderProduct(product) {
     $("#brandTitle").html('Бренд');
     $("#similarTitle").html('Похожие товары');
     $("#similarMore").html('Смотреть все');
+    $("#productDetailId").attr('data-product-card', productId);
 
     var sizeList = '';
     for (var i = 0; i < product.size.length; i++) {
+        defaultSize = product.size[0].id;
         var checked = (i == 0) ? 'checked' : ''
         sizeList += `
             <div>
                 <input type="radio" id="size-${ product.size[i].id }" name="size" value="${ product.size[i].id }" class="hidden peer" required ${ checked }>
-                <label for="size-${ product.size[i].id }" class="duration-150 border rounded-md px-4 py-2 flex items-center justify-center text-sm font-medium uppercase cursor-pointer focus:outline-none bg-white border-gray-200 text-gray-900 hover:bg-gray-50 peer-checked:ring-blue-600 peer-checked:ring-2">
+                <label onclick="renderProductBtns(${ product.size[i].id })" for="size-${ product.size[i].id }" class="duration-150 border rounded-md px-4 py-2 flex items-center justify-center text-sm font-medium uppercase cursor-pointer focus:outline-none bg-white border-gray-200 text-gray-900 hover:bg-gray-50 peer-checked:ring-blue-600 peer-checked:ring-2">
                     ${ product.size[i].name }
                 </label>
             </div>
@@ -98,7 +135,8 @@ function renderProduct(product) {
 
 function addToCart(e) {
     e.preventDefault();
-    updateCart('POST', productId, e.currentTarget.elements.size.value);
+    var sizeId = e.currentTarget.elements.size.value;
+    updateCart('POST', productId, sizeId, true);
 }
 
 
