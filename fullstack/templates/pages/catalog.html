@@ -77,11 +77,6 @@
         <a href="{% url 'catalog' %}" class="duration-150 text-gray-500 hover:text-gray-600 text-sm">Очистить фильтры</a>
     </div>
 </div>
-<script>
-    var preview = '';
-    for (var i = 0; i < 12; i++) preview += productCardPreloader;
-    document.getElementById('itemList').innerHTML = preview;
-</script>
 
 <div id="filtersModal" class="duration-300 fixed top-0 right-0 z-50 h-screen overflow-y-auto transition-transform translate-x-full bg-white w-full md:w-96 dark:bg-gray-800" tabindex="-1">
     <form class="flex h-full flex-col overflow-y-hidden bg-white shadow-xl">
@@ -195,6 +190,11 @@
         </div>
     </form>
 </div>
+<script>
+    var preview = '';
+    for (var i = 0; i < 12; i++) preview += productCardPreloader;
+    document.getElementById('itemList').innerHTML = preview;
+</script>
 {% endblock content %}
 
 {% block scripts %}

@@ -57,7 +57,7 @@ var productCardPreloader = `
 <div class="relative group animate-pulse">
     <div class="space-y-3">
         <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
-            <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded">
+            <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
                 <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
                     <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
                 </svg>
@@ -76,8 +76,8 @@ var productCardPreloader = `
 
 function showLoading() {
     $('#body').append(`
-    <div class="pointer-events-none fixed inset-0 flex items-center justify-center z-100" id="loading">
-        <div class="relative h-12 w-12 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-xl">
+    <div class="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm" id="loading">
+        <div class="relative h-12 w-12 flex items-center justify-center">
             <div class="animate-spin left-2 top-2 absolute border-l-2 border-white w-[calc(100%-16px)] h-[calc(100%-16px)] rounded-full"></div>
             <div class="animate-spin-left left-3 top-3 absolute border-r-2 border-white w-[calc(100%-24px)] h-[calc(100%-24px)] rounded-full"></div>
             <div class="animate-spin left-4 top-4 absolute border-l-2 border-white w-[calc(100%-32px)] h-[calc(100%-32px)] rounded-full"></div>
@@ -92,9 +92,21 @@ function hideLoading() {
 }
 
 
-function generateProductCard(product) {
+function generateWishBtn(product) {
     var color = (product.in_wishlist) ? 'rose' : 'gray'
     var method = (product.in_wishlist) ? 'DELETE' : 'POST';
+    return `
+    <button type="button" onclick="updateWishStatus('${ method }', ${ product.id })" class="text-${ color }-500 hover:text-${ color }-600 p-2 -m-2 isolate">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
+        </svg>
+    </button>
+    `;
+}
+
+
+function generateProductCard(product) {
+
     var card = `
         <div class="relative group" data-product-card="${ product.id }">
             <div>
@@ -107,13 +119,7 @@ function generateProductCard(product) {
                 </a>
                 <p class="mt-1 text-gray-900 font-medium">${ product.price.toLocaleString('ru-RU') } ₽</p>
             </div>
-            <div class="absolute top-0 right-0 flex overflow-hidden -m-2 pt-2 pr-2">
-                <button type="button" onclick="updateWishStatus('${ method }', ${ product.id })" class="text-${ color }-500 hover:text-${ color }-600 p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
-                    </svg>
-                </button>
-            </div>
+            <div class="absolute top-0 right-0 flex overflow-hidden pt-2 pr-2">${ generateWishBtn(product) }</div>
         </div>
     `
     return card;
@@ -126,7 +132,7 @@ function renderProductCard(productData, list) {
 
 
 function updateWishStatus(HTTPmethod, productId) {
-    if (!token) {
+    if (!authToken) {
         showMessage('Необходимо авторизоваться');
         return;
     }
@@ -199,4 +205,125 @@ function getSimplePageData() {
         error: function(error) {
         }
     })
+}
+
+
+function renderCart(data) {
+    $("#cartItems").empty();
+    console.log(data)
+    $(".cartSize").text(data.size);
+    if (data.goods.length === 0) {
+        $("#cartEmpty").removeClass('hidden');
+        $("#cartCheckout").addClass('hidden');
+    } else {
+        $("#cartEmpty").addClass('hidden');
+        $("#cartCheckout").removeClass('hidden');
+        $("#cartTotalPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
+        data.goods.forEach(item => {
+            if (item.quantity > 1) {
+                var price_per_once = `<p class="text-xs text-gray-500">1 шт / ${ item.product.price.toLocaleString('ru-RU') } ₽</p>`
+            } else {
+                var price_per_once = ''
+            }
+
+            if (item.size) {
+                sizeHTML = `<div class="mt-1 text-sm text-gray-500">${ item.size.name } размер</div>`
+                itemSize = item.size.id
+            } else {
+                sizeHTML = ''
+                itemSize = ''
+            }
+
+            $("#cartItems").append(
+                `
+                <li class="flex group p-4 relative">
+                    <div class="w-20 h-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md">
+                        <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center">
+                    </div>
+                    <div class="flex flex-col flex-1 space-y-1 justify-between">
+                        <a href="${ item.product.id }" class="flex space-x-4">
+                            <span aria-hidden="true" class="absolute inset-0"></span>
+                            <div class="flex flex-col">
+                                <div class="duration-150 text-sm group-hover:text-blue-600">${ item.product.name }</div>
+                                ${sizeHTML}
+                            </div>
+                        </a>
+                        <div class="ml-4">
+                            <span class="isolate inline-flex rounded-md border border-gray-200">
+                                <button type="button" onclick="updateCart('PUT', ${ item.product.id }, ${ itemSize })" class="relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                                    </svg>
+                                </button>
+                                <div class="relative justify-center cursor-default inline-flex items-center w-7 h-7 text-sm text-gray-900">${ item.quantity }</div>
+                                <button type="button" onclick="updateCart('POST', ${ item.product.id }, ${ itemSize })" class="relative inline-flex items-center justify-center p-1 text-gray-400 hover:text-gray-500 duration-150">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col justify-between items-end">
+                        <div class="ml-4 flex flex-col justify-between items-end">
+                            <p class="font-medium">${ item.total_price.toLocaleString('ru-RU') } ₽</p>
+                            ${ price_per_once }
+                        </div>
+                        ${ generateWishBtn(item) }
+                    </div>
+                </li>
+                `
+            );
+        })
+    }
+}
+
+
+function updateCart(HTTPmethod, productId, sizeId) {
+    showLoading();
+    $.ajax({
+        url: '/api/cart/',
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        type: HTTPmethod,
+        data: {
+            'product': productId, 'size': sizeId
+        },
+        success: function(data) {
+            renderCart(data.content);
+            hideLoading();
+            showMessage(data.message);
+        },
+        error: function(error) {
+            hideLoading();
+            showMessage(error.responseJSON.message);
+        }
+    })
+
+    // fetch('/cart/', {
+    //     method: HTTPmethod,
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'X-CSRFToken': csrftoken,
+    //     },
+    //     body: JSON.stringify({
+    //         'product_id': productId,
+    //         'size_id': sizeId,
+    //     })
+    // })
+
+    // .then(response => response.json())
+    // .then(data => {
+    //     renderCart(data);
+
+    //     const checkoutItems = document.querySelector("#checkoutItems");
+    //     if (checkoutItems) {
+    //         checkoutPage(data);
+    //     }
+    // })
+    // .catch(error => {
+    //     console.log('err', error)
+    // })
 }

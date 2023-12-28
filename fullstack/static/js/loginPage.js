@@ -43,6 +43,7 @@ function passwordReset(e) {
             $("#passwordResetForm").addClass('hidden');
         },
         error: function(error) {
+            hideLoading();
             console.log(error);
         }
     })

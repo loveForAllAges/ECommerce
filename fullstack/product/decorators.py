@@ -1,7 +1,7 @@
 from functools import wraps
 
 from .utils import get_main_categories, get_filters, get_queries
-from cart.utils import get_cart
+from cart.utils import get_serialized_cart
 
 
 def cart_and_categories(view_func):
@@ -9,7 +9,7 @@ def cart_and_categories(view_func):
     def _wrapped_view(request, *args, **kwargs):
         response = view_func(request, *args, **kwargs)
         combined_data = {
-            'cart': get_cart(args[0]),
+            'cart': get_serialized_cart(args[0]),
             'categories': get_main_categories(args[0]),
         }
 
@@ -23,7 +23,7 @@ def cart_and_categories_and_filters_and_queries(view_func):
     def _wrapped_view(request, *args, **kwargs):
         response = view_func(request, *args, **kwargs)
         combined_data = {
-            'cart': get_cart(args[0]),
+            'cart': get_serialized_cart(args[0]),
             'categories': get_main_categories(args[0]),
             'filters': get_filters(),
             'queries': get_queries(args[0]),

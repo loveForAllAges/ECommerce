@@ -1,9 +1,11 @@
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 
 from .serializers import (
     MainCategorySerializer, Product, Category, Brand, Size, 
-    FiltersBrandSerializer, FiltersSizeSerializer, FiltersCategorySerializer
+    FiltersBrandSerializer, FiltersSizeSerializer, FiltersCategorySerializer,
+    PreviewProductSerializer
 )
+
 
 def product_in_wishlist_query(request):
     if request.user.is_authenticated:
@@ -64,3 +66,11 @@ def get_queries(request):
         query_list += [('category', i.id, i.name) for i in Category.objects.filter(id__in=category_param)]
 
     return query_list
+
+
+def get_similar_products(request, category, brands):
+    queryset = preview_product_queryset(request).filter(
+        Q(category__name=category) | Q(brand__name__in=brands),
+    ).distinct()[:12]
+    serializer = PreviewProductSerializer(queryset, many=True, context={'request': request})
+    return serializer.data

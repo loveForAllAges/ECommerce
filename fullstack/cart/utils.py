@@ -11,11 +11,16 @@ def get_cart(request):
     else:
         kwargs = {'session': request.session.session_key}
     data, created = Cart.objects.prefetch_related(
-        Prefetch('items', queryset=CartItem.objects.prefetch_related(
+        Prefetch('items', queryset=CartItem.objects.prefetch_related('size', 
             Prefetch('product', queryset=Product.objects.prefetch_related(
-                'images', 'size'
+                'images'
             ).annotate(in_wishlist=product_in_wishlist_query(request)))
         ))
     ).get_or_create(kwargs)
+    return data
+
+
+def get_serialized_cart(request):
+    data = get_cart(request)
     serializer = CartSerializer(data, context={'request': request})
     return serializer.data

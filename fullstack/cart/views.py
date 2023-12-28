@@ -1,51 +1,50 @@
-from .cart import Cart
-from product.models import Product
-from django.shortcuts import get_object_or_404
-from product.models import Size
+from django.db.models import F, Q
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from .models import CartItem
+from .utils import get_cart, get_serialized_cart
+from product.models import Product
+from product.models import Size
+
 
 class CartAPIView(APIView):
-    def get(self, request):
-        cart = Cart(request)
-        res = cart.get_cart()
-        return Response(res)
-
     def post(self, request):
-        size_id = request.data.get('size_id', '')
-        product_id = request.data.get('product_id', '')
+        size_id = request.data.get('size', None)
+        product_id = request.data.get('product', None)
+        response = {'message': 'Ошибка'}
         try:
-            product = Product.objects.get(id=product_id)
-            size = None
-            if product.size.exists():
-                size = Size.objects.get(id=size_id)
-            cart = Cart(request)
-            cart.add(product, size)
-            res = cart.get_cart()
+            q = {}
+            cart = get_cart(request)
+            if size_id:
+                q['size'] = Size.objects.get(pk=size_id)
+            q.update({'product': Product.objects.get(pk=product_id, **q), 'cart': cart})
+            count = CartItem.objects.filter(**q).update(quantity=F('quantity') + 1)
+            if count == 0:
+                CartItem.objects.create(**q)
+            response.update({'message': 'Товар добавлен в корзину', 'content': get_serialized_cart(request)})
+            st = status.HTTP_200_OK
+        except Exception as ex:
+            st = status.HTTP_400_BAD_REQUEST
+        return Response(response, status=st)
+
+    def put(self, request):
+        size_id = request.data.get('size', None)
+        product_id = request.data.get('product', None)
+        response = {'message': 'Ошибка'}
+        try:
+            cart = get_cart(request)
+            q = Q(size=Size.objects.get(pk=size_id)) if size_id else Q(size__isnull=True)
+            q &= Q(product=Product.objects.get(Q(pk=product_id) & q), cart=cart)
+            item = CartItem.objects.get(Q(quantity__gt=0) & q)
+            item.quantity -= 1
+            item.save()
+            if item.quantity == 0: item.delete()
+            response.update({'message': 'Корзина обновлена', 'content': get_serialized_cart(request)})
             st = status.HTTP_200_OK
         except Exception as ex:
             print(ex)
             st = status.HTTP_400_BAD_REQUEST
-            res = {'message': 'error'}
-
-        return Response(res, status=st)
-
-    def delete(self, request):
-        size_id = request.data.get('size_id', '')
-        product_id = request.data.get('product_id', '')
-        action = request.data.get('action', '')
-        try:
-            product = Product.objects.get(id=product_id)
-            size = None
-            if product.size.exists():
-                size = Size.objects.get(id=size_id)
-            cart = Cart(request)
-            cart.update(product, action, size)
-            res = cart.get_cart()
-            st = status.HTTP_200_OK
-        except:
-            st = status.HTTP_400_BAD_REQUEST
-            res = {'message': 'error'}
-        return Response(res, status=st)
+        return Response(response, status=st)

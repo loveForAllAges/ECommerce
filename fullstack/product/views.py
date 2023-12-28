@@ -3,20 +3,19 @@ from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework import generics, views, viewsets
+from rest_framework import generics, views
 
-from .utils import preview_product_queryset, product_in_wishlist_query
+from .utils import (
+    preview_product_queryset, product_in_wishlist_query, get_similar_products
+)
 from .serializers import *
 from .pagination import CustomCursorPagination, CustomPageNumberPagination
 from .filters import ProductFilter
 from .decorators import (
     cart_and_categories, cart_and_categories_and_filters_and_queries
 )
-
-# from config.permissions import IsStaffOrReadOnly
 
 
 class MoreProductAPIView(generics.ListAPIView):
@@ -40,7 +39,7 @@ class MoreProductAPIView(generics.ListAPIView):
             serializer = self.get_serializer(page, many=True)
             next = self.paginator.get_paginated_response()
         return Response({'content': serializer.data, 'next': next})
-    
+
 
 class CatalogListAPIView(generics.ListAPIView):
     serializer_class = PreviewProductSerializer
@@ -65,9 +64,8 @@ class CatalogListAPIView(generics.ListAPIView):
         return Response({'content': serializer.data, 'next': next})
 
 
-class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
+class ProductDetailAPIView(generics.RetrieveAPIView):
     serializer_class = ProductDetailSerializer
-    # permission_classes = [IsStaffOrReadOnly]
 
     def get_queryset(self):
         queryset = Product.objects.select_related('category').prefetch_related(
@@ -75,8 +73,16 @@ class ProductDetailAPIView(generics.RetrieveUpdateAPIView):
         ).annotate(in_wishlist=product_in_wishlist_query(self.request))
         return queryset
 
+    @cart_and_categories
     def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance).data
+        category = serializer['category']
+        brands = [i['name'] for i in serializer['brand']]
+        return Response({
+            "content": serializer, 
+            "similar": get_similar_products(request, category, brands)
+        })
 
 
 class SearchListAPIView(generics.ListAPIView):

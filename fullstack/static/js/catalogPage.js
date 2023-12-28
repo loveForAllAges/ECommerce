@@ -9,7 +9,7 @@ function getPageData(is_update, queryDict={}) {
     }
 
     $.ajax({
-        url: '/api/products/catalog?' + queryString,
+        url: '/api/products/catalog/?' + queryString,
         headers: {
             'Authorization': authToken,
         },
@@ -35,9 +35,6 @@ function getPageData(is_update, queryDict={}) {
             } else {
                 $('#itemList').html(emptyCatalogHTML);
             }
-
-            // initModals();
-            // initFlowbite();
         },
         error: function(error) {
             console.log('err', error)

@@ -84,7 +84,7 @@ class CartProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist', 'size')
+        fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -106,12 +106,38 @@ class CategorySerializer(serializers.ModelSerializer):
         ) + '?category=' + str(obj.id)
 
 
+class ProductBrandSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Brand
+        fields = ('name', 'url')
+
+    def get_url(self, object):
+        return reverse(
+            'catalog', request=self.context.get('request')
+        ) + '?brand=' + str(object.id)
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ('name', 'url')
+
+    def get_url(self, object):
+        return reverse(
+            'catalog', request=self.context.get('request')
+        ) + '?category=' + str(object.id)
+
+
 class ProductDetailSerializer(serializers.ModelSerializer):
     in_wishlist = serializers.BooleanField()
     # category = FiltersCategorySerializer()
-    brand = serializers.StringRelatedField(many=True)
-    category = serializers.StringRelatedField()
-    size = serializers.StringRelatedField(many=True)
+    brand = ProductBrandSerializer(many=True)
+    category = ProductCategorySerializer()
+    size = FiltersSizeSerializer(many=True)
     # brand = FiltersBrandSerializer(many=True)
     # size = FiltersSizeSerializer(many=True)
     images = ProductImageListingField(many=True, read_only=True)
