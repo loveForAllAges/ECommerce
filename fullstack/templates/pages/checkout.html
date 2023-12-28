@@ -2,106 +2,112 @@
 {% load static %}
 
 {% block content %}
-<div class="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-16 md:grid-cols-2 md:px-8 md:pt-16">
-	<div class="py-12 md:col-start-2 md:row-start-1 md:mx-auto md:w-full md:max-w-lg md:bg-transparent md:px-0 md:pt-0 md:pb-24">
-		<div class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
-			<div>
-				<div class="text-sm text-gray-500">Итоговая стоимость</div>
-				<div class="mt-1 text-3xl font-bold tracking-tight text-black checkoutTotalPriceValues"></div>
-			</div>
-			<ul class=" divide-y divide-gray-200" id="checkoutItems">
-			</ul>
-
-			<div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
-				<div class="flex items-center justify-between">
-					<p class="text-gray-500">Подытог</p>
-					<p id="checkoutAllItemsPrice"></p>
+<div class="mx-auto py-12 space-y-6 md:space-y-10 md:py-16 max-w-2xl lg:max-w-7xl px-4 sm:px-6 lg:px-8">
+	<h1 id="pageTitle" class="text-xl md:text-2xl font-bold text-gray-900">
+		<div class="py-1.5"><div class="h-4 md:h-6 bg-gray-300 rounded-full w-52 md:w-56"></div></div>
+	</h1>
+	<div class="relative grid grid-cols-1 gap-x-10 md:grid-cols-2 space-y-10 md:space-y-0">
+		<div class="">
+			<div class="">
+				<div>
+					<div id="totalAmount" class="text-sm text-gray-500">
+                        <div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-36"></div></div>
+					</div>
+					<div class="mt-1 text-xl md:text-2xl font-bold text-gray-900 checkoutTotalPriceValues">
+						<div class="py-1.5"><div class="h-4 md:h-6 bg-gray-300 rounded-full w-32 md:w-44"></div></div>
+					</div>
 				</div>
-				<div class="flex items-center justify-between">
-					<p class="text-gray-500">Доставка</p>
-					<p id="checkoutDeliveryPrice"></p>
-				</div>
-				<div class="flex items-center justify-between">
-					<p class="text-gray-500" id="checkoutSaleName">Скидка</p>
-					<p id="checkoutSalePrice"></p>
-				</div>
-
-				<div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
-					<div class="text-base">Итого</div>
-					<div class="text-base checkoutTotalPriceValues" id="checkoutTotalPrice"></div>
+				<ul class=" divide-y divide-gray-200" id="checkoutItems">
+				</ul>
+	
+				<div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
+					<div class="flex items-center justify-between">
+						<p class="text-gray-500">Подытог</p>
+						<p id="checkoutAllItemsPrice"></p>
+					</div>
+					<div class="flex items-center justify-between">
+						<p class="text-gray-500">Доставка</p>
+						<p id="checkoutDeliveryPrice"></p>
+					</div>
+					<div class="flex items-center justify-between">
+						<p class="text-gray-500" id="checkoutSaleName">Скидка</p>
+						<p id="checkoutSalePrice"></p>
+					</div>
+	
+					<div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
+						<div class="text-base">Итого</div>
+						<div class="text-base checkoutTotalPriceValues" id="checkoutTotalPrice"></div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<div class="py-16 md:col-start-1 md:row-start-1 md:mx-auto md:w-full md:max-w-lg md:pt-0 md:pb-24">
-		<form action="" method="POST" id="checkoutForm" class="mx-auto max-w-2xl px-4 lg:max-w-none lg:px-0">
-			<div>
-				<h3 class="text-lg font-medium text-gray-900">Персональные данные</h3>
-
-				<div class="mt-6 grid grid-cols-2 gap-6">
-					<div class="relative col-span-2 sm:col-span-1">
-						<input required {{disabled}} type="text" id="first_name" name="first_name" autocomplete="first_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ first_name }}" />
-						<label for="first_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Имя</label>
-					</div>
-					<div class="relative col-span-2 sm:col-span-1">
-						<input required {{disabled}} type="text" id="last_name" name="last_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ last_name }}" />
-						<label for="last_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Фамилия</label>
-					</div>
-					<div class="relative col-span-2 sm:col-span-1">
-						<input required {{disabled}} type="text" id="phone" name="phone" autocomplete="phone" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ phone }}" />
-						<label for="phone" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Телефон</label>
-					</div>
-					<div class="relative col-span-2 sm:col-span-1">
-						<input required {{disabled}} type="text" id="email" name="email" autocomplete="email" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-500" placeholder=" " value="{{ email }}" />
-						<label for="email" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Почта</label>
-					</div>
-				</div>
-			</div>
-
-			<div class="mt-10">
-				<h3 class="text-lg font-medium text-gray-900">Тип доставки</h3>
-				<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
-				</div>
-			</div>
-
-			<div class="mt-10 hidden" id="checkoutAddressForm">
-				<h3 class="text-lg font-medium text-gray-900">Адрес доставки</h3>
-
-				<div class="mt-6 grid grid-cols-2 gap-6">
-					<div class="relative col-span-2 sm:col-span-1">
-						<input type="text" id="city" name="city" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.city }}" />
-						<label for="city" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Город</label>
-					</div>
-					<div class="relative col-span-2 sm:col-span-1">
-						<input type="text" id="zip_code" name="zip_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.zip_code }}" />
-						<label for="zip_code" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Индекс</label>
-					</div>
-					<div class="relative col-span-2">
-						<input type="text" id="address" name="address" autocomplete="address" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-1 focus:ring-black focus:border-black peer" placeholder=" " value="{{ address.address }}" />
-						<label for="address" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Адрес</label>
+	
+		<div class="md:row-start-1">
+			<form action="" method="POST" id="checkoutForm" class="space-y-10">
+				<div>
+					<h3 id="customerDataTitle" class="text-base md:text-lg font-medium text-gray-900">
+						<div class="py-1 md:py-1.5"><div class="h-4 bg-gray-300 rounded-full w-52"></div></div>
+					</h3>
+	
+					<div id="customerForm" class="mt-6 grid md:grid-cols-2 gap-6">
+						<div>
+							<label for="id_first_name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
+							<input type="text" name="first_name" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Введите имя" autofocus="" required="" id="id_first_name">
+						</div>
+				
+						<div>
+							<label for="id_last_name" class="block text-sm font-medium leading-6 text-gray-900">Фамилия</label>
+							<input type="text" name="last_name" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Фамилия" required="" id="id_last_name">
+						</div>
+				
+						<div>
+							<label for="id_phone" class="block text-sm font-medium leading-6 text-gray-900">Номер телефона</label>
+							<input type="text" name="phone" maxlength="10" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Номер телефона" required="" id="id_phone">
+						</div>
+				  
+						<div>
+							<label for="id_email" class="block text-sm font-medium leading-6 text-gray-900">Почта</label>
+							<input type="email" name="email" maxlength="320" autofocus="" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Почта" required="" id="id_email">
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="mt-10">
-				<h3 class="text-lg font-medium text-gray-900">Дополнительно</h3>
-
-				<label class="mt-6 relative inline-flex items-center cursor-pointer">
-					<input type="checkbox" name="advertising" class="sr-only peer" checked>
-					<div class="w-11 h-6 bg-gray-200 duration-200 peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:shadow after:rounded-full after:h-5 after:w-5 after:ring-0 after:transition after:ease-in-out peer-checked:bg-blue-600"></div>
-					<span class="ml-3 text-sm text-gray-900">Подписаться на рассылку новостей</span>
-				</label>
-			</div>
-
-			<div class="mt-10 flex justify-end border-t border-gray-200 pt-6">
-				<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
-			</div>
-		</form>
+	
+				<div>
+					<h3 class="text-base md:text-lg font-medium text-gray-900">Тип доставки</h3>
+					<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
+					</div>
+				</div>
+	
+				<div class="hidden" id="checkoutAddressForm">
+					<h3 class="text-base md:text-lg font-medium text-gray-900">Адрес доставки</h3>
+	
+					<div class="mt-6 grid md:grid-cols-2 gap-6">
+						<div>
+							<label for="id_city" class="block text-sm font-medium leading-6 text-gray-900">Город</label>
+							<input type="text" name="city" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Город" required="" id="id_city">
+						</div>
+				
+						<div>
+							<label for="id_zipcode" class="block text-sm font-medium leading-6 text-gray-900">Почтовый индекс</label>
+							<input type="text" name="zipcode" maxlength="10" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Почтовый индекс" required="" id="id_zipcode">
+						</div>
+				  
+						<div>
+							<label for="id_address" class="block text-sm font-medium leading-6 text-gray-900">Адрес доставки</label>
+							<input type="address" name="address" maxlength="320" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Адрес" required="" id="id_address">
+						</div>
+					</div>
+				</div>
+	
+				<div class="flex justify-end">
+					<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{% static 'js/checkout.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/checkoutPage.js' %}"></script>
 {% endblock scripts %}

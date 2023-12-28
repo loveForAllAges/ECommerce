@@ -8,12 +8,5 @@ urlpatterns = [
     # path('<uuid:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
 
 
-
-    # path('checkout/', views.CheckoutView.as_view(), name='checkout'),
-
-
-    path('delivery/', DeliveryListAPIView.as_view()),
-
-    path('orders/', OrderAPIView.as_view()),
-
+    path('checkout/', CheckoutAPIView.as_view()),
 ]

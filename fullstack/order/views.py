@@ -10,14 +10,6 @@ from account.models import Address
 from order.forms import OrderForm
 
 
-# class OrderListView(LoginRequiredMixin, ListView):
-#     template_name = 'usage/orders.html'
-
-#     def get_queryset(self):
-#         queryset = Order.objects.filter(customer=self.request.user).order_by('-number')
-#         return queryset
-
-
 # class OrderDetailView(DetailView):
 #     model = Order
 #     template_name = 'usage/order.html'
@@ -73,18 +65,19 @@ from django.db.models import OuterRef, Exists
 from django.contrib.auth import get_user_model
 
 
-class DeliveryListAPIView(generics.ListAPIView):
-    queryset = Delivery.objects.all()
-    serializer_class = DeliverySerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .decorators import cart_and_categories_and_deliveries
+from account.serializers import CustomerSerializer
 
 
-class OrderAPIView(generics.ListCreateAPIView):
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticatedOrCreateOnly, CartExists]
+class CheckoutAPIView(APIView):
+    @cart_and_categories_and_deliveries
+    def get(self, request, *args, **kwargs):
+        customer = CustomerSerializer(request.user).data if request.user.is_authenticated else ''
+        return Response({'customer': customer})
 
-    def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user)
-    
     def post(self, request):
         data = request.data.copy()
         if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):

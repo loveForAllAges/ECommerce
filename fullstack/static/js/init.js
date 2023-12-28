@@ -187,7 +187,6 @@ function updateWishStatus(HTTPmethod, productId) {
 
             if ($('#wishList')[0]) {
                 $('#wishListEmpty').addClass('hidden');
-                console.log(product)
                 product.in_wishlist = true;
                 renderProductCard(product, $("#wishList"));
             }
@@ -210,7 +209,6 @@ function getSimplePageData() {
 
 
 function renderCart(data) {
-    console.log('RENDERING CART');
     cartData = data;
     $("#cartItems").empty();
     $(".cartSize").text(data.size);
@@ -222,7 +220,6 @@ function renderCart(data) {
         $("#cartCheckout").removeClass('hidden');
         $("#cartTotalPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
         data.goods.forEach(item => {
-            console.log(item)
             if (item.quantity > 1) {
                 var price_per_once = `<p class="text-xs text-gray-500">1 шт / ${ item.product.price.toLocaleString('ru-RU') } ₽</p>`
             } else {
@@ -244,7 +241,7 @@ function renderCart(data) {
                         <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center">
                     </div>
                     <div class="flex flex-col flex-1 space-y-1 justify-between">
-                        <a href="${ item.product.id }" class="flex space-x-4">
+                        <a href="${ item.product.url }" class="flex space-x-4">
                             <span aria-hidden="true" class="absolute inset-0"></span>
                             <div class="flex flex-col">
                                 <div class="duration-150 text-sm group-hover:text-blue-600">${ item.product.name }</div>

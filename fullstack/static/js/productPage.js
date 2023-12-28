@@ -29,15 +29,13 @@ function renderSimilar(data) {
 
 function renderProductBtns(size=defaultSize) {
     var cartItems = cartData.goods;
-    console.log('cart', cartItems)
     var btnsHTML = `
     <button type="submit" id="addToCartBtn" class="w-full sm:w-auto justify-center inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white duration-150 hover:bg-blue-700">
         Добавить в корзину
     </button>
     `;
     for (var i = 0; i < cartItems.length; i++) {
-        console.log(cartItems[i].product.id, productId, cartItems[i].size.id, size)
-        if (cartItems[i].product.id == productId && cartItems[i].size.id == size) {
+        if (cartItems[i].product.id == productId && (cartItems[i].size && cartItems[i].size.id == size || !cartItems[i].size)) {
             btnsHTML = `
             <span class="inline-flex rounded-md border border-gray-200">
                 <button type="button" onclick="updateCart('PUT', ${ productId }, ${ size }, true)" class="relative inline-flex items-center justify-center p-2 text-gray-400 hover:text-gray-500 duration-150">
@@ -135,7 +133,8 @@ function renderProduct(product) {
 
 function addToCart(e) {
     e.preventDefault();
-    var sizeId = e.currentTarget.elements.size.value;
+    var sizeField = e.currentTarget.elements.size;
+    var sizeId = sizeField ? sizeField.value : null;
     updateCart('POST', productId, sizeId, true);
 }
 

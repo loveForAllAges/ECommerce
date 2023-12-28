@@ -77,14 +77,14 @@ class PreviewProductSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist')
 
 
-class CartProductSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='product_detail')
-    images = ProductImageListingField(many=True, read_only=True)
-    in_wishlist = serializers.BooleanField()
+# class CartProductSerializer(serializers.HyperlinkedModelSerializer):
+#     url = serializers.HyperlinkedIdentityField(view_name='product_detail')
+#     images = ProductImageListingField(many=True, read_only=True)
+#     in_wishlist = serializers.BooleanField()
 
-    class Meta:
-        model = Product
-        fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist')
+#     class Meta:
+#         model = Product
+#         fields = ('id', 'url', 'name', 'price', 'images', 'in_wishlist')
 
 
 class CategorySerializer(serializers.ModelSerializer):

@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import Cart, CartItem
-from product.serializers import CartProductSerializer, FiltersSizeSerializer
+from product.serializers import PreviewProductSerializer, FiltersSizeSerializer
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = CartProductSerializer(read_only=True)
+    product = PreviewProductSerializer(read_only=True)
     size = FiltersSizeSerializer(many=False, read_only=True) 
     class Meta:
         model = CartItem

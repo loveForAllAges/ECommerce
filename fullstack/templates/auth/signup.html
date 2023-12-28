@@ -33,13 +33,20 @@
             <input type="password" name="password" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Пароль" required="" id="id_password">
         </div>
 
+        <div class="">
+            <div class="flex items-center">
+                <input id="terms" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 focus:ring-offset-0">
+                <label for="terms" class="ms-2 text-sm text-gray-900">Согласие на обработку <a href="#" class="text-blue-600 duration-150 hover:text-blue-700">Персональных данных</a>.</label>
+            </div>
+        </div>
+
         <div>
             <button type="submit" class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Зарегистрироваться</button>
         </div>
 
         <div class="text-center text-sm text-gray-500">
             Есть аккаунт?
-            <a href="{% url 'login' %}" class="leading-6 text-blue-600 hover:text-blue-500">Войти</a>
+            <a href="{% url 'login' %}" class="text-blue-600 duration-150 hover:text-blue-700">Войти</a>
         </div>
     </form>
 </div>
