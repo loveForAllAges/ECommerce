@@ -3,40 +3,100 @@
 
 {% block content %}
 <div class="mx-auto py-12 space-y-6 md:space-y-10 md:py-16 max-w-2xl lg:max-w-7xl px-4 sm:px-6 lg:px-8">
-	<h1 id="pageTitle" class="text-xl md:text-2xl font-bold text-gray-900">
-		<div class="py-1.5"><div class="h-4 md:h-6 bg-gray-300 rounded-full w-52 md:w-56"></div></div>
-	</h1>
+	
+	<div>
+		<div class="loadedContent hidden text-xl md:text-2xl font-bold text-gray-900">Оформление заказа</div>
+		<div class="preloadedContent">
+			<div class="py-1"><div class="animate-pulse h-5 md:h-6 bg-gray-300 rounded-full w-52 md:w-64"></div></div>
+		</div>
+	</div>
+
 	<div class="relative grid grid-cols-1 gap-x-10 md:grid-cols-2 space-y-10 md:space-y-0">
 		<div class="">
-			<div class="">
+			<div class="">				
 				<div>
-					<div id="totalAmount" class="text-sm text-gray-500">
-                        <div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-36"></div></div>
-					</div>
-					<div class="mt-1 text-xl md:text-2xl font-bold text-gray-900 checkoutTotalPriceValues">
-						<div class="py-1.5"><div class="h-4 md:h-6 bg-gray-300 rounded-full w-32 md:w-44"></div></div>
+					<div class="loadedContent hidden text-sm text-gray-500">Итоговая стоимость</div>
+					<div class="preloadedContent">
+						<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-36"></div></div>
 					</div>
 				</div>
-				<ul class=" divide-y divide-gray-200" id="checkoutItems">
-				</ul>
-	
-				<div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
-					<div class="flex items-center justify-between">
-						<p class="text-gray-500">Подытог</p>
-						<p id="checkoutAllItemsPrice"></p>
+				
+				<div class="h-1"></div>
+				
+				<div>
+					<div class="loadedContent hidden text-xl md:text-2xl font-bold text-gray-900 checkoutTotalPriceValues"></div>
+					<div class="preloadedContent">
+						<div class="py-1"><div class="animate-pulse h-5 md:h-6 bg-gray-300 rounded-full w-24 md:w-36"></div></div>
 					</div>
-					<div class="flex items-center justify-between">
-						<p class="text-gray-500">Доставка</p>
-						<p id="checkoutDeliveryPrice"></p>
+				</div>
+
+				<div class="border-t border-gray-200 mt-6">
+					<div id="checkoutItems" class="loadedContent hidden divide-y divide-gray-200">
 					</div>
-					<div class="flex items-center justify-between">
-						<p class="text-gray-500" id="checkoutSaleName">Скидка</p>
-						<p id="checkoutSalePrice"></p>
+					<div id="checkoutItemsPreloaded" class="preloadedContent divide-y divide-gray-200">
 					</div>
-	
-					<div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6 text-black">
-						<div class="text-base">Итого</div>
-						<div class="text-base checkoutTotalPriceValues" id="checkoutTotalPrice"></div>
+				</div>
+
+				<div class="space-y-6 border-t border-gray-200 pt-6">
+
+					<div class="flex items-center justify-between">
+						<div>
+							<div class="loadedContent hidden text-sm text-gray-500">Подытог</div>
+							<div class="preloadedContent">
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-24"></div></div>
+							</div>
+						</div>
+						<div>
+							<div id="checkoutAllItemsPrice" class="loadedContent hidden text-sm text-gray-900"></div>
+							<div class="preloadedContent">
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-20"></div></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="flex items-center justify-between">
+						<div>
+							<div class="loadedContent hidden text-sm text-gray-500">Доставка</div>
+							<div class="preloadedContent">
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-20"></div></div>
+							</div>
+						</div>
+						<div>
+							<div id="checkoutDeliveryPrice" class="loadedContent hidden text-sm text-gray-900"></div>
+							<div class="preloadedContent">
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-16"></div></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="flex items-center justify-between">
+						<div>
+							<div class="loadedContent hidden text-sm text-gray-500">Скидка</div>
+							<div class="preloadedContent">
+								<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-16"></div>
+							</div>
+						</div>
+						<div>
+							<div id="checkoutSalePrice" class="loadedContent hidden text-sm text-gray-900"></div>
+							<div class="preloadedContent">
+								<div class="animate-pulse my-1 h-3 bg-gray-300 rounded-full w-14"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="flex items-center justify-between border-t border-gray-200 font-medium pt-6">
+						<div>
+							<div class="loadedContent hidden text-base text-gray-900">Итого</div>
+							<div class="preloadedContent">
+								<div class="animate-pulse my-1.5 h-3 bg-gray-300 rounded-full w-16"></div>
+							</div>
+						</div>
+						<div>
+							<div class="loadedContent hidden text-base text-gray-900 checkoutTotalPriceValues"></div>
+							<div class="preloadedContent">
+								<div class="animate-pulse my-1.5 h-3 bg-gray-300 rounded-full w-20"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -45,9 +105,12 @@
 		<div class="md:row-start-1">
 			<form action="" method="POST" id="checkoutForm" class="space-y-10">
 				<div>
-					<h3 id="customerDataTitle" class="text-base md:text-lg font-medium text-gray-900">
-						<div class="py-1 md:py-1.5"><div class="h-4 bg-gray-300 rounded-full w-52"></div></div>
-					</h3>
+					<div>
+						<div class="loadedContent hidden text-lg md:text-xl font-medium text-gray-900">Персональные данные</div>
+						<div class="preloadedContent">
+							<div class="py-1"><div class="animate-pulse h-5 bg-gray-300 rounded-full w-60"></div></div>
+						</div>
+					</div>
 	
 					<div id="customerForm" class="mt-6 grid md:grid-cols-2 gap-6">
 						<div>
@@ -73,7 +136,12 @@
 				</div>
 	
 				<div>
-					<h3 class="text-base md:text-lg font-medium text-gray-900">Тип доставки</h3>
+					<div>
+						<div class="loadedContent hidden text-lg md:text-xl font-medium text-gray-900">Тип доставки</div>
+						<div class="preloadedContent">
+							<div class="py-1"><div class="animate-pulse h-5 bg-gray-300 rounded-full w-32"></div></div>
+						</div>
+					</div>
 					<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
 					</div>
 				</div>
@@ -100,12 +168,40 @@
 				</div>
 	
 				<div class="flex justify-end">
+					<button onclick="loadPage()">aa</button>
 					<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+<script>
+	var productCheckoutPreloader = `
+	<div class="flex py-4">
+		<div class="animate-pulse h-20 w-20 overflow-hidden rounded-xl">
+			<div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
+				<svg class="w-8 h-8 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+					<path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+				</svg>
+			</div>
+		</div>
+		<div class="flex flex-1 flex-col ml-4">
+			<div class="animate-pulse my-1 h-3 bg-gray-300 rounded-full w-36"></div>
+			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-24 mt-2"></div>
+			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-16"></div>
+		</div>
+		<div class="flex flex-col justify-between items-end">
+			<div class="ml-4 flex flex-col justify-between items-end">
+				<div class="animate-pulse my-1 h-4 bg-gray-300 rounded-full w-20"></div>
+				<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-24"></div>
+			</div>
+		</div>
+	</div>
+	`;
+    var preview = '';
+    for (var i = 0; i < 4; i++) preview += productCheckoutPreloader;
+    document.getElementById('checkoutItemsPreloaded').innerHTML = preview;
+</script>
 {% endblock %}
 
 {% block scripts %}

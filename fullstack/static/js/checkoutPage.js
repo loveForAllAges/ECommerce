@@ -8,6 +8,7 @@ function getPageData() {
             renderDeliveries(data.deliveries);
             renderPage(data.cart);
             renderForm(data.customer);
+            loadPage();
         },
         error: function(error) {
         }
@@ -27,10 +28,18 @@ function renderForm(data) {
 }
 
 
+function loadPage() {
+    if ($('.loadedContent').hasClass('hidden')) {
+        $('.loadedContent').removeClass('hidden');
+        $('.preloadedContent').addClass('hidden');
+    } else {
+        $('.loadedContent').addClass('hidden');
+        $('.preloadedContent').removeClass('hidden');
+    }
+}
+
+
 function renderPage(data) {
-    $("#pageTitle").text('Оформление заказа');
-    $("#customerDataTitle").text('Персональные данные');
-    $("#totalAmount").text('Итоговая стоимость');
     $("#checkoutDeliveryPrice").text(`0 ₽`);
     $("#checkoutSalePrice").text(`0 ₽`);
     $('#checkoutItems').empty();
@@ -52,8 +61,8 @@ function renderPage(data) {
 
         $("#checkoutItems").append(
             `
-            <li class="flex group py-4 relative">
-                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
+            <div class="flex group py-4 relative">
+                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl">
                     <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center">
                 </div>
                 <div class="flex flex-col flex-1 space-y-1 justify-between">
@@ -74,7 +83,7 @@ function renderPage(data) {
                     </div>
                     <div class="flex justify-between">${ generateWishBtn(item.product) }</div>
                 </div>
-            </li>
+            </div>
             `
         )
     })
