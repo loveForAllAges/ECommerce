@@ -73,13 +73,13 @@
 						<div>
 							<div class="loadedContent hidden text-sm text-gray-500">Скидка</div>
 							<div class="preloadedContent">
-								<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-16"></div>
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-16"></div></div>
 							</div>
 						</div>
 						<div>
 							<div id="checkoutSalePrice" class="loadedContent hidden text-sm text-gray-900"></div>
 							<div class="preloadedContent">
-								<div class="animate-pulse my-1 h-3 bg-gray-300 rounded-full w-14"></div>
+								<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-14"></div></div>
 							</div>
 						</div>
 					</div>
@@ -88,13 +88,13 @@
 						<div>
 							<div class="loadedContent hidden text-base text-gray-900">Итого</div>
 							<div class="preloadedContent">
-								<div class="animate-pulse my-1.5 h-3 bg-gray-300 rounded-full w-16"></div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-16"></div></div>
 							</div>
 						</div>
 						<div>
 							<div class="loadedContent hidden text-base text-gray-900 checkoutTotalPriceValues"></div>
 							<div class="preloadedContent">
-								<div class="animate-pulse my-1.5 h-3 bg-gray-300 rounded-full w-20"></div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-20"></div></div>
 							</div>
 						</div>
 					</div>
@@ -112,25 +112,93 @@
 						</div>
 					</div>
 	
-					<div id="customerForm" class="mt-6 grid md:grid-cols-2 gap-6">
-						<div>
-							<label for="id_first_name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
-							<input type="text" name="first_name" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Введите имя" autofocus="" required="" id="id_first_name">
+					<div>
+						<div id="customerForm" class="loadedContent hidden mt-6 grid md:grid-cols-2 gap-6 md:gap-y-8">
+							<div>
+								<label for="first_name" class="block text-sm font-medium leading-6 text-gray-900">Имя</label>
+								<div class="relative mt-2 rounded-md shadow-sm">
+									<input type="text" name="first_name" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm disabled:cursor-not-allowed disabled:shadow-none disabled:ring-gray-200 disabled:bg-gray-50 disabled:text-gray-500" placeholder="Введите имя" required id="first_name">
+									<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+										<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+										</svg>
+									</div>
+								</div>
+								<p class="hidden mt-2 text-sm text-red-600" id="first_name-error">Your password must be less than 4 characters.</p>
+							</div>
+	
+							<div>
+								<label for="last_name" class="block text-sm font-medium leading-6 text-gray-900">Фамилия</label>
+								<div class="relative mt-2 rounded-md shadow-sm">
+									<input type="text" name="last_name" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm disabled:cursor-not-allowed disabled:shadow-none disabled:ring-gray-200 disabled:bg-gray-50 disabled:text-gray-500" placeholder="Введите фамилию" required id="last_name">
+									<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+										<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+										</svg>
+									</div>
+								</div>
+								<p class="hidden mt-2 text-sm text-red-600" id="last_name-error">Your password must be less than 4 characters.</p>
+							</div>
+	
+							<div>
+								<label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Номер телефона</label>
+								<div class="relative mt-2 rounded-md shadow-sm">
+									<input type="text" name="phone" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm disabled:cursor-not-allowed disabled:shadow-none disabled:ring-gray-200 disabled:bg-gray-50 disabled:text-gray-500" placeholder="Введите номер телефона" required id="phone">
+									<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+										<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+										</svg>
+									</div>
+								</div>
+								<p class="hidden mt-2 text-sm text-red-600" id="phone-error">Your password must be less than 4 characters.</p>
+							</div>
+	
+							<div>
+								<label for="email" class="block text-sm font-medium leading-6 text-gray-900">Почта</label>
+								<div class="relative mt-2 rounded-md shadow-sm">
+									<input type="email" name="email" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 pr-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm disabled:cursor-not-allowed disabled:shadow-none disabled:ring-gray-200 disabled:bg-gray-50 disabled:text-gray-500 ring-red-300 text-red-900 placeholder:text-red-400 focus:ring-red-600" placeholder="Введите почту" required id="email">
+									<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+										<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+										</svg>
+									</div>
+								</div>
+								<p class="hidden mt-2 text-sm text-red-600" id="email-error">Your password must be less than 4 characters.</p>
+							</div>
 						</div>
-				
-						<div>
-							<label for="id_last_name" class="block text-sm font-medium leading-6 text-gray-900">Фамилия</label>
-							<input type="text" name="last_name" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Фамилия" required="" id="id_last_name">
-						</div>
-				
-						<div>
-							<label for="id_phone" class="block text-sm font-medium leading-6 text-gray-900">Номер телефона</label>
-							<input type="text" name="phone" maxlength="10" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Номер телефона" required="" id="id_phone">
-						</div>
-				  
-						<div>
-							<label for="id_email" class="block text-sm font-medium leading-6 text-gray-900">Почта</label>
-							<input type="email" name="email" maxlength="320" autofocus="" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Почта" required="" id="id_email">
+						<div class="preloadedContent mt-6 grid md:grid-cols-2 gap-6 md:gap-y-8">
+							<div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-20"></div></div>
+								<div class="relative mt-2 rounded-md shadow-sm animate-pulse">
+									<div class="w-full ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset">
+										<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-20"></div></div>
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-20"></div></div>
+								<div class="relative mt-2 rounded-md shadow-sm animate-pulse">
+									<div class="w-full ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset">
+										<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-20"></div></div>
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-32"></div></div>
+								<div class="relative mt-2 rounded-md shadow-sm animate-pulse">
+									<div class="w-full ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset">
+										<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-20"></div></div>
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-20"></div></div>
+								<div class="relative mt-2 rounded-md shadow-sm animate-pulse">
+									<div class="w-full ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset">
+										<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-20"></div></div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -142,34 +210,101 @@
 							<div class="py-1"><div class="animate-pulse h-5 bg-gray-300 rounded-full w-32"></div></div>
 						</div>
 					</div>
-					<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
+					<div>
+						<div id="checkoutDeliveryLabels" class="loadedContent hidden mt-6 -space-y-px rounded-lg bg-white"></div>
+						<div class="preloadedContent">
+							<div class="mt-6 -space-y-px rounded-lg bg-white" id="checkoutDeliveryLabels">
+					
+								<div class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
+									<div class="animate-pulse mt-0.5 rounded-full h-4 w-4"></div>
+									<span class="ml-3 w-full">
+										<div class="flex justify-between">
+											<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-28"></div></div>
+											<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-8"></div></div>
+										</div>
+										<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-48"></div></div>
+									</span>
+								</div>
+								
+								<div class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
+									<div class="animate-pulse mt-0.5 rounded-full h-4 w-4"></div>
+									<span class="ml-3 w-full">
+										<div class="flex justify-between">
+											<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-28"></div></div>
+											<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-8"></div></div>
+										</div>
+										<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-48"></div></div>
+									</span>
+								</div>
+
+								<div class="rounded-tl-md rounded-tr-md duration-150 relative border p-4 flex cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:bg-gray-50">
+									<div class="animate-pulse mt-0.5 rounded-full h-4 w-4"></div>
+									<span class="ml-3 w-full">
+										<div class="flex justify-between">
+											<div class="py-1"><div class="animate-pulse h-3 bg-gray-300 rounded-full w-28"></div></div>
+											<div class="py-1.5"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-8"></div></div>
+										</div>
+										<div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-48"></div></div>
+									</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 	
 				<div class="hidden" id="checkoutAddressForm">
-					<h3 class="text-base md:text-lg font-medium text-gray-900">Адрес доставки</h3>
+					<h3 class="text-lg md:text-xl font-medium text-gray-900">Адрес доставки</h3>
 	
-					<div class="mt-6 grid md:grid-cols-2 gap-6">
+					<div class="mt-6 grid md:grid-cols-2 gap-6 md:gap-y-8">
 						<div>
-							<label for="id_city" class="block text-sm font-medium leading-6 text-gray-900">Город</label>
-							<input type="text" name="city" maxlength="128" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Город" required="" id="id_city">
+							<label for="city" class="block text-sm font-medium leading-6 text-gray-900">Город</label>
+							<div class="relative mt-2 rounded-md shadow-sm">
+								<input type="text" name="city" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm" placeholder="Введите город" required id="city">
+								<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+									<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+									</svg>
+								</div>
+							</div>
+							<p class="hidden mt-2 text-sm text-red-600" id="email-city">Your password must be less than 4 characters.</p>
 						</div>
-				
+
 						<div>
-							<label for="id_zipcode" class="block text-sm font-medium leading-6 text-gray-900">Почтовый индекс</label>
-							<input type="text" name="zipcode" maxlength="10" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Почтовый индекс" required="" id="id_zipcode">
+							<label for="zipcode" class="block text-sm font-medium leading-6 text-gray-900">Почтовый индекс</label>
+							<div class="relative mt-2 rounded-md shadow-sm">
+								<input type="text" name="zipcode" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm" placeholder="Введите почтовый индекс" required id="zipcode">
+								<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+									<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+									</svg>
+								</div>
+							</div>
+							<p class="hidden mt-2 text-sm text-red-600" id="email-zipcode">Your password must be less than 4 characters.</p>
 						</div>
-				  
-						<div>
-							<label for="id_address" class="block text-sm font-medium leading-6 text-gray-900">Адрес доставки</label>
-							<input type="address" name="address" maxlength="320" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 text-sm" placeholder="Адрес" required="" id="id_address">
+
+						<div class="md:col-span-2">
+							<label for="address" class="block text-sm font-medium leading-6 text-gray-900">Адрес доставки</label>
+							<div class="relative mt-2 rounded-md shadow-sm">
+								<input type="text" name="address" maxlength="128" class="block leading-6 w-full text-gray-900 ring-1 rounded-md border-0 ring-inset ring-gray-300 placeholder:text-gray-400 py-2 px-3 focus:ring-2 focus:ring-inset focus:ring-blue-600 text-sm" placeholder="Введите адрес" id="address">
+								<div class="hidden pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+									<svg class="h-5 w-5 text-red-500" x-description="Heroicon name: mini/exclamation-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+									</svg>
+								</div>
+							</div>
+							<p class="hidden mt-2 text-sm text-red-600" id="email-address">Your password must be less than 4 characters.</p>
 						</div>
 					</div>
 				</div>
 	
 				<div class="flex justify-end">
-					<button onclick="loadPage()">aa</button>
-					<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
+					<div>
+						<div class="loadedContent hidden">
+							<button onclick="loadPage()">aa</button>
+							<button type="submit" class="rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Оплатить</button>
+						</div>
+						<div class="preloadedContent"></div>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -186,14 +321,14 @@
 			</div>
 		</div>
 		<div class="flex flex-1 flex-col ml-4">
-			<div class="animate-pulse my-1 h-3 bg-gray-300 rounded-full w-36"></div>
-			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-24 mt-2"></div>
-			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-16"></div>
+			<div class="animate-pulse my-1 h-3 bg-gray-300 rounded-full w-24 md:w-36"></div>
+			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-16 md:w-24 mt-2"></div>
+			<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-12 md:w-16"></div>
 		</div>
 		<div class="flex flex-col justify-between items-end">
-			<div class="ml-4 flex flex-col justify-between items-end">
-				<div class="animate-pulse my-1 h-4 bg-gray-300 rounded-full w-20"></div>
-				<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-24"></div>
+			<div class="ml-2 flex flex-col justify-between items-end">
+				<div class="animate-pulse my-1 h-4 bg-gray-300 rounded-full w-16 md:w-20"></div>
+				<div class="animate-pulse my-1 h-3 bg-gray-200 rounded-full w-12 md:w-24"></div>
 			</div>
 		</div>
 	</div>
