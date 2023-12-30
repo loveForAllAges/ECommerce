@@ -18,16 +18,18 @@ function getPageData() {
 
 function renderForm(data) {
     if (data.email) {
+        console.log(data)
         for (var key in data) {
-            $(`#customerForm input[name='${ key }']`).val(data[key]);
-
+            $(`input[name='${ key }']`).val(data[key]);
         }
-        $(`#customerForm input`).addClass('disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500');
+        $(`#customerForm input`).addClass('disabled:cursor-not-allowed disabled:shadow-none disabled:ring-gray-200 disabled:bg-gray-50 disabled:text-gray-500');
         $(`#customerForm input`).attr('disabled', true);
+
     }
 }
 
 
+// TODO - TEST FUNC
 function loadPage() {
     if ($('.loadedContent').hasClass('hidden')) {
         $('.loadedContent').removeClass('hidden');
@@ -40,9 +42,6 @@ function loadPage() {
 
 
 function renderPage(data) {
-    $("#checkoutDeliveryPrice").text(`0 ₽`);
-    $("#checkoutSalePrice").text(`0 ₽`);
-    $('#checkoutItems').empty();
     $(".checkoutTotalPriceValues").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
     $("#checkoutTotalPrice").attr("data-price", data.total_price);
     $("#checkoutAllItemsPrice").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
@@ -54,7 +53,7 @@ function renderPage(data) {
         }
 
         if (item.size) {
-            sizeHTML = `<p class="mt-1 text-sm text-gray-500">${ item.size.name } размер</p>`
+            sizeHTML = `<p class="text-sm text-gray-500">${ item.size.name } размер</p>`
         } else {
             sizeHTML = ''
         }
@@ -70,8 +69,10 @@ function renderPage(data) {
                         <span aria-hidden="true" class="absolute inset-0"></span>
                         <div class="flex flex-col">
                             <p class="duration-150 text-sm group-hover:text-blue-600">${ item.product.name }</p>
-                            ${ sizeHTML }
-                            <p class="text-sm text-gray-500">${ item.quantity } шт</p>
+                            <div class="mt-1">
+                                ${ sizeHTML }
+                                <p class="text-sm text-gray-500">${ item.quantity } шт</p>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -118,9 +119,8 @@ function renderDeliveries(data) {
 function deliveryClicked() {
     if ($(this).is(':checked')) {
         var price = parseFloat(this.dataset.price);
-        var totalPrice = parseFloat($("#checkoutTotalPrice").data("price"));
         $("#checkoutDeliveryPrice").text(price + ' ₽');
-        $('.checkoutTotalPriceValues').text((totalPrice + price).toLocaleString('ru-RU') + ' ₽');
+        $('.checkoutTotalPriceValues').text((cartData.total_price + price).toLocaleString('ru-RU') + ' ₽');
 
         if ($(this).val() === 'pickup') {
             $('#checkoutAddressForm').addClass('hidden');
@@ -131,38 +131,108 @@ function deliveryClicked() {
 }
 
 
-$(document).ready(function() {
-    getPageData();
-    $('#checkoutDeliveryLabels').on('change', '.checkoutDeliveryInput', deliveryClicked);
-})
+function invalidField(fieldName, message='') {
+    $(`#${fieldName}Field div input`).addClass('ring-2 focus:ring-red-500 ring-red-500 placeholder:text-red-400 text-red-900');
+    $(`#${fieldName}Field p`).text(message);
+    $(`#${fieldName}Field div div`).html(`
+    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+        <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+        </svg>
+    </div>
+    `);
+}
 
 
-$(document).ready(function(){
-    const checkoutForm = document.querySelector('#checkoutForm');
+function validField(fieldName) {
+    $(`#${fieldName}Field div input`).removeClass('ring-2 focus:ring-red-500 ring-red-500 placeholder:text-red-400 text-red-900');
+    $(`#${fieldName}Field p`).text('');
+    $(`#${fieldName}Field div div`).html('');
+}
 
-    checkoutForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const checkoutFormData = new FormData(checkoutForm);
-        
-        fetch('/api/orders/', {
-            method: 'POST',
+
+function validateEmailField(data, fieldName) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const result = data.trim() !== '' && emailRegex.test(data);
+    if (result) {
+        validField(fieldName);
+    } else {
+        invalidField(fieldName, 'Неверный формат почты');
+    }
+    return result;
+}
+
+
+function validatePhoneField(data, fieldName) {
+    const phoneRegex = /^(\+7|8)[0-9]{10}$/;
+    const cleanPhoneNumber = data.replace(/\D/g, '');
+    const result = data.trim() !== '' && phoneRegex.test(cleanPhoneNumber);
+    if (result) {
+        validField(fieldName);
+    } else {
+        invalidField(fieldName, 'Неверный формат номера телефона');
+    }
+    return result;
+}
+
+
+function validateTextField(data, fieldName) {
+    const result = data.trim() !== '';
+    if (result) {
+        validField(fieldName);
+    } else {
+        invalidField(fieldName, 'Это обязательное поле');
+    }
+    return result;
+}
+
+
+function createOrder(e) {
+    showLoading();
+    disableButton($("#checkoutButton"));
+    e.preventDefault();
+    
+    var listData = $('#checkoutForm').serializeArray();
+    var data = {};
+    $.each(listData, function(index, field) {
+        data[field.name] = field.value;
+        validField(field.name);
+    })
+
+    var validated = true
+
+    if (validated) {
+        $.ajax({
+            url: '/api/orders/checkout/',
+            type: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
             },
-            body: checkoutFormData
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json()
-            } else {
-                showMessage('Введены неверные данные')
-                throw new Error()
+            data: listData,
+            success: function(data) {
+                console.log('SUCCESS', data);
+            },
+            error: function(data) {
+                var errors = data.responseJSON;
+
+                for (var key in errors) {
+                    invalidField(key, errors[key][0]);
+                    // showMessage(errors[key]);
+                }
+
+            },
+            complete: function() {
+                enableButton($("#checkoutButton"));
+                hideLoading();
             }
         })
-        .then(data => {
-            window.location.href = data.url;
-        }) 
-        .catch(error => {
-        })
-    })
+    }
+
+}
+
+
+$(document).ready(function() {
+    getPageData();
+    $('#checkoutDeliveryLabels').on('change', '.checkoutDeliveryInput', deliveryClicked);
+    $('#checkoutForm').submit(createOrder);
 })

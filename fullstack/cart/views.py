@@ -12,6 +12,7 @@ from product.models import Size
 
 class CartAPIView(APIView):
     def post(self, request):
+        print(123)
         size_id = request.data.get('size', None)
         product_id = request.data.get('product', None)
         response = {'message': 'Ошибка'}
@@ -27,6 +28,7 @@ class CartAPIView(APIView):
             response.update({'message': 'Товар добавлен в корзину', 'content': get_serialized_cart(request)})
             st = status.HTTP_200_OK
         except Exception as ex:
+            print(ex)
             st = status.HTTP_400_BAD_REQUEST
         return Response(response, status=st)
 

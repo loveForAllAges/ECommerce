@@ -56,10 +56,4 @@ class Address(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    zip_code = models.CharField(max_length=32)
-
-
-# class Wish(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     created = models.DateTimeField(auto_now_add=True)
+    zipcode = models.CharField(max_length=32)

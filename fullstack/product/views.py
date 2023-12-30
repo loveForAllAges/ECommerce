@@ -146,6 +146,7 @@ class WishAPIView(views.APIView):
         return Response({'content': response})
 
     def post(self, request, *args, **kwargs):
+        print('ERORR')
         response = None
         if request.user.is_authenticated:
             data = self.get_object()

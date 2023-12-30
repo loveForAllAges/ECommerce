@@ -7,7 +7,6 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from cart.cart import Cart
 from account.models import Address
-from order.forms import OrderForm
 
 
 # class OrderDetailView(DetailView):
@@ -70,62 +69,78 @@ from rest_framework.views import APIView
 
 from .decorators import cart_and_categories_and_deliveries
 from account.serializers import CustomerSerializer
+from .serializers import CheckoutSerializer
+from cart.utils import get_serialized_cart, remove_cart
+from config.permissions import CartExists
 
 
-class CheckoutAPIView(APIView):
+class CheckoutAPIView(CartExists, APIView):
     @cart_and_categories_and_deliveries
     def get(self, request, *args, **kwargs):
         customer = CustomerSerializer(request.user).data if request.user.is_authenticated else ''
         return Response({'customer': customer})
 
     def post(self, request):
-        data = request.data.copy()
-        if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):
-            return response.Response({'message': 'Неверные данные'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if data['delivery'] == 'pickup':
-            data['city'] = ''
-            data['address'] = ''
-            data['zip_code'] = ''
-
-        if self.request.user.is_authenticated:
-            data['first_name'] = self.request.user.first_name
-            data['last_name'] = self.request.user.last_name
-            data['email'] = self.request.user.email
-            data['phone'] = self.request.user.phone
-            data['customer'] = self.request.user.pk
-
-            if data['delivery'] != 'pickup':
-                address, created = Address.objects.get_or_create(customer=request.user)
-                address.city = data['city']
-                address.address = data['address']
-                address.zip_code = data['zip_code']
-                address.save()
-        data['delivery'] = Delivery.objects.get(slug=data['delivery']).pk
-        
-        order_serializer = OrderSerializer(data=data, context={'request': self.request})
-        order_serializer.is_valid(raise_exception=True)
-        order = order_serializer.save()
-
-        cart = Cart(request)
-        url = request.build_absolute_uri(order.url())
-
-        for i in cart.get_cart()['goods']:
-            item = OrderItem.objects.create(
-                order=order, product_id=i['product']['id'], quantity=i['quantity'], 
-                price=i['total_price']
-            )
-            if i['size']:
-                item.size_id = i['size']['id']
-                item.save()
-
-        cart.clear()
-
+        print(request.data)
+        cart = get_serialized_cart(request)
+        serializer = CheckoutSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save(user=request.user, cart=cart)
+        url = request.build_absolute_uri(order.url)
         send_email(
-            request.user.email, 
+            order.email, 
             'Заказ оформлен',
-            f'Заказ успешно оформлен! Отслеживание заказа: ' + request.build_absolute_uri(url)
+            f'Заказ успешно оформлен! Отслеживание заказа: ' + url
         )
+        remove_cart(request)
+        return Response('OK')
+        # data = request.data.copy()
+        # if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):
+        #     return response.Response({'message': 'Неверные данные'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # if data['delivery'] == 'pickup':
+        #     data['city'] = ''
+        #     data['address'] = ''
+        #     data['zip_code'] = ''
 
-        message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
-        return response.Response({'url': url, 'message': message}, status=status.HTTP_200_OK)
+        # if self.request.user.is_authenticated:
+        #     data['first_name'] = self.request.user.first_name
+        #     data['last_name'] = self.request.user.last_name
+        #     data['email'] = self.request.user.email
+        #     data['phone'] = self.request.user.phone
+        #     data['customer'] = self.request.user.pk
+
+        #     if data['delivery'] != 'pickup':
+                # address, created = Address.objects.get_or_create(customer=request.user)
+                # address.city = data['city']
+                # address.address = data['address']
+                # address.zip_code = data['zip_code']
+                # address.save()
+        # data['delivery'] = Delivery.objects.get(slug=data['delivery']).pk
+        
+        # order_serializer = OrderSerializer(data=data, context={'request': self.request})
+        # order_serializer.is_valid(raise_exception=True)
+        # order = order_serializer.save()
+
+        # cart = Cart(request)
+        # url = request.build_absolute_uri(order.url())
+
+        # for i in cart.get_cart()['goods']:
+        #     item = OrderItem.objects.create(
+        #         order=order, product_id=i['product']['id'], quantity=i['quantity'], 
+        #         price=i['total_price']
+        #     )
+        #     if i['size']:
+        #         item.size_id = i['size']['id']
+        #         item.save()
+
+        # cart.clear()
+
+        # send_email(
+        #     request.user.email, 
+        #     'Заказ оформлен',
+        #     f'Заказ успешно оформлен! Отслеживание заказа: ' + request.build_absolute_uri(url)
+        # )
+
+        # message = 'Заказ оформлен. На почту отправлено дублирующее письмо.'
+        # return response.Response({'url': url, 'message': message}, status=status.HTTP_200_OK)

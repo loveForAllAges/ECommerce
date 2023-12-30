@@ -303,3 +303,15 @@ function updateCart(HTTPmethod, productId, sizeId, detailPage=false) {
         }
     })
 }
+
+
+function disableButton(button) {
+    button.attr('disabled', true);
+    button.addClass('disabled:cursor-not-allowed disabled:shadow-none disabled:bg-blue-400');
+}
+
+
+function enableButton(button) {
+    button.attr('disabled', false);
+    button.removeClass('disabled:cursor-not-allowed disabled:shadow-none disabled:bg-blue-400');
+}

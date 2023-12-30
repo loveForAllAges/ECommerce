@@ -5,7 +5,7 @@ from django.shortcuts import HttpResponse, HttpResponse as HttpResponse, redirec
 from django.http import Http404, HttpRequest
 
 from config.utils import decode_user
-from frontend.permissions import AnonymousUserMixin
+from frontend.permissions import AnonymousUserMixin, CartNotEmptyMixin
 
 
 class AccountTemplateView(LoginRequiredMixin, TemplateView):
@@ -51,7 +51,7 @@ class PasswordResetProcessTemplateView(AnonymousUserMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class CheckoutTemplateView(TemplateView):
+class CheckoutTemplateView(CartNotEmptyMixin, TemplateView):
     template_name = 'pages/checkout.html'
 
 

@@ -15,12 +15,6 @@ class AccountSerializer(serializers.ModelSerializer):
         return obj.is_staff or obj.is_superuser
 
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = ('city', 'address', 'zip_code')
-
-
 class SettingsSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255, read_only=True)
 
@@ -84,7 +78,18 @@ class PasswordResetSerializer(serializers.Serializer):
         return instance
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('city', 'address', 'zip_code')
+
+
 class CustomerSerializer(serializers.ModelSerializer):
+    # last_address = AddressSerializer(many=True, source='address_set')
+    city = serializers.CharField(source='address_set.first.city', read_only=True)
+    address = serializers.CharField(source='address_set.first.address', read_only=True)
+    zipcode = serializers.CharField(source='address_set.first.zipcode', read_only=True)
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'phone')
+        fields = ('first_name', 'last_name', 'email', 'phone', 'address', 'zipcode', 'city')

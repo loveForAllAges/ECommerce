@@ -33,9 +33,9 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='orders')
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
-    email = models.EmailField(blank=True)
-    phone = models.PositiveIntegerField(blank=True, null=True)
-    zip_code = models.CharField(max_length=32, blank=True)
+    email = models.EmailField()
+    phone = models.PositiveIntegerField()
+    zipcode = models.CharField(max_length=32, blank=True)
     city = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255, blank=True)
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
@@ -48,8 +48,9 @@ class Order(models.Model):
         total = sum([item.quantity for item in orderitems])
         return total
     
+    @property
     def url(self):
-        return reverse('order-detail', kwargs={'pk': self.pk})
+        return reverse('order_detail', kwargs={'pk': self.pk})
 
     @property
     def total_price(self):

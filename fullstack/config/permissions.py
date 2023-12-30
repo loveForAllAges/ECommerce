@@ -1,6 +1,7 @@
 from rest_framework import permissions
 
-from cart.cart import Cart
+from cart.models import Cart
+from cart.utils import cart_not_empty
 
 
 class IsStaffOrReadOnly(permissions.BasePermission):
@@ -20,7 +21,13 @@ class IsAuthenticatedOrCreateOnly(permissions.BasePermission):
 
 class CartExists(permissions.BasePermission):
     def has_permission(self, request, view):
-        cart = Cart(request)
-        if len(cart):
+        print("OK")
+        if cart_not_empty(request):
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        print("OK")
+        if cart_not_empty(request):
             return True
         return False
