@@ -56,7 +56,7 @@ var cartData;
 
 var productCardPreloader = `
 <div class="relative group animate-pulse">
-    <div class="space-y-3">
+    <div>
         <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
             <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
                 <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -64,11 +64,11 @@ var productCardPreloader = `
                 </svg>
             </div>
         </div>
-        <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-            <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
+        <div>
+            <div class="py-1 mt-2"><div class="h-3 bg-gray-200 rounded-full"></div></div>
         </div>
         <div>
-            <div class="my-1 h-4 bg-gray-300 rounded-full w-24"></div>
+            <div class="mt-1 py-1"><div class="h-4 bg-gray-300 rounded-full w-24"></div></div>
         </div>
     </div>
 </div>
@@ -97,7 +97,7 @@ function generateWishBtn(product) {
     var color = (product.in_wishlist) ? 'rose' : 'gray'
     var method = (product.in_wishlist) ? 'DELETE' : 'POST';
     return `
-    <button type="button" onclick="updateWishStatus('${ method }', ${ product.id })" class="text-${ color }-500 hover:text-${ color }-600 p-2 -m-2 isolate">
+    <button type="button" onclick="updateWishStatus('${ method }', ${ product.id })" class="text-${ color }-400 hover:text-${ color }-500 duration-150 p-2 -m-2 isolate">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
         </svg>
@@ -109,12 +109,12 @@ function generateWishBtn(product) {
 function generateProductCard(product) {
 
     var card = `
-        <div class="relative group" data-product-card="${ product.id }">
+        <div class="relative group rounded-xl" data-product-card="${ product.id }">
             <div>
                 <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
                     <img src="${ product.images[0] }" class="h-full w-full object-cover object-center">
                 </div>
-                <a href="${ product.url }" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
+                <a href="${ product.url }" class="block mt-2 text-gray-900 group-hover:text-blue-700 text-sm duration-150">
                     <span aria-hidden="true" class="absolute inset-0"></span>
                     ${ product.name }
                 </a>
@@ -280,8 +280,20 @@ function renderCart(data) {
 }
 
 
+// TODO - TEST FUNC
+function loadPage() {
+    if ($('.loadedContent').hasClass('hidden')) {
+        $('.loadedContent').removeClass('hidden');
+        $('.preloadedContent').addClass('hidden');
+    } else {
+        $('.loadedContent').addClass('hidden');
+        $('.preloadedContent').removeClass('hidden');
+    }
+}
+
+
 function updateCart(HTTPmethod, productId, sizeId, detailPage=false) {
-    showLoading();
+    // showLoading();
     $.ajax({
         url: '/api/cart/',
         headers: {
@@ -294,12 +306,12 @@ function updateCart(HTTPmethod, productId, sizeId, detailPage=false) {
         success: function(data) {
             renderCart(data.content);
             if ($('#productDetailName')[0] && productId == window.location.pathname.split('/')[2]) renderProductBtns(sizeId);
-            hideLoading();
-            showMessage(data.message);
+            // hideLoading();
+            // showMessage(data.message);
         },
         error: function(error) {
-            hideLoading();
-            showMessage(error.responseJSON.message);
+            // hideLoading();
+            // showMessage(error.responseJSON.message);
         }
     })
 }

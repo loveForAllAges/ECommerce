@@ -1,4 +1,5 @@
 function uploadOrdersIntoAccountPage(orders) {
+    console.log(orders)
     if (orders.length == 0) {
         $("#accountOrderList").html(`
             <div id="wishListEmpty" class="col-span-3 md:col-span-4 lg:col-span-5 mt-10 text-center">
@@ -10,10 +11,9 @@ function uploadOrdersIntoAccountPage(orders) {
         `);
         return;
     }
-    $('#accountOrderList').empty();
-    orders.slice(0, 4).forEach(order => {
+    orders.forEach(order => {
         var items = '';
-        order.goods.forEach((item, key) => {
+        order.goods.slice(0, 4).forEach((item, key) => {
             console.log(item);
             var geo = ''
             if (key == 1) {
@@ -24,9 +24,9 @@ function uploadOrdersIntoAccountPage(orders) {
                 geo = 'top-auto left-auto'
             }
             items += `
-            <div class="absolute ${ geo } w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                    <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center rounded-xl">
+            <div class="absolute ${ geo } w-1/2 h-1/2 rounded-lg border-gray-100 p-2">
+                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-lg">
+                    <img src="${ item.product.images[0] }" class="h-full w-full object-cover object-center rounded-lg">
                 </div>
             </div>
             `
@@ -38,16 +38,11 @@ function uploadOrdersIntoAccountPage(orders) {
         else if (order.status.id == 3) statusColor = 'yellow'
 
         $('#accountOrderList').append(`
-        <li class="group relative">
-            <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
+        <div class="group relative">
+            <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50 border">
                 ${ items }
                 <div class="absolute left-2 top-1">
-                    <span class="inline-flex items-center rounded-lg bg-${ statusColor }-100 px-2 py-0.5 text-xs font-medium text-${ statusColor }-800">
-                        <svg class="mr-1.5 h-2 w-2 text-${ statusColor }-400" fill="currentColor" viewBox="0 0 8 8">
-                        <circle cx="4" cy="4" r="3" />
-                        </svg>
-                        ${ order.status.name }
-                    </span>
+                    <span class="inline-flex items-center rounded-md bg-${ statusColor }-50 px-2 py-1 text-xs font-medium text-${ statusColor }-700 ring-1 ring-inset ring-${ statusColor }-700/10">${ order.status.name }</span>
                 </div>
             </div>
             <a href="${ order.url }" class="block mt-2 text-gray-900 group-hover:text-blue-600 text-sm duration-150">
@@ -55,29 +50,30 @@ function uploadOrdersIntoAccountPage(orders) {
                 Заказ #${ order.number }
             </a>
             <p class="mt-1 text-gray-900 font-medium">${ order.total_price.toLocaleString('ru-RU') } ₽</p>
-        </li>
+        </div>
         `)
     });
 }
+
+orderStatusColors = `
+    bg-blue-50 text-blue-700 ring-blue-700/10
+    bg-red-50 text-red-700 ring-red-700/10
+    bg-green-50 text-green-700 ring-green-700/10
+    bg-yellow-50 text-yellow-700 ring-yellow-700/10
+`
 
 
 function getPageData() {
     $.ajax({
         url: '/api/auth/account',
         success: function(data) {
-            console.log(data);
             renderCart(data.cart);
             renderHeaderCategories(data.categories);
-            $('#accountName').html(data.content.full_name);
-            $('#accountEmail').html(data.content.email);
-            $('#accountWelcomeText').html('Добро пожаловать,');
-            $('#accountOrderTitle').html(`Заказы<span class="text-sm text-gray-500 font-normal ml-2">${ data.content.orders.length }</span>`);
-            $('#accountOrderDesc').html('История ваших заказов');
-            $('#accountMenu').removeClass('hidden');
+            $('#fullName').html(data.content.full_name);
+            $('#email').html(data.content.email);
+            $('#accountOrderTitle').append(`<span class="text-sm text-gray-500 font-normal ml-2">${ data.content.orders.length }</span>`);
             uploadOrdersIntoAccountPage(data.content.orders);
-            if (data.content.is_staff) {
-                addAdmBtn();
-            }
+            loadPage();
         },
         error: function(error) {
         }

@@ -21,13 +21,6 @@ class IsAuthenticatedOrCreateOnly(permissions.BasePermission):
 
 class CartExists(permissions.BasePermission):
     def has_permission(self, request, view):
-        print("OK")
         if cart_not_empty(request):
             return True
-        return False
 
-    def has_object_permission(self, request, view, obj):
-        print("OK")
-        if cart_not_empty(request):
-            return True
-        return False

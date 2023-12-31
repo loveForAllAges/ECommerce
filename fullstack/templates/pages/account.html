@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 space-y-16">
+<div class="mx-auto py-12 space-y-12 md:space-y-16 md:py-16 max-w-2xl lg:max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="md:flex md:items-center md:justify-between">
         <div class="md:flex md:space-x-5 md:items-center text-center">
             <span class="inline-block h-20 w-20 overflow-hidden rounded-full bg-gray-100">
@@ -11,90 +11,110 @@
                 </svg>
             </span>
             <div class="mt-4 text-center md:mt-0 md:text-left">
-            <div id="accountWelcomeText" class="text-sm text-gray-500"><div class="my-1 h-3 bg-gray-200 rounded-full w-24"></div></div>
-            <div id="accountName" class="text-xl font-bold text-gray-900 sm:text-2xl"><div class="my-2.5 h-6 bg-gray-200 rounded-full w-36"></div></div>
-            <div id="accountEmail" class="text-sm text-gray-500"><div class="my-1 h-3 bg-gray-200 rounded-full w-32"></div></div>
-            </div>
-        </div>
-        <div id="accountMenu" class="hidden mt-5 flex justify-center md:mt-0 space-x-4">
-            <a href="{% url 'settings' %}" class="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
-                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Настройки
-            </a>
-            <button type="button" data-modal-target="logoutModal" data-modal-toggle="logoutModal" class="flex items-center justify-center text-gray-500 duration-150 hover:text-blue-700">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <div class="divide-y divide-gray-200">
-        <div class="space-y-1">
-            <div id="accountOrderTitle" class="text-lg font-medium leading-6 text-gray-900"><div class="py-1"><div class="h-4 bg-gray-200 rounded-full w-24"></div></div></div>
-            <div id="accountOrderDesc" class="max-w-2xl text-sm text-gray-500"><div class="py-1"><div class="h-3 bg-gray-200 rounded-full w-48"></div></div></div>
-        </div>
-        <ul id="accountOrderList" class="mt-6 py-8 grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8">
-            <li class="group relative space-y-3 animate-pulse">
-                <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50">
-                    <div class="absolute w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-                            </svg>
-                        </div>
+                <div>
+                    <div id="fullName" class="loadedContent hidden text-lg md:text-xl font-medium text-gray-900"></div>
+                    <div class="preloadedContent">
+                        <div class="py-1"><div class="animate-pulse h-5 bg-gray-300 rounded-full w-32 mx-auto md:mx-0"></div></div>
                     </div>
-                    <div class="absolute left-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="absolute top-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="absolute top-auto left-auto w-1/2 h-1/2 rounded-xl border-gray-100 p-2">
-                        <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-xl">
-                            <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="block text-gray-900 group-hover:text-blue-600 text-sm duration-150">
-                    <div class="my-1 h-3 bg-gray-200 rounded-full"></div>
                 </div>
                 <div>
-                    <div class="my-1 h-4 bg-gray-200 rounded-full w-24"></div>
+                    <div id="email" class="loadedContent hidden text-sm text-gray-500"></div>
+                    <div class="preloadedContent">
+                        <div class="py-1"><div class="animate-pulse h-3 bg-gray-200 rounded-full w-36 mx-auto md:mx-0"></div></div>
+                    </div>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
+        <div class="mt-6 md:mt-0">
+            <div class="loadedContent hidden flex justify-center items-center space-x-8">
+                <div class="">
+                    <a href="{% url 'adm_home' %}" class="block p-2 -m-2 text-gray-500 duration-150 hover:text-blue-700">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg>   
+                    </a>
+                </div>
+                <div class="">
+                    <a href="{% url 'settings' %}" class="block p-2 -m-2 text-gray-500 duration-150 hover:text-blue-700">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="">
+                    <button type="button" data-modal-target="logoutModal" data-modal-toggle="logoutModal" class="block -m-2 p-2 text-gray-500 duration-150 hover:text-blue-700">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="preloadedContent h-5">
+            </div>
+        </div>
     </div>
-</div>
 
+    <div class="space-y-6">
+        <div>
+            <div id="accountOrderTitle" class="loadedContent hidden text-lg md:text-xl font-medium text-gray-900">Заказы </div>
+            <div class="preloadedContent">
+                <div class="py-1"><div class="animate-pulse h-5 bg-gray-300 rounded-full w-32"></div></div>
+            </div>
+        </div>
+    
+        <div>
+            <div id="accountOrderList" class="loadedContent hidden grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8"></div>
+            <div id="accountOrderListPreloader" class="preloadedContent grid gap-x-4 gap-y-8 grid-cols-2 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-5 xl:gap-x-8">
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    var orderCardPreloader = `
+    <div class="group relative animate-pulse">
+        <div class="relative aspect-w-1 aspect-h-1 rounded-xl bg-gray-50 border">
+            <div class="absolute w-1/2 h-1/2 rounded-lg border-gray-100 p-2">
+                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-lg">
+                    <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute left-auto w-1/2 h-1/2 rounded-lg border-gray-100 p-2">
+                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-lg">
+                    <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute top-auto w-1/2 h-1/2 rounded-lg border-gray-100 p-2">
+                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-lg">
+                    <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute top-auto left-auto w-1/2 h-1/2 rounded-lg border-gray-100 p-2">
+                <div class="flex items-center justify-center w-full h-full bg-gray-300 rounded-lg">
+                    <svg class="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="py-1 mt-2"><div class="h-3 bg-gray-200 rounded-full"></div></div>
+        <div class="mt-1 py-1"><div class="h-4 bg-gray-300 rounded-full w-24"></div></div>
+    </div>
+    `;
+    var preview = '';
+    for (var i = 0; i < 10; i++) preview += orderCardPreloader;
+    document.getElementById('accountOrderListPreloader').innerHTML = preview;
+</script>
 {% include 'components/logoutModal.html' %}
 {% endblock content %}
 
 {% block scripts %}
-<script>
-    function addAdmBtn() {
-        $('#accountMenu').prepend(`
-            <a href="{% url 'adm_home' %}" class="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
-                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>                          
-                Админ
-            </a>
-        `)
-    }
-</script>
 <script type="text/javascript" src="{% static 'js/accountPage.js' %}"></script>
 {% endblock scripts %}

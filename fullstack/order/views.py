@@ -74,7 +74,9 @@ from cart.utils import get_serialized_cart, remove_cart
 from config.permissions import CartExists
 
 
-class CheckoutAPIView(CartExists, APIView):
+class CheckoutAPIView(APIView):
+    permission_classes = [CartExists]
+
     @cart_and_categories_and_deliveries
     def get(self, request, *args, **kwargs):
         customer = CustomerSerializer(request.user).data if request.user.is_authenticated else ''
@@ -93,7 +95,7 @@ class CheckoutAPIView(CartExists, APIView):
             f'Заказ успешно оформлен! Отслеживание заказа: ' + url
         )
         remove_cart(request)
-        return Response('OK')
+        return Response(url)
         # data = request.data.copy()
         # if data['delivery'] != 'pickup' and not (data['address'] and data['zip_code'] and data['city']):
         #     return response.Response({'message': 'Неверные данные'}, status=status.HTTP_400_BAD_REQUEST)

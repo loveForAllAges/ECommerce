@@ -29,18 +29,6 @@ function renderForm(data) {
 }
 
 
-// TODO - TEST FUNC
-function loadPage() {
-    if ($('.loadedContent').hasClass('hidden')) {
-        $('.loadedContent').removeClass('hidden');
-        $('.preloadedContent').addClass('hidden');
-    } else {
-        $('.loadedContent').addClass('hidden');
-        $('.preloadedContent').removeClass('hidden');
-    }
-}
-
-
 function renderPage(data) {
     $(".checkoutTotalPriceValues").text(`${data.total_price.toLocaleString('ru-RU')} ₽`);
     $("#checkoutTotalPrice").attr("data-price", data.total_price);
@@ -209,8 +197,8 @@ function createOrder(e) {
                 'X-CSRFToken': csrftoken,
             },
             data: listData,
-            success: function(data) {
-                console.log('SUCCESS', data);
+            success: function(url) {
+                location.replace(url);
             },
             error: function(data) {
                 var errors = data.responseJSON;

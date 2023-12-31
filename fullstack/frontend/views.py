@@ -55,6 +55,10 @@ class CheckoutTemplateView(CartNotEmptyMixin, TemplateView):
     template_name = 'pages/checkout.html'
 
 
+class OrderTemplateView(TemplateView):
+    template_name = 'pages/order_detail.html'
+
+
 from django.urls import reverse
 from product.models import Brand, Size, Category, Product, ProductImage, SearchHistory
 from order.models import Delivery

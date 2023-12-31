@@ -16,7 +16,6 @@ def params_for_cart(request):
 
 
 def get_cart(request):
-
     data, created = Cart.objects.prefetch_related(
         Prefetch('items', queryset=CartItem.objects.prefetch_related('size', 
             Prefetch('product', queryset=Product.objects.prefetch_related(
@@ -33,7 +32,6 @@ def remove_cart(request):
 
 def cart_not_empty(request):
     res = Cart.objects.filter(**params_for_cart(request), items__isnull=False).exists()
-    print(res)
     return res
 
 

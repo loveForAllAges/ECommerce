@@ -12,7 +12,7 @@ from product.models import Size
 
 class CartAPIView(APIView):
     def post(self, request):
-        print(123)
+        print(request.data)
         size_id = request.data.get('size', None)
         product_id = request.data.get('product', None)
         response = {'message': 'Ошибка'}

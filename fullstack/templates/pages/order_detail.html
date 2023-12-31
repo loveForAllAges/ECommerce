@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load my_filters %}
 
 {% block content %}
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 lg:pb-32">
@@ -81,9 +80,9 @@
                     
                     <div class="flex flex-col justify-between items-end">
                         <div class="ml-4 flex flex-col justify-between items-end">
-                            <p class="font-medium">{{ product.total_price|add_space_separator }} ₽</p>
+                            <p class="font-medium">{{ product.total_price }} ₽</p>
                             {% if product.quantity > 1 %}
-                            <p class="text-sm text-gray-500">1 шт. / {{ product.product.price|add_space_separator }} ₽</p>
+                            <p class="text-sm text-gray-500">1 шт. / {{ product.product.price }} ₽</p>
                             {% endif %}
                         </div>
                         <div class="flex justify-between">
@@ -126,7 +125,7 @@
                 <div class="space-y-6 border-t border-gray-200 pt-6 text-sm">
                     <div class="flex items-center justify-between font-medium text-black">
                         <div class="text-base">Итого</div>
-                        <div class="text-base">{{ object.total_price|add_space_separator }} ₽</div>
+                        <div class="text-base">{{ object.total_price }} ₽</div>
                     </div>
                 </div>
             </div>
@@ -134,3 +133,6 @@
     </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/orderPage.js' %}"></script>
+{% endblock scripts %}
